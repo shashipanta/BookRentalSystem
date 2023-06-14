@@ -1,12 +1,15 @@
 package com.brs.bookrentalsystem.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+@Data
 @Entity
 @Table(name = "tbl_book",
         uniqueConstraints = {
@@ -35,17 +38,20 @@ public class Book {
     @Column(name = "stock_count", nullable = false)
     private Integer stockCount = 10;
 
+    @Column(name = "published_date", nullable = false)
+    private LocalDate publishedDate;
+
     @Column(name = "photo", length = 200, nullable = false)
     private String photo;
 
-    @ManyToOne(fetch = EAGER, cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "category_id",
             foreignKey = @ForeignKey(name = "fk_book_categoryId")
     )
     private Category category;
 
 
-    @ManyToMany(fetch = EAGER)
+    @ManyToMany
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),

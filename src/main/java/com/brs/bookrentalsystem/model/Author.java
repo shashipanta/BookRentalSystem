@@ -1,6 +1,7 @@
 package com.brs.bookrentalsystem.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.Set;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Data
 @Table(name = "tbl_author",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_author_email", columnNames = "email"),
