@@ -1,4 +1,4 @@
-package com.brs.bookrentalsystem.controller;
+package com.brs.bookrentalsystem.controller.rest;
 
 import com.brs.bookrentalsystem.dto.category.CategoryRequest;
 import com.brs.bookrentalsystem.dto.category.CategoryResponse;
