@@ -1,5 +1,6 @@
 package com.brs.bookrentalsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
@@ -17,6 +19,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
                 @UniqueConstraint(name = "uk_book_isbn", columnNames = "isbn_no")
         }
 )
+
 public class Book {
 
     @Id
@@ -44,7 +47,7 @@ public class Book {
     @Column(name = "photo", length = 200, nullable = false)
     private String photo;
 
-    @ManyToOne()
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id",
             foreignKey = @ForeignKey(name = "fk_book_categoryId")
     )

@@ -66,6 +66,13 @@ public class BookServiceImpl implements BookService {
         return null;
     }
 
+
+    // handle exception
+    @Override
+    public Book getBookEntityById(Integer bookId) {
+        return bookRepo.findById(bookId).orElseThrow();
+    }
+
     @Override
     public BookResponse updateBook(BookRequest request, Integer bookId) {
         return null;

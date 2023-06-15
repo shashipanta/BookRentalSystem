@@ -1,6 +1,5 @@
 package com.brs.bookrentalsystem.dto.book;
 
-import com.brs.bookrentalsystem.model.Book;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -39,7 +38,5 @@ public class BookRequest {
 
     @NotNull(message = "Select at least one author")
     private List<Integer> authors;
-
-
 
 }
