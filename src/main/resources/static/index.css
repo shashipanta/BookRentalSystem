@@ -1,0 +1,55 @@
+:root {
+    /* GLOBAL DECLARATIONS */
+    --clr-bg-primary: #b31312;
+    --bs-offcanvas-width: max-content !important;
+}
+
+.card ul > li {
+    list-style: none;
+}
+
+.container > .side-menu {
+    max-width: fit-content;
+}
+
+.menu-header {
+    background: var(--clr-bg-primary);
+    color: white;
+}
+
+/* clear defaults */
+.profile-header img {
+    width: 100%;
+    height: 100%;
+}
+
+.profile-header {
+    width: 3em;
+    aspect-ratio: 1/1;
+}
+
+.profile-img {
+    /* border-radius: 50%; */
+    object-fit: cover;
+}
+
+
+/* FILTER CONPONENT */
+.filter-container {
+    border: solid 1px black;
+    background: var(--clr-bg-primary);
+    width: 100%;
+    color: white;
+    margin-block: 1em;
+}
+
+.filter-container input {
+    border: none;
+    outline: none;
+    padding: .5em 1em;
+}
+
+/* action buttons in table */
+.action-menu {
+    width: max-content;
+}

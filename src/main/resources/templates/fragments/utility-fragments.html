@@ -34,13 +34,30 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
 
+    <!--  Font awesome  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!--    Base style.css-->
-    <link rel="stylesheet" href="./index.css"/>
+    <link rel="stylesheet" th:href="@{/index.css}"/>
 
     <!--    Additional Style-->
-    <th:block th:replace="${links}" />
+    <th:block th:replace="${links}"/>
 </head>
 <body>
+
+<!-- Toggle sidebar menu -->
+<div th:fragment="sidebar_toggle" class="d-flex align-items-center justify-content-between top-nav">
+    <a
+            class=""
+            data-bs-toggle="offcanvas"
+            href="#offcanvasExample"
+            role="button"
+            aria-controls="offcanvasExample"
+    >
+        <i class="fa-sharp fa-solid fa-bars"></i>
+    </a>
+    <h1>Book Rental System</h1>
+</div>
 
 
 <th:block th:fragment="common_scripts">

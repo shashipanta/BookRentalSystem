@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
     <meta charset="UTF-8">
-    <title>Base Template.html</title>
+    <title>Base Template</title>
 
     <link rel="stylesheet" href="">
 </head>
-<body>
+<body class="container">
+
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side-menu}"></th:block>
 
 <button type="button" class="btn btn-primary" id="liveToastBtn">
     Show live toast
@@ -36,9 +40,8 @@
 </div>
 
 
-
 <!-- Common Scripts-->
-<th:block th:replace="fragments/utility-fragments :: common_scripts"></th:block>
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
 
 </body>
 </html>
