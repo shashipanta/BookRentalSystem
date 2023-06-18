@@ -1,5 +1,6 @@
 package com.brs.bookrentalsystem.model;
 
+import com.brs.bookrentalsystem.model.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Data
 @Entity
 @Table(name = "tbl_category")
-public class Category {
+public class Category extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

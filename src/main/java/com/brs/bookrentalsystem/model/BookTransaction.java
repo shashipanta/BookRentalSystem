@@ -1,6 +1,7 @@
 package com.brs.bookrentalsystem.model;
 
 import com.brs.bookrentalsystem.enums.RentStatus;
+import com.brs.bookrentalsystem.model.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,7 +19,8 @@ import static jakarta.persistence.FetchType.LAZY;
                 @UniqueConstraint(name = "uk_bookTransaction_code", columnNames = "code"),
         }
 )
-public class BookTransaction {
+
+public class BookTransaction  extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
