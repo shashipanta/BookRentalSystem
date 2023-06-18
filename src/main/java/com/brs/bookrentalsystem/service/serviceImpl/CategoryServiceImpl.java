@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +27,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponse> getAllCategories() {
-        return null;
+
+        List<Category> categories = categoryRepo.findAll();
+        List<CategoryResponse> categoryResponseList = categories.stream()
+                .map(this::toCategoryResponse)
+                .collect(Collectors.toList());
+        return categoryResponseList;
     }
 
     @Override
@@ -68,5 +74,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         return category;
     }
+
 
 }

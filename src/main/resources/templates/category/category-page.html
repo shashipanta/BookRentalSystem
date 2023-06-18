@@ -25,6 +25,11 @@
                 <i class="fa-solid fa-filter"></i>
             </form>
 
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Create New Category
+            </button>
+
         </div>
 
         <table class="table table-primary table-bordered table-hover">
@@ -37,27 +42,29 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
+            <!--/*@thymesVar id="categoriesList" type="List<CategoryResponse>"*/-->
+            <tr th:each="category, index :${categoriesList}">
+                <th th:text="${category.id}" hidden></th>
+                <th th:text="${index.count}" scope="row">1</th>
+                <td th:text="${category.name}">Mark</td>
+                <td th:text="${category.description}">Otto</td>
                 <td>
-                    <a href="" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
-                    <a href="" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a  class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
+                    <a th:href="@{/brs/admin/category/} + ${category.id} + '/edit'" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
                 </td>
             </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-            </tr>
-            </tbody>
+<!--            <tr>-->
+<!--                <th scope="row">2</th>-->
+<!--                <td>Jacob</td>-->
+<!--                <td>Thornton</td>-->
+<!--                <td>@fat</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <th scope="row">3</th>-->
+<!--                <td colspan="2">Larry the Bird</td>-->
+<!--                <td>@twitter</td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
         </table>
 
 
@@ -81,36 +88,46 @@
     </nav>
 
     <!--    Create new category modal -->
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Create New Category
-    </button>
+
 
     <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+        <div class="modal fade" th:classappend="${showModal}?'show':''" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
         <div class="modal-dialog">
             <div class="modal-content">
-                <form th:action="@{/brs/admin/category/save}">
+                <form th:action="@{/brs/admin/category/save}" th:object="${categoryRequest}">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New category</h1>
+                        <th:block th:if="${showModal}">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Update category</h1>
+                        </th:block>
+                        <th:block>
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New category</h1>
+
+                        </th:block>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
+                        <input type="text" th:field="*{id}" hidden>
+
                         <div class="form-group">
                             <label for="categoryName">Category Name</label>
-                            <input type="text" class="form-control" id="categoryName"
+                            <input th:field="*{name}" type="text" class="form-control" id="categoryName"
                                    placeholder="eg:Science & Technology">
                         </div>
                         <div class="form-group">
                             <label for="categoryDescription">Description</label>
-                            <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
+                            <textarea th:field="*{description}" class="form-control" id="categoryDescription" rows="3"></textarea>
                         </div>
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-sm btn-success">Create</button>
+                        <button type="submit"
+                                class="btn btn-sm" th:classappend="!${showModal}?'btn-success':'btn-warning'"
+                                th:text="${showModal}?'Update':'Create'"
+                        >Create</button>
                         <button type="reset" class="btn btn-sm btn-info">Reset</button>
                     </div>
                 </form>
@@ -119,22 +136,6 @@
         </div>
     </div>
 
-    <!--  form -->
-    <!--<form th:action="@{/brs/admin/category/save}">-->
-
-    <!--    <div class="input-group input-group-sm mb-3">-->
-    <!--        <span class="input-group-text" id="inputGroup-sizing-sm">Category Name</span>-->
-    <!--        <input type="text" class="form-control" aria-label="Sizing example input"-->
-    <!--               aria-describedby="inputGroup-sizing-sm">-->
-    <!--    </div>-->
-
-    <!--    <div class="input-group input-group-sm mb-3">-->
-    <!--        <span class="input-group-text" >Category Description</span>-->
-    <!--        <input type="text" class="form-control" aria-label="Sizing example input"-->
-    <!--               aria-describedby="inputGroup-sizing-sm">-->
-    <!--    </div>-->
-
-    <!--</form>-->
 
     <th:block th:insert="~{fragments/utility-fragments :: common_scripts}"></th:block>
 
