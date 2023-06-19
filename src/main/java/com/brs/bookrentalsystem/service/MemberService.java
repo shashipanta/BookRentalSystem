@@ -14,6 +14,7 @@ public interface MemberService {
     MemberResponse updateMember(MemberRequest request, Integer memberId);
 
     MemberResponse getMemberById(Integer memberId);
+
     Member getMemberEntityById(Integer memberId);
 
     Message deleteMember(Integer memberId);

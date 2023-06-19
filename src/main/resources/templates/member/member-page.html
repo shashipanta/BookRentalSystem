@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+    <meta charset="UTF-8">
+    <title>Register Member</title>
+
+    <link rel="stylesheet" href="">
+</head>
+<body>
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side-menu}"></th:block>
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-md-8">
+            <table class="table table-primary table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">S.N</th>
+                    <th scope="col">Member Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Mobile Number</th>
+                    <th scope="col">Address</th>
+                    <th scope="col" class="th-sm">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--/*@thymesVar id="categoriesList" type="List<CategoryResponse>"*/-->
+                <tr th:each="member, index :${memberList}">
+                    <th th:text="${member.id}" hidden></th>
+                    <th th:text="${index.count}" scope="row">1</th>
+                    <td th:text="${member.name}">Mark</td>
+                    <td th:text="${member.email}">Otto</td>
+                    <td th:text="${member.mobileNumber}">9812XXXXXX</td>
+                    <td th:text="${member.address}">Address</td>
+                    <td class="d-flex gap-2">
+                        <a th:href="@{/brs/admin/member/delete/} + ${member.id}"
+                           class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
+                        <a th:href="@{/brs/admin/member/} + ${member.id} + '/edit'"
+                           class="btn btn-sm btn-warning">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card my-form">
+                <!-- base form -->
+                <th:block th:replace="~{base-form.html :: member_form(memberRequest = ${memberRequest})}"></th:block>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Toast Message -->
+    <th:block
+            th:replace="~{fragments/toast-msg-fragment :: toast_message(message = ${message}, type = ${messageType})}"></th:block>
+</div>
+
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+</body>
+</html>

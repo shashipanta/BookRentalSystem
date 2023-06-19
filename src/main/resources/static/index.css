@@ -17,6 +17,23 @@
     color: white;
 }
 
+/*.top-nav {*/
+/*    padding-block: .5em;*/
+/*    background: var(--clr-bg-primary);*/
+/*    color: white;*/
+/*    margin-bottom: 20px;*/
+/*}*/
+
+.top-nav {
+    padding: .4em 8em;
+    background: var(--clr-bg-primary);
+    color: white;
+    margin-bottom: 2em;
+}
+.top-nav h1{
+    margin-bottom: 0;
+}
+
 /* clear defaults */
 .profile-header img {
     width: 100%;
@@ -54,4 +71,11 @@
 /* action buttons in table */
 .action-menu {
     width: max-content;
+}
+
+
+/* form  */
+.my-form{
+    padding: 1em;
+    border: solid 1px green;
 }

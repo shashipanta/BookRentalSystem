@@ -12,15 +12,17 @@ public interface AuthorService {
 
     AuthorResponse registerAuthor(AuthorRequest request);
 
-    AuthorResponse updateAuthor(AuthorRequest request, Short authorId);
+    AuthorResponse updateAuthor(AuthorRequest authorRequest);
 
     AuthorResponse findAuthorById(Integer authorId);
 
-    Author getAuthorById(Integer authorId);
+    Author getAuthorEntityById(Integer authorId);
+
+    AuthorResponse getAuthor(Integer authorId);
 
     Set<Author> getAuthorAssociated(List<Integer> authorIdList);
 
     List<AuthorResponse> getRegisteredAuthors();
 
-    Message deleteAuthorById(Short authorId);
+    Message deleteAuthorById(Integer authorId);
 }

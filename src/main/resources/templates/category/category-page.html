@@ -5,16 +5,17 @@
     <title>Category Setup</title>
     <link rel="stylesheet" href="@{}">
 </head>
-<body class="container">
+<body>
+
 <!-- toggle sidebar menu -->
 <th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
 <!--    sidebar menu -->
 <th:block th:replace="~{fragments/off-canvas-menu :: side-menu}"></th:block>
 
-<!-- category list -->
+<div class="container">
 
-<tr>
 
+    <!-- category list -->
     <h4>Available Categories</h4>
 
     <div class="table-responsive">
@@ -26,7 +27,8 @@
             </form>
 
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop">
                 Create New Category
             </button>
 
@@ -49,22 +51,23 @@
                 <td th:text="${category.name}">Mark</td>
                 <td th:text="${category.description}">Otto</td>
                 <td>
-                    <a  class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
-                    <a th:href="@{/brs/admin/category/} + ${category.id} + '/edit'" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
+                    <a th:href="@{/brs/admin/category/} + ${category.id} + '/edit'"
+                       class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
                 </td>
             </tr>
-<!--            <tr>-->
-<!--                <th scope="row">2</th>-->
-<!--                <td>Jacob</td>-->
-<!--                <td>Thornton</td>-->
-<!--                <td>@fat</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <th scope="row">3</th>-->
-<!--                <td colspan="2">Larry the Bird</td>-->
-<!--                <td>@twitter</td>-->
-<!--            </tr>-->
-<!--            </tbody>-->
+            <!--            <tr>-->
+            <!--                <th scope="row">2</th>-->
+            <!--                <td>Jacob</td>-->
+            <!--                <td>Thornton</td>-->
+            <!--                <td>@fat</td>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <th scope="row">3</th>-->
+            <!--                <td colspan="2">Larry the Bird</td>-->
+            <!--                <td>@twitter</td>-->
+            <!--            </tr>-->
+            <!--            </tbody>-->
         </table>
 
 
@@ -92,8 +95,10 @@
 
     <!-- Modal -->
 
-        <div class="modal fade" th:classappend="${showModal}?'show':''" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" th:classappend="${showModal}?'show':''" id="staticBackdrop"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
 
         <div class="modal-dialog">
             <div class="modal-content">
@@ -106,7 +111,8 @@
                             <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New category</h1>
 
                         </th:block>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
@@ -119,7 +125,8 @@
                         </div>
                         <div class="form-group">
                             <label for="categoryDescription">Description</label>
-                            <textarea th:field="*{description}" class="form-control" id="categoryDescription" rows="3"></textarea>
+                            <textarea th:field="*{description}" class="form-control" id="categoryDescription"
+                                      rows="3"></textarea>
                         </div>
 
                     </div>
@@ -127,7 +134,8 @@
                         <button type="submit"
                                 class="btn btn-sm" th:classappend="!${showModal}?'btn-success':'btn-warning'"
                                 th:text="${showModal}?'Update':'Create'"
-                        >Create</button>
+                        >Create
+                        </button>
                         <button type="reset" class="btn btn-sm btn-info">Reset</button>
                     </div>
                 </form>
@@ -138,6 +146,9 @@
 
 
     <th:block th:insert="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+
+</div>
 
 </body>
 </html>

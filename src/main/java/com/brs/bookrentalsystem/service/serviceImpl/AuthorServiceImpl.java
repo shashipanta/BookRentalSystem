@@ -28,10 +28,19 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
+    // handle exception
     @Override
-    public AuthorResponse updateAuthor(AuthorRequest request, Short authorId) {
-        return null;
+    public AuthorResponse updateAuthor(AuthorRequest request) {
+
+        Author author = toAuthor(request);
+
+        author = authorRepo.save(author);
+
+        return toAuthorResponse(author);
+
     }
+
+
 
     // handle exception
     @Override
@@ -42,8 +51,13 @@ public class AuthorServiceImpl implements AuthorService {
 
     // handle exception
     @Override
-    public Author getAuthorById(Integer authorId) {
+    public Author getAuthorEntityById(Integer authorId) {
         return authorRepo.findById(authorId).orElseThrow();
+    }
+
+    @Override
+    public AuthorResponse getAuthor(Integer authorId) {
+        return null;
     }
 
     @Override
@@ -56,12 +70,19 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<AuthorResponse> getRegisteredAuthors() {
-        return null;
+
+        List<Author> authorList = authorRepo.findAll();
+
+        List<AuthorResponse> authorResponseList = authorList.stream()
+                .map(this::toAuthorResponse)
+                .collect(Collectors.toList());
+        return authorResponseList;
     }
 
     @Override
-    public Message deleteAuthorById(Short authorId) {
-        return null;
+    public Message deleteAuthorById(Integer authorId) {
+        authorRepo.deleteById(authorId);
+        return new Message("SUCCESS", "Author deleted successfully");
     }
 
     // handle exception
@@ -76,6 +97,15 @@ public class AuthorServiceImpl implements AuthorService {
         author.setEmail(request.getEmail());
         author.setMobileNumber(request.getMobileNumber());
         return author;
+    }
+
+    private AuthorRequest toAuthorRequest(AuthorResponse response){
+        return AuthorRequest.builder()
+                .id(response.getId())
+                .name(response.getName())
+                .email(response.getEmail())
+                .mobileNumber(response.getMobileNumber())
+                .build();
     }
 
     private AuthorResponse toAuthorResponse(Author author) {
