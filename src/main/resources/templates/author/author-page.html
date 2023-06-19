@@ -58,13 +58,23 @@
     </div>
 </div>
 
+<!-- Databasse Error message -->
+<p th:if="${errorResponse}" th:text="${errorResponse}"></p>
+
+<!-- floating toast -->
+<th:block
+        th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">
+</th:block>
+
 
 <!-- Toast Message -->
 <th:block
-        th:replace="~{fragments/toast-msg-fragment :: toast_message(message = ${message}, type = ${messageType})}"></th:block>
+        th:replace="~{fragments/toast-msg-fragment :: toast_message(message = ${message}, type = ${messageType})}">
+</th:block>
 
 <!-- Common Scripts-->
 <th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
 
 </body>
 </html>

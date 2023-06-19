@@ -11,3 +11,7 @@ body{
     right: 8em;
     top: 15em;
 }
+
+.badge {
+    background: var(--clr-bg-primary);
+}

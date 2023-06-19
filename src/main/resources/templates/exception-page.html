@@ -15,10 +15,10 @@
 <div class="exception-msg">
     <h1> Oops Something Went Wrong !</h1>
 
-    <div class="d-flex">
+    <div class="">
         <th:block th:if="${errorResponse}" >
-            <p th:text="${errorResponse.code}"></p>
-            <p th:text="${errorResponse.message}"></p>
+            <span th:text="${errorResponse.message}" class="badge badge-danger">message</span>
+            <p th:text="${errorResponse.code}">code</p>
         </th:block>
     </div>
 
