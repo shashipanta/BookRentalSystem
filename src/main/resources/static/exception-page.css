@@ -1,0 +1,13 @@
+body{
+    background-image: url("https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/c7bdc723940433.5632b6072b317.jpg");
+    position: relative;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+
+}
+
+.exception-msg{
+    position: absolute;
+    right: 8em;
+    top: 15em;
+}

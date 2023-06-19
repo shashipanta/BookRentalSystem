@@ -3,6 +3,8 @@ package com.brs.bookrentalsystem.service.serviceImpl;
 import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.author.AuthorRequest;
 import com.brs.bookrentalsystem.dto.author.AuthorResponse;
+import com.brs.bookrentalsystem.error.codes.ErrorCodes;
+import com.brs.bookrentalsystem.error.exception.NoSuchElementFoundException;
 import com.brs.bookrentalsystem.model.Author;
 import com.brs.bookrentalsystem.repo.AuthorRepo;
 import com.brs.bookrentalsystem.service.AuthorService;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepo authorRepo;
+
+    private static final String NOT_FOUND_MESSAGE = "AUTHOR WITH ID : %d NOT FOUND";
 
     @Override
     public AuthorResponse registerAuthor(AuthorRequest request) {
@@ -45,14 +49,18 @@ public class AuthorServiceImpl implements AuthorService {
     // handle exception
     @Override
     public AuthorResponse findAuthorById(Integer authorId) {
-        Author author = authorRepo.findById(authorId).orElseThrow();
+        Author author = authorRepo
+                .findById(authorId)
+                .orElseThrow(() -> generateNoElementFoundException(authorId));
+
         return toAuthorResponse(author);
     }
 
     // handle exception
     @Override
     public Author getAuthorEntityById(Integer authorId) {
-        return authorRepo.findById(authorId).orElseThrow();
+        return authorRepo.findById(authorId)
+                .orElseThrow(() -> generateNoElementFoundException(authorId));
     }
 
     @Override
@@ -115,5 +123,9 @@ public class AuthorServiceImpl implements AuthorService {
                 .name(author.getName())
                 .mobileNumber(author.getMobileNumber())
                 .build();
+    }
+
+    private NoSuchElementFoundException generateNoElementFoundException(Integer authorId){
+        return new NoSuchElementFoundException(ErrorCodes.AUTHOR_NOT_FOUND, String.format(NOT_FOUND_MESSAGE, authorId) );
     }
 }

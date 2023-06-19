@@ -5,10 +5,7 @@ import com.brs.bookrentalsystem.dto.author.AuthorResponse;
 import com.brs.bookrentalsystem.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +18,11 @@ public class AuthorController {
     @PostMapping(value = "/")
     public AuthorResponse registerNewAuthor(@RequestBody @Valid AuthorRequest authorRequest){
         return authorService.registerAuthor(authorRequest);
+    }
+
+    @GetMapping(value = "/{id}")
+    public AuthorResponse getAuthorById(@PathVariable("id") Integer authorId){
+        return authorService.findAuthorById(authorId);
     }
 
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+    <meta charset="UTF-8">
+    <title>Exception</title>
+
+    <link rel="stylesheet" href="/exception-page.css">
+</head>
+<body>
+
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side-menu}"></th:block>
+
+<div class="exception-msg">
+    <h1> Oops Something Went Wrong !</h1>
+
+    <div class="d-flex">
+        <th:block th:if="${errorResponse}" >
+            <p th:text="${errorResponse.code}"></p>
+            <p th:text="${errorResponse.message}"></p>
+        </th:block>
+    </div>
+
+</div>
+
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+
+</body>
+</html>
