@@ -4,7 +4,7 @@ import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.author.AuthorRequest;
 import com.brs.bookrentalsystem.dto.author.AuthorResponse;
 import com.brs.bookrentalsystem.error.codes.ErrorCodes;
-import com.brs.bookrentalsystem.error.exception.NoSuchElementFoundException;
+import com.brs.bookrentalsystem.error.exception.impl.NoSuchEntityFoundException;
 import com.brs.bookrentalsystem.model.Author;
 import com.brs.bookrentalsystem.repo.AuthorRepo;
 import com.brs.bookrentalsystem.service.AuthorService;
@@ -125,7 +125,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .build();
     }
 
-    private NoSuchElementFoundException generateNoElementFoundException(Integer authorId){
-        return new NoSuchElementFoundException(ErrorCodes.AUTHOR_NOT_FOUND, String.format(NOT_FOUND_MESSAGE, authorId) );
+    private NoSuchEntityFoundException generateNoElementFoundException(Integer authorId){
+        return new NoSuchEntityFoundException(String.format(NOT_FOUND_MESSAGE, authorId),ErrorCodes.NOT_FOUND);
     }
 }

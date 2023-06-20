@@ -79,3 +79,14 @@
     padding: 1em;
     border: solid 1px green;
 }
+
+/* hamburger menu*/
+.fa-sharp.fa-solid.fa-bars.ham-menu {
+    color: white;
+    font-size: 1.5em;
+}
+
+.floating-toast{
+    right: 8em;
+    bottom: .5em;
+}

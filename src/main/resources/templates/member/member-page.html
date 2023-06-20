@@ -58,6 +58,11 @@
         </div>
     </div>
 
+    <!-- floating toast -->
+    <th:block
+            th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">
+    </th:block>
+
 
     <!-- Toast Message -->
     <th:block

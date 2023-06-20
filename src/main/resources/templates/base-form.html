@@ -5,6 +5,7 @@
         th:object="${authorRequest}"
         class="d-flex flex-column gap-4"
 >
+    <h1 th:if="*{id} ? 'Update Author' : 'Register a New Author'"></h1>
     <input type="text" th:field="*{id}" hidden>
 
     <div class="form-group">
@@ -44,6 +45,8 @@
         th:object="${memberRequest}"
         class="d-flex flex-column gap-4"
 >
+    <h1 th:if="${id} ? 'Update Member' : 'Register a New member'"></h1>
+
     <input type="text" th:field="*{id}" hidden>
 
     <div class="form-group">

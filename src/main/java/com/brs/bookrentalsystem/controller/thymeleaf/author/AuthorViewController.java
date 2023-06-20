@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+//http://localhost:8080/brs/admin/author/;jsessionid=D1653963FF0BD16535DF1982126122D8
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/brs/admin/author")

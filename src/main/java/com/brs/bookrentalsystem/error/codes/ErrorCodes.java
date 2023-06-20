@@ -1,7 +1,9 @@
 package com.brs.bookrentalsystem.error.codes;
 
 public enum ErrorCodes {
-    AUTHOR_NOT_FOUND,
-    BOOK_NOT_FOUND,
-    CATEGORY_NOT_FOUND,
+    FOREIGN_KEY_CONSTRAINT_VIOLATION,
+    UINQUE_KEY_CONSTRAINT_VIOLATION,
+
+    NOT_FOUND,
+    INTERNAL_SERVER_ERROR
 }

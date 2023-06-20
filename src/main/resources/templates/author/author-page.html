@@ -56,15 +56,17 @@
         </div>
 
     </div>
+
+    <!-- floating toast -->
+    <th:block
+            th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">
+    </th:block>
 </div>
 
 <!-- Databasse Error message -->
-<p th:if="${errorResponse}" th:text="${errorResponse}"></p>
+<!--<p th:if="${errorResponse}" th:text="${errorResponse}"></p>-->
 
-<!-- floating toast -->
-<th:block
-        th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">
-</th:block>
+
 
 
 <!-- Toast Message -->

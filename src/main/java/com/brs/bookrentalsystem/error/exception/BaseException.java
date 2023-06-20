@@ -3,12 +3,12 @@ package com.brs.bookrentalsystem.error.exception;
 
 import com.brs.bookrentalsystem.error.codes.ErrorCodes;
 
-public class NoSuchElementFoundException extends RuntimeException  {
+public class BaseException extends RuntimeException{
 
     private ErrorCodes errorCode;
 
-    public NoSuchElementFoundException(ErrorCodes errorCode, String reason){
-        super(reason);
+    public BaseException(String message, ErrorCodes errorCode){
+        super(message);
         this.errorCode = errorCode;
     }
 }
