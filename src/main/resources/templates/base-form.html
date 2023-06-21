@@ -5,28 +5,32 @@
         th:object="${authorRequest}"
         class="d-flex flex-column gap-4"
 >
-    <h1 th:if="*{id} ? 'Update Author' : 'Register a New Author'"></h1>
+    <h1 th:text="*{id} ? 'Update Author' : 'Register a New Author'"></h1>
     <input type="text" th:field="*{id}" hidden>
 
     <div class="form-group">
         <label for="authorName">Author Name</label>
         <input th:field="*{name}"
+               th:classappend="*{#fields.hasErrors('name')}? 'is-invalid'"
                type="text" class="form-control" id="authorName" placeholder="eg: Shashi Kumar Panta">
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback">Name error</span>
     </div>
 
     <div class="form-group">
         <label for="authorEmail">Email</label>
         <input th:field="*{email}"
+               th:classappend="*{#fields.hasErrors('email')}? 'is-invalid'"
                type="email" class="form-control" id="authorEmail" aria-describedby="authorEmailHelp"
                placeholder="Enter email">
-        <small id="authorEmailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback">Email error</span>
     </div>
 
     <div class="form-group">
         <label for="authorPhoneNo">Phone Number</label>
         <input th:field="*{mobileNumber}"
+               th:classappend="*{#fields.hasErrors('mobileNumber')}? 'is-invalid'"
                class="form-control" type="text" id="authorPhoneNo" name="phone" placeholder="eg: 9812347567">
-        <!--        <input type="number" class="form-control" id="authorPhoneNo"  placeholder="eg: 9812347567">-->
+        <span th:if="${#fields.hasErrors('mobileNumber')}" th:errors="*{mobileNumber}" class="invalid-feedback">Name error</span>
     </div>
 
     <button
@@ -45,34 +49,54 @@
         th:object="${memberRequest}"
         class="d-flex flex-column gap-4"
 >
-    <h1 th:if="${id} ? 'Update Member' : 'Register a New member'"></h1>
+    <h4 th:text="${id}? 'Update Member' : 'Register a New member'" class="m-0"></h4>
 
     <input type="text" th:field="*{id}" hidden>
 
     <div class="form-group">
         <label for="authorName">Member Name</label>
         <input th:field="*{name}"
+               th:classappend="*{#fields.hasErrors('name')}? 'is-invalid'"
                type="text" class="form-control" id="memberName" placeholder="eg: Shashi Kumar Panta">
+        <span
+                th:if="${#fields.hasErrors('name')}"
+                th:errors="*{name}"
+                class="invalid-feedback"
+        >Name error</span>
     </div>
 
     <div class="form-group">
         <label for="authorEmail">Email</label>
         <input th:field="*{email}"
+               th:classappend="*{#fields.hasErrors('email')}? 'is-invalid'"
                type="email" class="form-control" id="memberEmail" aria-describedby="authorEmailHelp"
                placeholder="Enter email">
-        <small id="memberEmailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        <span
+                th:if="${#fields.hasErrors('email')}"
+                th:errors="*{email}"
+                class="invalid-feedback"
+        >Name error</span>
     </div>
 
     <div class="form-group">
         <label for="authorPhoneNo">Phone Number</label>
         <input th:field="*{mobileNumber}"
                class="form-control" type="text" id="memberPhoneNumber" name="phone" placeholder="eg: 9812347567">
-        <!--        <input type="number" class="form-control" id="authorPhoneNo"  placeholder="eg: 9812347567">-->
+        <span
+                th:if="${#fields.hasErrors('mobileNumber')}"
+                th:errors="*{mobileNumber}"
+                class="invalid-feedback"
+        >Name error</span>
     </div>
     <div class="form-group">
         <label for="authorPhoneNo">Address</label>
         <input th:field="*{address}"
                class="form-control" type="text" id="memberAddress" name="phone" placeholder="eg: Nayabasti">
+        <span
+                th:if="${#fields.hasErrors('address')}"
+                th:errors="*{address}"
+                class="invalid-feedback"
+        >Name error</span>
     </div>
 
     <div>

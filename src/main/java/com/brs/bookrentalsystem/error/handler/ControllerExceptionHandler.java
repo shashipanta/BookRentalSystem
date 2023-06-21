@@ -53,6 +53,9 @@ public class ControllerExceptionHandler {
         } else if(errorReceived.contains("fk_")){
             errorResponse.setCode("S002");
             errorResponse.setMessage("Foreign key Violation");
+        } else if(errorReceived.contains("null")){      // remove
+            errorResponse.setCode("S003");
+            errorResponse.setMessage("");
         }
 
         System.out.println("Context Path : " + request.getRequestURI());

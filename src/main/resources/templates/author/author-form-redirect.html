@@ -1,10 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+  <meta charset="UTF-8">
+  <title>Base Template</title>
+
+  <link rel="stylesheet" href="">
+</head>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Author form redirect</title>
 </head>
 <body>
+
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side_menu}"></th:block>
+
+<div class="container">
+
+  <form action="/brs/admin/author/save"
+        th:object="${authorRequest}"
+        class="d-flex flex-column gap-4"
+  >
+      <h1 th:text="*{id} ? 'Update Author' : 'Register a New Author'"></h1>
+    <input type="text" th:field="*{id}" hidden>
+
+    <div class="form-group" >
+      <label for="authorName">Author Name</label>
+      <input th:field="*{name}"
+             th:classappend="*{#fields.hasErrors('name')}? 'is-invalid'"
+             type="text" class="form-control" id="authorName" placeholder="eg: Shashi Kumar Panta">
+      <span
+              th:if="${#fields.hasErrors('name')}"
+              th:errors="*{name}"
+              class="invalid-feedback"
+      >Name error</span>
+    </div>
+
+    <div class="form-group">
+      <label for="authorEmail">Email</label>
+      <input th:field="*{email}"
+             type="email" class="form-control" id="authorEmail" aria-describedby="authorEmailHelp"
+             placeholder="Enter email">
+      <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</span>
+    </div>
+
+    <div class="form-group">
+      <label for="authorPhoneNo">Phone Number</label>
+      <input th:field="*{mobileNumber}"
+             class="form-control" type="text" id="authorPhoneNo" name="phone" placeholder="eg: 9812347567">
+      <span th:if="${#fields.hasErrors('mobileNumber')}" th:errors="*{mobileNumber}">Name error</span>
+    </div>
+
+    <button
+            type="submit"
+            class="btn"
+            th:classappend="*{id}?'btn-info': 'btn-success'"
+            th:text="*{id}? 'Update' : 'Save'"
+    >{{Save}} Author</button>
+  </form>
+</div>
+
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
 
 </body>
 </html>

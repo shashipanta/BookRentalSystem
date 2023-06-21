@@ -3,12 +3,12 @@ package com.brs.bookrentalsystem.controller.thymeleaf.author;
 import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.author.AuthorRequest;
 import com.brs.bookrentalsystem.dto.author.AuthorResponse;
-import com.brs.bookrentalsystem.model.Author;
 import com.brs.bookrentalsystem.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -28,6 +28,14 @@ public class AuthorViewController {
         if (!model.containsAttribute("authorRequest")) {
             model.addAttribute("authorRequest", new AuthorRequest());
         }
+
+//        if(model.containsAttribute("bindingResult")){
+//            BindingResult bindingResult = (BindingResult) model.getAttribute("bindingResult");
+//            model.addAttribute("BindingResult", bindingResult);
+//        }
+
+        System.out.println(model.asMap());
+
         // get registered authors
         List<AuthorResponse> registeredAuthors = authorService.getRegisteredAuthors();
         model.addAttribute("authorList", registeredAuthors);
@@ -37,13 +45,30 @@ public class AuthorViewController {
 
     @GetMapping("/save")
     public String saveNewAuthor(
-           @Valid @ModelAttribute("AuthorRequest") AuthorRequest request,
-           RedirectAttributes ra
+            @Valid @ModelAttribute("authorRequest") AuthorRequest request,
+            BindingResult bindingResult,
+            Model model
     ) {
+
+        if (bindingResult.hasErrors()) {
+            System.out.println("binding errors : " + bindingResult);
+            model.addAttribute("authorRequest", request);
+            model.addAttribute("authorList", authorService.getRegisteredAuthors());
+//            ra.addFlashAttribute(bindingResult);
+
+            return "/author/author-page";
+        }
+
+        if (request.getName().contains("shashi")) {
+            bindingResult.rejectValue("name", "author.name", "Shashi cannot be added as author");
+            model.addAttribute("authorRequest", request);
+            return "/author/author-form-redirect";
+        }
+
         AuthorResponse authorResponse = authorService.registerAuthor(request);
         Message createdMessage = new Message("CREATED", "Author saved successfully");
-        ra.addFlashAttribute("message", createdMessage);
-        ra.addFlashAttribute("messageType", "create");
+        model.addAttribute("message", createdMessage);
+        model.addAttribute("messageType", "create");
         return "redirect:/brs/admin/author/";
     }
 
@@ -52,11 +77,10 @@ public class AuthorViewController {
     public String editAuthor(
             @PathVariable("id") Integer authorId,
             RedirectAttributes ra
-    ){
+    ) {
         AuthorResponse authorResponse = authorService.findAuthorById(authorId);
 
         ra.addFlashAttribute("authorRequest", authorResponse);
-
 
         return "redirect:/brs/admin/author/";
     }
@@ -65,9 +89,9 @@ public class AuthorViewController {
     public String deleteAuthorById(
             @PathVariable("id") Integer authorId,
             RedirectAttributes ra
-    ){
+    ) {
         Message message = authorService.deleteAuthorById(authorId);
-        ra.addFlashAttribute("message",message);
+        ra.addFlashAttribute("message", message);
         ra.addFlashAttribute("messageType", "delete");
 
         return "redirect:/brs/admin/author/";

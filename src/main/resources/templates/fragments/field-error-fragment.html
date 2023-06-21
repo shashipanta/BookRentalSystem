@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<span
+        th:fragment="field_error(errorField)"
+        th:if="${#fields.hasErrors('${errorField}')}"
+        th:errors="*{errorField}"
+        class="invalid-feedback"
+>Custom Field error
+</span>

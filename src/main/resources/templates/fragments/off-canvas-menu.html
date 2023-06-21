@@ -1,7 +1,7 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 
 
-<div    th:fragment="side-menu"
+<div    th:fragment="side_menu"
         class="offcanvas offcanvas-start side-menu"
         tabindex="-1"
         id="offcanvasExample"
@@ -26,7 +26,7 @@
         <li><a class="list-group-item" th:href="@{/brs/admin/category/}">Category Setup</a></li>
         <li><a class="list-group-item" th:href="@{/brs/admin/author/}">Author Setup</a></li>
         <li><a class="list-group-item" th:href="@{/brs/admin/member/}">Customer Setup</a></li>
-        <li><a class="list-group-item" href="#">Book Setup</a></li>
+        <li><a class="list-group-item" th:href="@{/brs/admin/book/}">Book Setup</a></li>
         <li><a class="list-group-item disabled" href="#">Additional Setup</a></li>
       </ul>
     </div>

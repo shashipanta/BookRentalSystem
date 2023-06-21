@@ -11,6 +11,7 @@ import com.brs.bookrentalsystem.service.AuthorService;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.CategoryService;
 import com.brs.bookrentalsystem.util.DateUtil;
+import com.brs.bookrentalsystem.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +28,19 @@ public class BookServiceImpl implements BookService {
     private final CategoryService categoryService;
     private final AuthorService authorService;
     private final DateUtil dateUtil;
+    private final FileStorageUtil fileStorageUtil;
 
 
     @Override
     public BookResponse saveBook(BookRequest request) {
+        String fileStorageLocation = fileStorageUtil.getFileStorageLocation(request);
+
+        request.setPhotoPath(fileStorageLocation);
         Book book = toBook(request);
         book = bookRepo.save(book);
+
+        // if saved then store file
+        fileStorageUtil.saveMultipartFile(request.getMultipartFile(), fileStorageLocation);
         return toBookResponse(book);
     }
 
@@ -86,22 +94,25 @@ public class BookServiceImpl implements BookService {
 
     public Book toBook(BookRequest request){
 
-        Category category = categoryService.getCategoryById(request.getCategory());
-        Set<Author> authors = authorService.getAuthorAssociated(request.getAuthors());
+        Category category = categoryService.getCategoryById(request.getCategoryId());
+        Set<Author> authors = authorService.getAuthorAssociated(request.getAuthorId());
         LocalDate publishedDate = dateUtil.stringToDate(request.getPublishedDate());
 
         Book book = new Book();
 
-        if(request.getBookId() != null) book.setId(request.getBookId());
+
+//        String imagePath = fileStorageUtil.saveMultipartFile(request.getMultipartFile(), fileStorageLocation);
+        if(request.getId() != null) book.setId(request.getId());
         if(request.getBookName() != null) book.setName(request.getBookName());
         if(request.getTotalPages() != null) book.setTotalPages(request.getTotalPages());
         if(request.getIsbn() != null) book.setIsbn(request.getIsbn());
-        if(request.getStockCount() != null) book.setStockCount(request.getStockCount());
+        book.setStockCount(request.getStockCount());
         if(request.getPublishedDate() != null) book.setPublishedDate(publishedDate);
         if(request.getRating() != null) book.setRating(request.getRating());
-        if(request.getCategory() != null) book.setCategory(category);
-        if(request.getAuthors() != null) book.setAuthor(authors);
-        if(request.getPhotoPath() != null) book.setPhoto(request.getPhotoPath());
+        book.setCategory(category);
+        book.setAuthor(authors);
+        // creation
+        if(request.getMultipartFile() != null) book.setPhoto(request.getPhotoPath());
 
         return book;
     }
