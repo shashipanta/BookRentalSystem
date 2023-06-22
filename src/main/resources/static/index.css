@@ -90,3 +90,13 @@
     right: 8em;
     bottom: .5em;
 }
+
+
+/* return book form */
+.hidden-form{
+    display: none;
+}
+
+.shown-form{
+    display: block;
+}

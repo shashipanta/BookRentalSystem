@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+    <meta charset="UTF-8">
+    <title>Return Book</title>
+
+    <link rel="stylesheet" href="">
+
+</head>
+<body>
+
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side_menu}"></th:block>
+
+<style>
+    .hidden-form {
+        border: solid red;
+        margin-bottom: 2px;
+        display: none;
+    }
+</style>
+
+<div class="container">
+
+    <form th:action="@{/brs/library/book/return/submit}" th:object="${bookReturnRequest}">
+        <h1> Return Book </h1>
+
+        <!--   CODE FILTER     -->
+        <input type="codeInput" name="code" id="codeInput">
+
+        <ul id="codeContainer" style="display: none;">
+            <th:block th:each="transaction : ${transactionList}">
+                <li th:value="${transaction.code}" th:text="${transaction.code}"></li>
+            </th:block>
+        </ul>
+
+        <select class="card" th:field="*{code}" id="codeSelect">
+            <option value="" selected>Open this select menu</option>
+            <option th:each="transaction : ${transactionList}"
+                    th:value="${transaction.code}"
+                    th:text="${transaction.code}"
+            >One
+            </option>
+        </select>
+
+
+<!--            <p th:text="${transaction}"></p>-->
+            <!--           VIEW MEMBER NAME-->
+            <div th:each="transaction: ${transactionList}" class="hidden-form" id="hidden-form">
+
+                <div class="form-group">
+                    <span id="transactionCode" th:value="${transaction.code}" th:text="${transaction.code}" hidden="hidden"></span>
+                    <label for="memberId">Member Name</label>
+                    <input th:field="*{memberId}"
+                           th:value="${transaction.member.id}"
+                           disabled
+                           th:classappend="*{#fields.hasErrors('memberId')}? 'is-invalid'"
+                           type="text" class="form-control" id="memberId" placeholder="eg: Rich Dad Poor Dad">
+
+                </div>
+
+                <!-- VIEW RENTED DATE-->
+                <div class="form-group">
+                    <label for="rentFrom">Book Rented From</label>
+                    <input
+                            disabled
+                            th:value="${transaction.rentFrom}"
+                            type="text" class="form-control" id="rentFrom" placeholder="eg: Rich Dad Poor Dad">
+                </div>
+            </div>
+
+
+        <!--  Submit buttons -->
+        <div class="form-group d-flex justify-content-between flex-fill mt-3 gap-2">
+            <button type="submit" class="btn btn-success w-50">Return It!</button>
+
+            <button type="reset" class="btn btn-dark w-50"> Reset</button>
+        </div>
+
+
+    </form>
+
+
+</div>
+
+<script>
+
+</script>
+
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+</body>
+</html>

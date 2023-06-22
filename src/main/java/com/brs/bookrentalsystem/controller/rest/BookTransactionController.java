@@ -20,6 +20,6 @@ public class BookTransactionController {
 
     @PostMapping(value = "/")
     public BookTransactionResponse addNewBookTransaction(@RequestBody @Valid BookTransactionRequest request){
-        return bookTransactionService.createBookTransaction(request);
+        return bookTransactionService.rentBook(request);
     }
 }

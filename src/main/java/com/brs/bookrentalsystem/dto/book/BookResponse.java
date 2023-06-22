@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class BookResponse {
 
-    private Integer bookId;
+    private Integer id;
 
     private String bookName;
 

@@ -2,6 +2,7 @@ package com.brs.bookrentalsystem.dto.book;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,7 +21,7 @@ public class BookAddRequest {
 
     private Short totalPages;
 
-    @NotBlank(message = "ISBN cannot be blank")
+    @Size(min = 13, max = 13, message = "ISBN should be 13 digits")
     private String isbn;
 
     private Double rating;

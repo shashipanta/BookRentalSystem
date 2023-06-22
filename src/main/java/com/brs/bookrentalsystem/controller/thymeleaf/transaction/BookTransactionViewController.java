@@ -1,0 +1,110 @@
+package com.brs.bookrentalsystem.controller.thymeleaf.transaction;
+
+
+import com.brs.bookrentalsystem.dto.book.BookResponse;
+import com.brs.bookrentalsystem.dto.book.BookReturnRequest;
+import com.brs.bookrentalsystem.dto.member.MemberResponse;
+import com.brs.bookrentalsystem.dto.transaction.BookTransactionRequest;
+import com.brs.bookrentalsystem.dto.transaction.BookTransactionResponse;
+import com.brs.bookrentalsystem.dto.transaction.TransactionFilterRequest;
+import com.brs.bookrentalsystem.service.BookService;
+import com.brs.bookrentalsystem.service.BookTransactionService;
+import com.brs.bookrentalsystem.service.CategoryService;
+import com.brs.bookrentalsystem.service.MemberService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/brs/library/book")
+public class BookTransactionViewController {
+
+    private final BookService bookService;
+    private final CategoryService categoryService;
+    private final MemberService memberService;
+
+    private final BookTransactionService bookTransactionService;
+
+
+    @GetMapping("/rent")
+    public String openRentBookPage(Model model) {
+
+        List<BookResponse> savedBooks = bookService.getBooksAvailableOnStock();
+        List<MemberResponse> registeredMembers = memberService.getRegisteredMembers();
+
+        model.addAttribute("transactionRequest", new BookTransactionRequest());
+        model.addAttribute("bookList", savedBooks);
+        model.addAttribute("memberList", registeredMembers);
+
+        return "/bookTransaction/rentbook-page";
+    }
+
+    @GetMapping(value = "/rent/submit")
+    public String rentBook(
+            @Valid @ModelAttribute("transactionRequest") BookTransactionRequest request,
+            BindingResult bindingResult,
+            Model model
+    ) {
+
+        if (bindingResult.hasErrors()) {
+            List<BookResponse> savedBooks = bookService.getBooksAvailableOnStock();
+            List<MemberResponse> registeredMembers = memberService.getRegisteredMembers();
+
+//            model.addAttribute("transactionRequest", new BookTransactionRequest());
+            model.addAttribute("bookList", savedBooks);
+            model.addAttribute("memberList", registeredMembers);
+
+            return "/bookTransaction/rentbook-page";
+        }
+
+        BookTransactionResponse bookTransaction = bookTransactionService.rentBook(request);
+        model.addAttribute("transactionResponse", bookTransaction);
+        model.addAttribute("message", bookTransaction);
+        model.addAttribute("type", "create");
+
+        return "redirect:/brs/library/book/rent";
+    }
+
+
+    // RETURN RENTED BOOKS
+    @GetMapping(value = "/return")
+    public String openBookReturnPage(Model model) {
+        List<BookTransactionResponse> allTransactions = bookTransactionService.getNotReturnedBookTransactions();
+
+        model.addAttribute("bookReturnRequest", new BookReturnRequest());
+        model.addAttribute("transactionList", allTransactions);
+
+        return "/bookTransaction/returnbook-page";
+    }
+
+
+    @GetMapping(value = "/return/submit")
+    public String returnBookByCode(
+            @Valid @ModelAttribute("returnBookRequest") BookTransactionRequest request,
+            Model model
+    ) {
+        BookTransactionResponse bookTransactionResponse = bookTransactionService.returnBook(request);
+
+        model.addAttribute("message", bookTransactionResponse);
+
+        return "/bookTransaction/returnbook-page";
+    }
+
+    @GetMapping(value = "/return/filter")
+    public String filterBookTransactionByTransactionCode(
+            @ModelAttribute("transactionFilterRequest") TransactionFilterRequest request
+    ) {
+        List<BookTransactionResponse> bookTransactionResponses = bookTransactionService.filterTransactionByTransactionCode(request);
+        return "/bookTransaction/returnbook-page";
+    }
+
+
+}

@@ -24,9 +24,10 @@ public class BookTransactionResponse {
 
     private RentStatus rentStatus;
 
-
     @JsonIgnore
     private Book book;
+
+    private String expiryDate;
 
     private Member member;
 }

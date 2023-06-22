@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+  <meta charset="UTF-8">
+  <title>Book Inventory</title>
+
+  <link rel="stylesheet" href="">
+</head>
+<body>
+
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side_menu}"></th:block>
+
+<div class="container">
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-primary table-bordered table-hover">
+        <thead>
+        <tr>
+          <th scope="col">S.N</th>
+          <th scope="col">Name</th>
+          <th scope="col">Cover</th>
+          <th scope="col">Published</th>
+          <th scope="col">Rating</th>
+          <th scope="col">Stock</th>
+          <th scope="col">Soft Deleted</th>
+          <th scope="col" class="th-sm">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!--/*@thymesVar id="categoriesList" type="List<CategoryResponse>"*/-->
+        <tr th:each="book, index :${savedBooks}">
+          <th th:text="${book.id}" hidden></th>
+          <th th:text="${index.count}" scope="row">count</th>
+          <th th:text="${book.bookName}" scope="row">Book Name</th>
+          <td th:text="${book.photoPath}">/home/some/path</td>
+          <td th:text="${book.publishedDate}">2023-12-12</td>
+          <td th:text="${book.rating}">7.8</td>
+          <td th:text="${book.stockCount}">200</td>
+          <td th:text="${book.totalPages}">2525</td>
+
+          <td class="d-flex gap-1">
+            <a th:href="@{/brs/admin/book/delete/} + ${book.id}"
+               class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
+            <a th:href="@{/brs/admin/book/} + ${book.id} + '/edit'"
+               class="btn btn-sm btn-warning">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+
+</div>
+
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+</body>
+</html>

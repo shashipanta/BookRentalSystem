@@ -15,9 +15,15 @@ public interface BookService {
 
         BookResponse getBookById(Integer bookId);
 
+        BookRequest getBookRequestById(Integer bookId);
+
         Book getBookEntityById(Integer bookId);
 
-        BookResponse updateBook(BookRequest request, Integer bookId);
+        BookResponse updateBook(BookRequest request);
 
         Message deleteBookById(Integer bookId);
+
+        void updateStock(Integer bookId, Integer stockUpdateNumber);
+
+        List<BookResponse> getBooksAvailableOnStock();
 }

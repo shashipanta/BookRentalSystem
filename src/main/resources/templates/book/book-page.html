@@ -17,7 +17,7 @@
 
     <!-- Form   -->
     <form th:action="@{/brs/admin/book/save}" th:object="${bookRequest}" method="post" enctype="multipart/form-data">
-        <h1 th:text="*{id} ? 'Update Book' : 'Register a New Book'"></h1>
+        <h1 th:text="*{id}? 'Update Book' : 'Register a New Book'"></h1>
 
         <div class="row">
             <!-- FIRST ROW-->
@@ -141,6 +141,7 @@
                     >Author Error</span>
                 </div>
 
+                <!-- MULTIPART FILE -->
                 <div class="form-group">
                     <label for="publishedDate">Book Image (jpg and png only)</label>
                     <input th:field="*{multipartFile}"
@@ -152,9 +153,15 @@
                     >Multipart file error</span>
 
                 </div>
+                <th:block th:if="!*{multipartFile} and *{id}">
+                    <label for="uploadedImage">Uploaded Book Image</label>
+                    <img class="img-thumbnail" id="uploadedImage"
+                            th:src="@{/uploads/} + ${fileName}" alt="" srcset="">
+                    
+                </th:block>
             </div>
 
-            <!--  Submit form -->
+            <!--  Submit buttons -->
             <div class="form-group d-flex justify-content-between flex-fill mt-3 gap-2">
                 <button
                         type="submit"
@@ -169,12 +176,20 @@
         </div>
     </form>
 
+    <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Tooltip on left">
+        Tooltip on left
+    </button>
+
 </div>
 
 
 <!-- Common Scripts-->
 <th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
-
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 
 
 </body>

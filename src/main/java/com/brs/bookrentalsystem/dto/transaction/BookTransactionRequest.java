@@ -1,13 +1,16 @@
 package com.brs.bookrentalsystem.dto.transaction;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookTransactionRequest {
 
     private Long transactionId;
@@ -21,7 +24,9 @@ public class BookTransactionRequest {
     @NotNull(message = "Member must be selected")
     private Integer memberId;
 
-    @NotNull(message = "Days must be selected")
+    @NotNull(message = "Days should be provided")
+    @Max(value = 365, message = "Days cannot exceed 1 year")
+    @Min(value = 1, message = "Days should be at least 1")
     private Integer totalDays;
 
 }

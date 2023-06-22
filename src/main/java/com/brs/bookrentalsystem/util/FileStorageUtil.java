@@ -17,9 +17,11 @@ public class FileStorageUtil {
     private static final String ROOT_LOCATION = System.getProperty("user.home")
             + File.separator + "Desktop" + File.separator + "BRS";
 
+    public String formattedIsbn;
+
     public String getFileStorageLocation(BookRequest request){
         String formattedBookName = request.getBookName().replace(" ", "-");
-        String formattedIsbn = changeToStandardIsbn(request.getIsbn());
+        formattedIsbn = changeToStandardIsbn(request.getIsbn());
 
         // ISBN_BOOK_NAME_IMAGE-SAVED-DATE.png 987-11-2-530011-1_RICH-DAD-POOR-DAD_2023-01-23.Png
         String storedFileName = String.format("%s_%s_%s.png", formattedIsbn, formattedBookName, dateUtil.dateToString(LocalDate.now()));

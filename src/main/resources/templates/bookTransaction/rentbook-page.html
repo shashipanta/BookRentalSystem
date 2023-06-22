@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+    <meta charset="UTF-8">
+    <title>Rent Book</title>
+
+    <link rel="stylesheet" href="">
+</head>
+<body>
+
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side_menu}"></th:block>
+
+<div class="container">
+
+    <form th:action="@{/brs/library/book/rent/submit}" th:object="${transactionRequest}">
+        <h1> Rent Book </h1>
+
+        <!--   SELECT BOOK NAME     -->
+        <div class="form-group">
+            <label for="bookId" class=""> Book Name</label>
+            <select th:field="*{bookId}"
+                    th:classappend="*{#fields.hasErrors('bookId')}? 'is-invalid'"
+                    class="form-select mt-2" aria-label="Default select example"
+                    id="bookId">
+                <option value="" disabled selected>-- select --</option>
+                <option th:each="book : ${bookList}"
+                        th:value="${book.id}"
+                        th:text="${book.bookName}">
+                </option>
+            </select>
+            <span th:if="${#fields.hasErrors('bookId')}"
+                  th:errors="*{bookId}"
+                  class="invalid-feedback"
+            >Category error</span>
+        </div>
+
+        <!--   SELECT MEMBER    -->
+        <div class="form-group">
+            <label for="memberId" class=""> Member Name</label>
+            <select th:field="*{memberId}"
+                    th:classappend="*{#fields.hasErrors('memberId')}? 'is-invalid'"
+                    class="form-select mt-2" aria-label="Default select example"
+                    id="memberId">
+                <option value="" disabled selected>-- select --</option>
+                <option th:each="member : ${memberList}"
+                        th:value="${member.id}"
+                        th:text="${member.name}">
+                </option>
+            </select>
+            <span th:if="${#fields.hasErrors('memberId')}"
+                  th:errors="*{memberId}"
+                  class="invalid-feedback"
+            >Category error</span>
+        </div>
+
+        <!--   TOTAL RENTED DAYS    -->
+        <div class="form-group">
+            <label for="totalDays">Rent for (days)</label>
+            <input th:field="*{totalDays}"
+                   min="1"
+                   th:classappend="*{#fields.hasErrors('totalDays')}? 'is-invalid'"
+                   type="number" class="form-control" id="totalDays" aria-describedby="authorEmailHelp"
+                   placeholder="eg: 1024">
+            <span th:if="${#fields.hasErrors('totalDays')}"
+                  th:errors="*{totalDays}"
+                  class="invalid-feedback"
+            >Total Days error</span>
+        </div>
+
+        <!--   TRANSACTION-CODE    -->
+        <div class="form-group">
+            <label for="code">Code</label>
+            <input th:field="*{code}"
+                   th:classappend="*{#fields.hasErrors('code')}? 'is-invalid'"
+                   type="number" class="form-control" id="code" aria-describedby="authorEmailHelp"
+                   placeholder="eg: 09-8765-1234-0">
+            <span th:if="${#fields.hasErrors('code')}"
+                  th:errors="*{code}"
+                  class="invalid-feedback"
+            >Code Error</span>
+        </div>
+
+        <!--   DATE OF RETURN    -->
+        <div class="form-group" >
+            <label for="dateOfReturn">Date of Return</label>
+            <input readonly type="date" id="dateOfReturn" class="form-control">
+        </div>
+
+        <!--  Submit buttons -->
+        <div class="form-group d-flex justify-content-between flex-fill mt-3 gap-2">
+            <button type="submit" class="btn btn-success w-50" >Rent It!</button>
+
+            <button type="reset" class="btn btn-dark w-50"> Reset</button>
+        </div>
+
+
+    </form>
+
+    <!-- floating toast -->
+    <th:block
+            th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">
+    </th:block>
+
+    <!-- Toast Message -->
+    <th:block
+            th:replace="~{fragments/toast-msg-fragment :: toast_message(message = ${message}, type = ${messageType})}">
+    </th:block>
+
+
+</div>
+
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+</body>
+</html>
