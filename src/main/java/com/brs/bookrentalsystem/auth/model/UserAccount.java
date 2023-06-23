@@ -1,9 +1,9 @@
 package com.brs.bookrentalsystem.auth.model;
 
-import com.brs.bookrentalsystem.auth.enums.RoleNames;
 import com.brs.bookrentalsystem.model.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.Set;
 
