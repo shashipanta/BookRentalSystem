@@ -2,6 +2,7 @@ package com.brs.bookrentalsystem.model.audit;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.Date;
 
 @Data
+@DynamicInsert
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Auditable<U> {
@@ -28,5 +30,15 @@ public abstract class Auditable<U> {
 
     @LastModifiedDate
     protected Date lastModificationDate;
+
+    @Column(name = "is_active", columnDefinition = "boolean default true", insertable = false)
+    protected Boolean isActive;
+
+//    @PrePersist
+//    public void populateIsActive(){
+//        if(isActive == null){
+//            isActive = true;
+//        }
+//    }
 
 }

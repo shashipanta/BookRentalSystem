@@ -75,7 +75,7 @@ public class ControllerExceptionHandler {
         if(requestedUrl.contains("/delete")){
             url = requestedUrl.substring(0, requestedUrl.indexOf("/delete") + 1);
         } else {
-            url = requestedUrl.substring(0, requestedUrl.lastIndexOf("/") + 1);
+            url = requestedUrl.substring(0, requestedUrl.lastIndexOf("/") );
         }
 
         return url;

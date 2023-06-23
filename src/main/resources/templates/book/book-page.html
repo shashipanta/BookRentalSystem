@@ -38,59 +38,66 @@
 
                 </div>
 
-                <div class="form-group">
-                    <label for="totalPages">Total Pages</label>
-                    <input th:field="*{totalPages}"
-                           th:classappend="*{#fields.hasErrors('totalPages')}? 'is-invalid'"
-                           type="number" class="form-control" id="totalPages" aria-describedby="authorEmailHelp"
-                           placeholder="eg: 1024">
-                    <span th:if="${#fields.hasErrors('totalPages')}"
-                          th:errors="*{totalPages}"
-                          class="invalid-feedback"
-                    >Page error</span>
+                <div class="row">
+                    <!--  TOTAL PAGES   -->
+                    <div class="form-group col-md-6">
+                        <label for="totalPages">Total Pages</label>
+                        <input th:field="*{totalPages}"
+                               th:classappend="*{#fields.hasErrors('totalPages')}? 'is-invalid'"
+                               type="number"
+                               min="1"
+                               class="form-control"
+                               id="totalPages" aria-describedby="authorEmailHelp"
+                               placeholder="eg: 1024">
+                        <span th:if="${#fields.hasErrors('totalPages')}"
+                              th:errors="*{totalPages}"
+                              class="invalid-feedback"
+                        >Page error</span>
+                    </div>
+
+                    <!--  ISBN NUMBER   -->
+                    <div class="form-group col-md-6">
+                        <label for="isbn">ISBN</label>
+                        <input th:field="*{isbn}"
+                               th:classappend="*{#fields.hasErrors('isbn')}? 'is-invalid'"
+                               class="form-control" type="text" id="isbn" name="isbn" placeholder="eg: 123-4-56-789104-2">
+                        <span th:if="${#fields.hasErrors('isbn')}"
+                              th:errors="*{isbn}"
+                              class="invalid-feedback"
+                        >ISBN error</span>
+                    </div>
                 </div>
 
-                <!--  ISBN NUMBER   -->
-                <div class="form-group">
-                    <label for="isbn">ISBN</label>
-                    <input th:field="*{isbn}"
-                           th:classappend="*{#fields.hasErrors('isbn')}? 'is-invalid'"
-                           class="form-control" type="text" id="isbn" name="isbn" placeholder="eg: ABC-2012">
-                    <span th:if="${#fields.hasErrors('isbn')}"
-                          th:errors="*{isbn}"
-                          class="invalid-feedback"
-                    >ISBN error</span>
+
+                <div class="row">
+                    <!--       RATING         -->
+                    <div class="form-group col-md-6">
+                        <label for="bookRating">Rating</label>
+                        <input th:field="*{rating}"
+                               min="0.0" max="10.0"
+                               th:classappend="*{#fields.hasErrors('rating')}? 'is-invalid'"
+                               class="form-control" type="text" id="bookRating" name="rating"
+                               placeholder="eg: 10">
+                        <span th:if="${#fields.hasErrors('rating')}"
+                              th:errors="*{rating}"
+                              class="invalid-feedback"
+                        >Rating error</span>
+                    </div>
+
+                    <!--  STOCK COUNT -->
+                    <div class="form-group col-md-6">
+                        <label for="stockCount">Stock Count</label>
+                        <input th:field="*{stockCount}"
+                               th:classappend="*{#fields.hasErrors('stockCount')}? 'is-invalid'"
+                               class="form-control" type="text" id="stockCount" name="phone" placeholder="eg: 20">
+                        <span th:if="${#fields.hasErrors('stockCount')}"
+                              th:errors="*{stockCount}"
+                              class="invalid-feedback">Stock count error</span>
+                    </div>
                 </div>
 
-                <!--       RATING         -->
-                <div class="form-group">
-                    <label for="bookRating">Rating</label>
-                    <input th:field="*{rating}"
-                           th:classappend="*{#fields.hasErrors('rating')}? 'is-invalid'"
-                           class="form-control" type="text" id="bookRating" name="rating"
-                           placeholder="eg: 9812347567">
-                    <span th:if="${#fields.hasErrors('rating')}"
-                          th:errors="*{rating}"
-                          class="invalid-feedback"
-                    >Rating error</span>
-                </div>
 
-                <!--  STOCK COUNT -->
-                <div class="form-group">
-                    <label for="stockCount">Stock Count</label>
-                    <input th:field="*{stockCount}"
-                           th:classappend="*{#fields.hasErrors('stockCount')}? 'is-invalid'"
-                           class="form-control" type="text" id="stockCount" name="phone" placeholder="eg: 20">
-                    <span th:if="${#fields.hasErrors('stockCount')}"
-                          th:errors="*{stockCount}"
-                          class="invalid-feedback">Stock count error</span>
-                </div>
-            </div>
-
-            <!-- SECOND ROW -->
-            <div class="col-md-6">
-
-
+                <!--  PUBLISHED DATE -->
                 <div class="form-group">
                     <label for="publishedDate">Published Date</label>
                     <input th:field="*{publishedDate}"
@@ -101,6 +108,13 @@
                           class="invalid-feedback"
                     >Published Date error</span>
                 </div>
+            </div>
+
+            <!-- SECOND ROW -->
+            <div class="col-md-6">
+
+
+
 
                 <!--   SELECT CATEGORY     -->
                 <div class="form-group">
@@ -145,6 +159,7 @@
                 <div class="form-group">
                     <label for="publishedDate">Book Image (jpg and png only)</label>
                     <input th:field="*{multipartFile}"
+                           th:value="*{photoPath}"
                            th:classappend="*{#fields.hasErrors('multipartFile')}? 'is-invalid'"
                            type="file" id="multipartFile" class="form-control">
                     <span th:if="${#fields.hasErrors('multipartFile')}"

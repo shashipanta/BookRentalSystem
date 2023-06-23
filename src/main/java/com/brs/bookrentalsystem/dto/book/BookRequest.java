@@ -1,9 +1,7 @@
 package com.brs.bookrentalsystem.dto.book;
 
 import com.brs.bookrentalsystem.annotation.ValidMultipartFile;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +27,8 @@ public class BookRequest {
     @Size(min = 13, max = 13, message = "ISBN should be 13 digits")
     private String isbn;
 
+    @Min(value = 0, message = "Min rating should be greater than 0")
+    @Max(value = 10, message = "Max rating should not be greater than 10")
     private Double rating;
 
     @NotNull(message = "StockCount should be provided")

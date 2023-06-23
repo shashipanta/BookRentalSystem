@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+    <meta charset="UTF-8">
+    <title>Register </title>
+
+    <link rel="stylesheet" href="/login.css">
+</head>
+<body>
+
+<div class="container">
+    <form th:object="${registrationRequest}"
+          th:action="@{/brs/auth/register/submit}"
+          class="form-signin"
+          method="post"
+    >
+
+        <div class="text-center mb-2">
+            <img class="mb-2" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72"
+                 height="72">
+            <h1 class="h3 mb-3 font-weight-normal">Book Rental System</h1>
+            <p>Rent your favourite book</p>
+        </div>
+
+        <div class="form-label-group">
+            <input  th:field="*{userName}"
+                    type="text" id="inputUserName" class="form-control" placeholder="eg: Jhon Doe" required=""
+                   >
+            <label for="inputUserName">User Name</label>
+        </div>
+
+        <div class="form-label-group">
+            <input th:field="*{email}"
+                    type="email" id="inputEmail" class="form-control" placeholder="Email address" required=""
+                   autofocus="">
+            <label for="inputEmail">Email address</label>
+        </div>
+
+        <div class="form-label-group">
+            <input th:field="*{password}"
+                    type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+            <label for="inputPassword">Password</label>
+        </div>
+
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+        <button class="btn btn-md btn-primary btn-block" type="submit">Register New Account</button>
+
+        <div class="form-label-group">
+            <a th:href="@{/brs/auth/login}">Already have account?</a>
+        </div>
+
+        <p class="mt-1 mb-3 text-muted text-center">© 2017-2018</p>
+
+    </form>
+</div>
+
+</body>
+</html>

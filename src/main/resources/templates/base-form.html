@@ -6,7 +6,7 @@
         th:object="${authorRequest}"
         class="d-flex flex-column gap-4"
 >
-    <h1 th:text="*{id} ? 'Update Author' : 'Register a New Author'"></h1>
+    <h1 th:text="${id} ? 'Update Author' : 'Register a New Author'"></h1>
     <input type="text" th:field="*{id}" hidden>
 
     <div class="form-group">

@@ -50,7 +50,9 @@ public class BookServiceImpl implements BookService {
 
     private BookResponse toBookResponse(Book book) {
 
-        String publishedDate = dateUtil.dateToString(book.getPublishedDate());
+//        String publishedDate = dateUtil.dateToString(book.getPublishedDate());
+        String publishedDate = dateUtil.localDateToHtmlDateFormat(book.getPublishedDate());
+
         List<Author> authors = book.getAuthor().stream()
                 .toList();
 

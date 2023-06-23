@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class DateUtil {
 
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter htmlDateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyy");
 
     public String dateToString(LocalDate date){
             return dateFormatter.format(date);
@@ -21,6 +22,10 @@ public class DateUtil {
 
     public LocalDate getCurrentDate(DateTimeFormatter dateFormatter){
         return LocalDate.parse(LocalDate.now().format(dateFormatter));
+    }
+
+    public String localDateToHtmlDateFormat(LocalDate date){
+        return htmlDateFormatter.format(date);
     }
 
     public LocalDate addDayToDate(Integer dayToAdd){

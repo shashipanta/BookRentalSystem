@@ -23,7 +23,7 @@ public class AuthorViewController {
 
     private final AuthorService authorService;
 
-    @GetMapping(value = "/")
+    @GetMapping(path = {"/", ""})
     public String openAuthorPage(Model model) {
         if (!model.containsAttribute("authorRequest")) {
             model.addAttribute("authorRequest", new AuthorRequest());
