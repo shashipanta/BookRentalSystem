@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +23,9 @@ public class FileController {
             + File.separator + "Desktop" + File.separator + "BRS";
 
 
-    @GetMapping("/{filename}")
-    public ResponseEntity<byte[]> getImage(@PathVariable("filename") String filename) {
+    // http://localhost:8080/brs/uploads/file?filename=myFileName.extension
+    @GetMapping("/file")
+    public ResponseEntity<byte[]> getImage(@RequestParam("filename") String filename) {
         byte[] image = new byte[0];
         try {
             image = FileUtils.readFileToByteArray(new File(ROOT_LOCATION + File.separator + filename));

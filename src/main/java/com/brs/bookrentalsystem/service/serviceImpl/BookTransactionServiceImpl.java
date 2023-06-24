@@ -1,8 +1,7 @@
 package com.brs.bookrentalsystem.service.serviceImpl;
 
-import com.brs.bookrentalsystem.dto.transaction.BookTransactionRequest;
-import com.brs.bookrentalsystem.dto.transaction.BookTransactionResponse;
-import com.brs.bookrentalsystem.dto.transaction.TransactionFilterRequest;
+import com.brs.bookrentalsystem.dto.Message;
+import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.enums.RentStatus;
 import com.brs.bookrentalsystem.model.Book;
 import com.brs.bookrentalsystem.model.BookTransaction;
@@ -12,11 +11,16 @@ import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.MemberService;
 import com.brs.bookrentalsystem.util.DateUtil;
+import com.brs.bookrentalsystem.util.RandomAlphaNumericString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -27,6 +31,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     private final BookService bookService;
     private final MemberService memberService;
     private final BookTransactionRepo bookTransactionRepo;
+    private final RandomAlphaNumericString randomAlphaNumericString;
 
     private final DateUtil dateUtil;
 
@@ -45,8 +50,50 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         return toBookTransactionResponse(bookTransaction);
     }
 
+    // TODO:: Handle exception
+    @Override
+    public BookTransaction getTransactionById(Long transactionId) {
+        return bookTransactionRepo.findById(transactionId).orElseThrow();
+    }
+
+    @Override
+    public Message returnBook(BookReturnRequest request) {
+
+        BookTransaction transactionById = getTransactionById(request.getId());
+//        BookTransactionRequest build = BookTransactionRequest.builder()
+//                .transactionId(request.getId())
+//                .memberId(transactionById.getMember().getId())
+//                .bookId(transactionById.getBook().getId())
+//                .totalDays(null)
+//                .code(request.getCode())
+//                .build();
+
+        BookTransaction bookTransaction = new BookTransaction();
+        bookTransaction.setRentStatus(RentStatus.RETURNED);
+        bookTransaction.setMember(transactionById.getMember());
+        bookTransaction.setBook(transactionById.getBook());
+        bookTransaction.setCode(transactionById.getCode());
+        bookTransaction.setRentTo(transactionById.getRentTo());
+        bookTransaction.setRentFrom(transactionById.getRentFrom());
+
+//        transactionById.setRentStatus(RentStatus.RETURNED);
+//        // create new transaction instead of
+//        transactionById.setTransactionId(null);
+
+        BookTransaction save = bookTransactionRepo.save(bookTransaction);
+
+        // update stock
+        bookService.updateStock(save.getBook().getId(), 1);
+
+        // give return operation to
+
+        return new Message("S100", "Book returned successfully");
+
+
+    }
+
     // when returning
-    public BookTransactionResponse returnBook(BookTransactionRequest request){
+    public BookTransactionResponse returnBook(BookTransactionRequest request) {
 
         BookTransaction bookTransaction = toBookTransaction(request);
 
@@ -78,17 +125,61 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     public List<BookTransactionResponse> getNotReturnedBookTransactions() {
         List<BookTransaction> rentedBookTransactions = bookTransactionRepo.findBookTransactionByRentStatus(RentStatus.RENTED);
 
+//        List<BookTransaction> distinct = rentedBookTransactions.stream()
+//                .collect(Collectors.toList());
+//        rentedBookTransactions.sort(Comparator.comparing(BookTransaction::getCode));
+//
+//        int count = 0;
+//        List<BookTransaction> actualRented =
+//        for(int i=0; i<rentedBookTransactions.size() -1; i++){
+//            if(rentedBookTransactions.get(i).getCode().equals(rentedBookTransactions.get(i+1))){
+//                count++
+//            } else {
+//                (count % 2) == 0 ?
+//            }
+//        }
         return rentedBookTransactions.stream()
                 .map(this::toBookTransactionResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<BookTransactionResponse> filterTransactionByTransactionCode(TransactionFilterRequest filterRequest) {
+    public List<String> filterTransactionByTransactionCode(TransactionFilterRequest filterRequest) {
         List<BookTransaction> bookTransactions = bookTransactionRepo.filterByTransactionCode(filterRequest.getCode());
         return bookTransactions.stream()
-                .map(this::toBookTransactionResponse)
+                .map(BookTransaction::getCode)
                 .collect(Collectors.toList());
+    }
+
+    // generate transaction code for client
+    @Override
+    public String generateTransactionCode(String bookName) {
+
+        String paddingString = "BOOK-";
+        String upperCase = bookName.replace(" ", "").substring(0, 5).toUpperCase();
+
+        String randomString = randomAlphaNumericString.generateRandomString(5);
+        return upperCase + randomString;
+    }
+
+    @Override
+    public String getBookReturnDate(Integer days) {
+        LocalDate expiryDate = dateUtil.addDayToDate(days);
+        return expiryDate.toString();
+    }
+
+    @Override
+    public TransactionResponse getTransaction(String transactionCode) {
+        BookTransaction bookTransactionByCode = bookTransactionRepo.findBookTransactionByCode(transactionCode);
+        return TransactionResponse.builder()
+                .id(bookTransactionByCode.getTransactionId())
+                .code(bookTransactionByCode.getCode())
+                .memberName(bookTransactionByCode.getMember().getName())
+                .bookName(bookTransactionByCode.getBook().getName())
+                .rentedDate(dateUtil.dateToString(bookTransactionByCode.getRentFrom()))
+                .expiryDate(dateUtil.dateToString(bookTransactionByCode.getRentTo()))
+                .build();
+
     }
 
     private BookTransaction toBookTransaction(BookTransactionRequest request) {

@@ -1,6 +1,5 @@
 package com.brs.bookrentalsystem.util;
 
-import com.brs.bookrentalsystem.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +12,10 @@ import java.nio.file.Path;
 public class CustomMultipartFile implements MultipartFile {
 
     private byte[] inputFile;
+
+    public CustomMultipartFile(byte[] inputFile) {
+        this.inputFile = inputFile;
+    }
 
     @Override
     public String getName() {

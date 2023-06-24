@@ -3,6 +3,7 @@ package com.brs.bookrentalsystem.service;
 import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.book.BookRequest;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
+import com.brs.bookrentalsystem.dto.book.BookUpdateRequest;
 import com.brs.bookrentalsystem.model.Book;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public interface BookService {
 
         Book getBookEntityById(Integer bookId);
 
-        BookResponse updateBook(BookRequest request);
+        BookResponse updateBook(BookUpdateRequest updateRequest);
 
         Message deleteBookById(Integer bookId);
 
         void updateStock(Integer bookId, Integer stockUpdateNumber);
 
         List<BookResponse> getBooksAvailableOnStock();
+
+        BookUpdateRequest getBookUpdateRequest(Integer bookId);
 }

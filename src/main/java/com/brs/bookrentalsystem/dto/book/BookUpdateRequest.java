@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookRequest {
+public class BookUpdateRequest {
 
     private Integer id;
 
@@ -37,10 +37,10 @@ public class BookRequest {
     @NotBlank(message = "Published date cannot be empty")
     private String publishedDate;
 
-//    @NotBlank(message = "Photo should be provided")
+    //    @NotBlank(message = "Photo should be provided")
     private String photoPath;
 
-    @ValidMultipartFile(message = "Please provide book cover image")
+//    @ValidMultipartFile(message = "Please provide book cover image")
     private MultipartFile multipartFile;
 
 //    for thymeleaf request

@@ -1,0 +1,23 @@
+
+/* main container */
+.book-container {
+    display: flex;
+    gap: 2em;
+}
+
+.title{
+    color: var(--clr-bg-primary);
+    font-size: 1.2em;
+}
+
+.flex-info{
+    display: flex;
+    gap: .5em;
+    align-items:center;
+    flex-wrap: wrap;
+}
+
+.readonly-container{
+    display: flex;
+    gap: 2em;
+}

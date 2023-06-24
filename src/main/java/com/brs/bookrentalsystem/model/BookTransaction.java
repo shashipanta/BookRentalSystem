@@ -16,7 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Table(name = "tbl_book_transaction",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_bookTransaction_code", columnNames = "code"),
+                @UniqueConstraint(name = "uk_bookTransaction_code", columnNames = {"transactionId", "code"}),
         }
 )
 
@@ -55,5 +55,8 @@ public class BookTransaction  extends Auditable<String> {
             foreignKey = @ForeignKey(name = "fk_bookTransaction_memberId")
     )
     private Member member;
+
+    @Column(name = "penalty_days", insertable = false, columnDefinition = "integer default -1")
+    private Short penaltyDays = -1;
 
 }

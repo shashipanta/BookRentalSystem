@@ -1,24 +1,25 @@
 package com.brs.bookrentalsystem.controller.thymeleaf.transaction;
 
 
+import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
-import com.brs.bookrentalsystem.dto.book.BookReturnRequest;
+import com.brs.bookrentalsystem.dto.transaction.BookReturnRequest;
 import com.brs.bookrentalsystem.dto.member.MemberResponse;
 import com.brs.bookrentalsystem.dto.transaction.BookTransactionRequest;
 import com.brs.bookrentalsystem.dto.transaction.BookTransactionResponse;
 import com.brs.bookrentalsystem.dto.transaction.TransactionFilterRequest;
+import com.brs.bookrentalsystem.dto.transaction.TransactionResponse;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.CategoryService;
 import com.brs.bookrentalsystem.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -80,18 +81,27 @@ public class BookTransactionViewController {
         List<BookTransactionResponse> allTransactions = bookTransactionService.getNotReturnedBookTransactions();
 
         model.addAttribute("bookReturnRequest", new BookReturnRequest());
-        model.addAttribute("transactionList", allTransactions);
 
         return "/bookTransaction/returnbook-page";
     }
 
 
+    // http://localhost:8080/brs/library/book/return/verify?code={codepassed}
+    @GetMapping(value = "/return/verify")
+    @ResponseBody
+    public ResponseEntity<TransactionResponse> getTransactionDetails(@RequestParam("code") String code){
+        TransactionResponse response = bookTransactionService.getTransaction(code);
+
+        return ResponseEntity.ok(response);
+    }
+
+
     @GetMapping(value = "/return/submit")
     public String returnBookByCode(
-            @Valid @ModelAttribute("returnBookRequest") BookTransactionRequest request,
+            @Valid @ModelAttribute("bookReturnRequest") BookReturnRequest request,
             Model model
     ) {
-        BookTransactionResponse bookTransactionResponse = bookTransactionService.returnBook(request);
+        Message bookTransactionResponse = bookTransactionService.returnBook(request);
 
         model.addAttribute("message", bookTransactionResponse);
 
@@ -99,12 +109,29 @@ public class BookTransactionViewController {
     }
 
     @GetMapping(value = "/return/filter")
-    public String filterBookTransactionByTransactionCode(
-            @ModelAttribute("transactionFilterRequest") TransactionFilterRequest request
+    @ResponseBody
+    public List<String> filterBookTransactionByTransactionCode(
+            @RequestParam("filterValue") String filterRequest
     ) {
-        List<BookTransactionResponse> bookTransactionResponses = bookTransactionService.filterTransactionByTransactionCode(request);
-        return "/bookTransaction/returnbook-page";
+        TransactionFilterRequest transactionFilterRequest = new TransactionFilterRequest(filterRequest);
+        List<String> codeList = bookTransactionService.filterTransactionByTransactionCode(transactionFilterRequest);
+        return codeList;
     }
 
+
+    // generate transaction code
+    @GetMapping("/generate-code")
+    @ResponseBody
+    public String generateTransactionCode(@RequestParam("bookName") String bookName){
+        String s = bookTransactionService.generateTransactionCode(bookName);
+        return s;
+    }
+
+    // get book return date
+    @GetMapping("/get-return-date")
+    @ResponseBody
+    public String generateBookReturnDate(@RequestParam("totalDays") Integer totalDays){
+        return bookTransactionService.getBookReturnDate(totalDays);
+    }
 
 }

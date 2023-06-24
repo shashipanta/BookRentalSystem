@@ -26,49 +26,52 @@
     <form th:action="@{/brs/library/book/return/submit}" th:object="${bookReturnRequest}">
         <h1> Return Book </h1>
 
+        <input type="text" th:field="*{id}" hidden>
+
         <!--   CODE FILTER     -->
         <input type="codeInput" name="code" id="codeInput">
 
-        <ul id="codeContainer" style="display: none;">
-            <th:block th:each="transaction : ${transactionList}">
-                <li th:value="${transaction.code}" th:text="${transaction.code}"></li>
-            </th:block>
-        </ul>
 
         <select class="card" th:field="*{code}" id="codeSelect">
             <option value="" selected>Open this select menu</option>
-            <option th:each="transaction : ${transactionList}"
-                    th:value="${transaction.code}"
-                    th:text="${transaction.code}"
-            >One
-            </option>
         </select>
 
-
-<!--            <p th:text="${transaction}"></p>-->
-            <!--           VIEW MEMBER NAME-->
-            <div th:each="transaction: ${transactionList}" class="hidden-form" id="hidden-form">
-
-                <div class="form-group">
-                    <span id="transactionCode" th:value="${transaction.code}" th:text="${transaction.code}" hidden="hidden"></span>
-                    <label for="memberId">Member Name</label>
-                    <input th:field="*{memberId}"
-                           th:value="${transaction.member.id}"
-                           disabled
-                           th:classappend="*{#fields.hasErrors('memberId')}? 'is-invalid'"
-                           type="text" class="form-control" id="memberId" placeholder="eg: Rich Dad Poor Dad">
-
-                </div>
-
-                <!-- VIEW RENTED DATE-->
-                <div class="form-group">
-                    <label for="rentFrom">Book Rented From</label>
-                    <input
-                            disabled
-                            th:value="${transaction.rentFrom}"
-                            type="text" class="form-control" id="rentFrom" placeholder="eg: Rich Dad Poor Dad">
-                </div>
+        <!-- verify transaction details -->
+        <!-- value placed through jquery -->
+        <div class="verify-details" th:object="${transactionResponse}">
+            <div class="form-group">
+                <label for="bookName">Book Name</label>
+                <input
+                        th:value="${bookName}"
+                        disabled
+                        type="text" class="form-control" id="bookName">
             </div>
+
+            <div class="form-group">
+                <label for="memberName">Member Name</label>
+                <input
+                       th:value="${memberName}"
+                       disabled
+                       type="text" class="form-control" id="memberName">
+            </div>
+            <!-- VIEW RENTED DATE-->
+            <div class="form-group">
+                <label for="rentFrom">Book Rented From</label>
+                <input
+                        disabled
+                        th:value="${rentedDate}"
+                        type="text" class="form-control" id="rentFrom" placeholder="eg: Rich Dad Poor Dad">
+            </div>
+
+            <div class="form-group">
+                <label for="rentTo">Book Rented Expiration</label>
+                <input
+                        disabled
+                        th:value="${expiryDate}"
+                        type="text" class="form-control" id="rentTo" placeholder="">
+            </div>
+        </div>
+
 
 
         <!--  Submit buttons -->
@@ -84,7 +87,55 @@
 
 </div>
 
+<!-- for jquery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
 <script>
+    let baseUrl = "http://localhost:8080/brs/library/book/";
+
+    // get filtered code based on input
+    $("#codeInput").change(function () {
+        let partialCode = $(this).val();
+        console.log("partial code ", partialCode);
+
+        if(partialCode === "") return;
+        $.ajax({
+            type: "GET",
+            url: baseUrl + "return/filter" + "?filterValue=" + partialCode,
+            // Data: JSON.stringify(this.filterData),
+            success: function (codeList) {
+                for (let i = 0; i < codeList.length; i++) {
+                    let code = codeList[i];
+                    console.log("code from server : ", code);
+                   $("#codeSelect").append(new Option(code, code ));
+
+                   // $("#codeContainer").append(`<li "${code}">${code}</li>`)
+                   //  $("#codeContainer").css("display", "block");
+                }
+                console.log("woah code extracted from server");
+            }
+        })
+    })
+
+    // get transaction verification
+    $("select#codeSelect").change(function () {
+
+        var selectedCode = $(this).children("option:selected").attr("value");
+
+        $.ajax({
+            url: "http://localhost:8080/brs/library/book/return/verify" + "?code=" + selectedCode,
+            success: function (details) {
+                $("#bookName").val(details?.bookName)
+                $("#rentTo").val(details?.expiryDate);
+                $("#rentFrom").val(details?.rentedDate);
+                $("#id").val(details?.id);
+                $("#codeSelect").val(details?.code);
+                $("#memberName").val(details?.memberName);
+                console.log("woah transaction generated", details)
+            }
+        });
+        // alert("You have selected the country - " + selectedBookName);
+    });
 
 </script>
 

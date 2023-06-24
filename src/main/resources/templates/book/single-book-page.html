@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+    <meta charset="UTF-8">
+    <title th:if="*{bookTitle}" th:text="*{bookTitle}"></title>
+
+    <link rel="stylesheet" href="/single-book-page.css">
+</head>
+<body>
+
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side_menu}"></th:block>
+
+<div class="container">
+
+    <div class="book-container">
+
+
+        <div class="img-container">
+            <img th:src="@{/uploads/file(filename= *{bookResponse.fileName})}"
+                 class="img-thumbnail"
+                 th:alt="*{bookResponse.bookName}" alt="...">
+        </div>
+        <div class="card-body d-flex flex-column gap-2 w-50">
+            <!-- Book Title -->
+            <h1 th:text="${bookResponse.bookName}" class="card-title">Book Title</h1>
+
+            <div class="meta-data">
+                <div class="d-flex gap-3 published-date">
+                    <span class="title">Published Date</span>
+                    <div class="wrapper">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span th:text="${bookResponse.publishedDate}" class="date"></span>
+                    </div>
+                </div>
+
+                <!-- RATING -->
+                <div class="rating" data-toggle="tooltip" data-placement="left" th:title="${bookResponse.rating}">
+                    <span class="title">Total Ratings</span>
+                    <th:rating th:each="rating :${ratings}">
+                        <i class="fa-solid fa-star rating-golden"></i>
+                    </th:rating>
+                </div>
+
+                <!-- PAGES -->
+                <div class="flex-info">
+                    <span class="title">Total Pages</span>
+                    <div class="wrapper">
+                        <i class="fa-sharp fa-regular fa-page"></i>
+                        <span th:text="${bookResponse.totalPages}">total pages</span>
+                    </div>
+
+                </div>
+
+                <!-- Stock -->
+                <div class="flex-info">
+                    <span class="title">Available Stock</span>
+                    <div class="wrapper">
+                        <span th:text="${bookResponse.stockCount}">stock Ammount</span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="flex-info">
+                <span class="title">Authors</span>
+                <th:author th:each="author: ${bookResponse.authors}">
+                    <span th:text="${author.name}" class="badge rounded-pill bg-primary">Primary</span>
+                </th:author>
+            </div>
+            <!--            <span class="badge rounded-pill bg-primary">Primary</span>-->
+            <!--      <a href="#" class="btn btn-primary">Go somewhere</a>-->
+        </div>
+    </div>
+
+
+</div>
+
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+</body>
+</html>

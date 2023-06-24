@@ -49,6 +49,10 @@
                class="btn btn-sm btn-warning">
               <i class="fa-solid fa-pen-to-square"></i>
             </a>
+            <a th:href="@{/brs/admin/book/view/} + ${book.id}"
+               class="btn btn-sm btn-info">
+              <i class="fa-solid fa-eye icon-view"></i>
+            </a>
           </td>
         </tr>
 
@@ -56,12 +60,24 @@
       </table>
     </div>
 
+    <!-- floating toast -->
+    <th:block
+            th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">
+    </th:block>
+
+    <!-- toast message -->
+    <th:normal-toast th:replace="~{fragments/toast-msg-fragment :: toast_message(message=${message}, type=${type})}">
+
+    </th:normal-toast>
+
 
 </div>
 
 
 <!-- Common Scripts-->
 <th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+
 
 </body>
 </html>

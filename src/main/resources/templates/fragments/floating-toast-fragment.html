@@ -5,7 +5,9 @@
 
     <div aria-live="polite" aria-atomic="true">
 
-    <div class="toast-header">
+    <div class="toast-header"
+         th:classappend="${errorResponse.code}?'alert-danger': 'alert-success'"
+    >
         <!--      error code -->
         <strong th:text="${errorResponse.code}"class="me-auto">Response code</strong>
         <small>11 mins ago</small>

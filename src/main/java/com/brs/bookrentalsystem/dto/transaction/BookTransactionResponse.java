@@ -29,5 +29,6 @@ public class BookTransactionResponse {
 
     private String expiryDate;
 
+    @JsonIgnore
     private Member member;
 }

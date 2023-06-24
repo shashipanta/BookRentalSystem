@@ -2,8 +2,7 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
     <meta charset="UTF-8">
-    <title>Register Book</title>
-
+    <title>BRS - Book Rental System</title>
     <link rel="stylesheet" href="">
 </head>
 <body>
@@ -17,7 +16,7 @@
 
     <!-- Form   -->
     <form th:action="@{/brs/admin/book/save}" th:object="${bookRequest}" method="post" enctype="multipart/form-data">
-        <h1 th:text="*{id}? 'Update Book' : 'Register a New Book'"></h1>
+        <h1>Register A new Book</h1>
 
         <div class="row">
             <!-- FIRST ROW-->
@@ -110,11 +109,8 @@
                 </div>
             </div>
 
-            <!-- SECOND ROW -->
+            <!-- SECOND COLUMN -->
             <div class="col-md-6">
-
-
-
 
                 <!--   SELECT CATEGORY     -->
                 <div class="form-group">

@@ -1,12 +1,16 @@
 package com.brs.bookrentalsystem.util;
 
 import com.brs.bookrentalsystem.dto.book.BookRequest;
+import com.brs.bookrentalsystem.dto.book.BookUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 
 @Component
@@ -20,6 +24,19 @@ public class FileStorageUtil {
     public String formattedIsbn;
 
     public String getFileStorageLocation(BookRequest request){
+        String formattedBookName = request.getBookName().replace(" ", "-");
+        formattedIsbn = changeToStandardIsbn(request.getIsbn());
+
+        // ISBN_BOOK_NAME_IMAGE-SAVED-DATE.png 987-11-2-530011-1_RICH-DAD-POOR-DAD_2023-01-23.Png
+        String storedFileName = String.format("%s_%s_%s.png", formattedIsbn, formattedBookName, dateUtil.dateToString(LocalDate.now()));
+
+        String filePath = ROOT_LOCATION + File.separator + storedFileName;
+
+        return filePath;
+
+    }
+
+    public String getFileStorageLocation(BookUpdateRequest request){
         String formattedBookName = request.getBookName().replace(" ", "-");
         formattedIsbn = changeToStandardIsbn(request.getIsbn());
 
@@ -59,13 +76,29 @@ public class FileStorageUtil {
     }
 
     // change isbn into standard format
-    private String changeToStandardIsbn(String isbn) {
+    public String changeToStandardIsbn(String isbn) {
         // Format : A 13-digit ISBN, 978-3-16-148410-0,
         return isbn.substring(0, 3) + "-"
                 + isbn.charAt(3) + "-"
                 + isbn.substring(4, 6) + "-"
                 + isbn.substring(6, 12) + "-"
                 + isbn.charAt(12);
+    }
+
+    public MultipartFile imagePathToMultipartFile(String filePath)  {
+        File imageFile = new File(filePath);
+//        String mimeType = Files.probeContentType(imageFile.toPath());
+//        String fileName = filePath.substring(filePath.lastIndexOf("/"));
+//        DiskFileItem diskFileItem = new DiskFileItem("file",
+//                mimeType, false, fileName, (int) imageFile.length(), imageFile.getParentFile());
+//
+//        diskFileItem.getOutputStream().write(FileUtils.readFileToByteArray(imageFile));
+
+        try {
+            return new CustomMultipartFile(FileUtils.readFileToByteArray(imageFile));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

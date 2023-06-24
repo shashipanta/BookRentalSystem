@@ -27,7 +27,8 @@
                 <option value="" disabled selected>-- select --</option>
                 <option th:each="book : ${bookList}"
                         th:value="${book.id}"
-                        th:text="${book.bookName}">
+                        th:text="${book.bookName}"
+                        th:id="${book.bookName}">
                 </option>
             </select>
             <span th:if="${#fields.hasErrors('bookId')}"
@@ -57,40 +58,45 @@
 
         <!--   TOTAL RENTED DAYS    -->
         <div class="form-group">
-            <label for="totalDays">Rent for (days)</label>
+            <label for="totalRentedDays">Rent for (days)</label>
             <input th:field="*{totalDays}"
                    min="1"
+                   id="totalRentedDays"
                    th:classappend="*{#fields.hasErrors('totalDays')}? 'is-invalid'"
-                   type="number" class="form-control" id="totalDays" aria-describedby="authorEmailHelp"
+                   type="number" class="form-control" aria-describedby="authorEmailHelp"
                    placeholder="eg: 1024">
             <span th:if="${#fields.hasErrors('totalDays')}"
                   th:errors="*{totalDays}"
                   class="invalid-feedback"
             >Total Days error</span>
         </div>
+        <div class="readonly-container">
+            <!--   TRANSACTION-CODE    -->
+            <div class="form-group">
+                <label for="code">Code</label>
+                <input th:field="*{code}"
+                       id="code"
+                       readonly
+                       th:classappend="*{#fields.hasErrors('code')}? 'is-invalid'"
+                       type="text" class="form-control" aria-describedby="authorEmailHelp"
+                       placeholder="eg: Xf123kow">
+                <span th:if="${#fields.hasErrors('code')}"
+                      th:errors="*{code}"
+                      class="invalid-feedback"
+                >Code Error</span>
+            </div>
 
-        <!--   TRANSACTION-CODE    -->
-        <div class="form-group">
-            <label for="code">Code</label>
-            <input th:field="*{code}"
-                   th:classappend="*{#fields.hasErrors('code')}? 'is-invalid'"
-                   type="number" class="form-control" id="code" aria-describedby="authorEmailHelp"
-                   placeholder="eg: 09-8765-1234-0">
-            <span th:if="${#fields.hasErrors('code')}"
-                  th:errors="*{code}"
-                  class="invalid-feedback"
-            >Code Error</span>
+            <!--   DATE OF RETURN    -->
+            <div class="form-group">
+                <label for="dateOfReturn">Date of Return</label>
+                <input readonly type="date" id="dateOfReturn" class="form-control">
+            </div>
         </div>
 
-        <!--   DATE OF RETURN    -->
-        <div class="form-group" >
-            <label for="dateOfReturn">Date of Return</label>
-            <input readonly type="date" id="dateOfReturn" class="form-control">
-        </div>
 
         <!--  Submit buttons -->
         <div class="form-group d-flex justify-content-between flex-fill mt-3 gap-2">
-            <button type="submit" class="btn btn-success w-50" >Rent It!</button>
+            <button type="submit" class="btn btn-success w-50">Rent It!</button>
 
             <button type="reset" class="btn btn-dark w-50"> Reset</button>
         </div>
@@ -114,6 +120,47 @@
 
 <!-- Common Scripts-->
 <th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<script>
+    // generate code
+    // $("#bookId").click(function(){
+    //     $.ajax({url: "", success: function(result){
+    //             $("#div1").html(result);
+    //             console.log("clicked")
+    //         }});
+    // });
+
+    let baseUrl = "http://localhost:8080/brs/library/book/";
+
+    // get generated transaction code
+    $("select#bookId").change(function () {
+
+        var selectedBookName = $(this).children("option:selected").attr("id");
+
+        $.ajax({
+            url: "http://localhost:8080/brs/library/book/generate-code?bookName=" + selectedBookName,
+            success: function (code) {
+                $("#code").val(code);
+                console.log("woah code generated")
+            }
+        });
+        // alert("You have selected the country - " + selectedBookName);
+    });
+
+    // get predicted return date
+    $("#totalRentedDays").blur(function () {
+        var givenDays = $(this).val();
+
+        $.ajax({
+            url: baseUrl + "get-return-date?totalDays=" + givenDays, success: function (expiryDate) {
+                $("#dateOfReturn").val(expiryDate);
+                console.log("woah expiry date generated")
+            }
+        })
+    })
+</script>
 
 </body>
 </html>

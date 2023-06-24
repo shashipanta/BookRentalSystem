@@ -34,6 +34,11 @@
     margin-bottom: 0;
 }
 
+.top-nav a{
+    text-decoration: none;
+    color: white;
+}
+
 /* clear defaults */
 .profile-header img {
     width: 100%;
@@ -99,4 +104,20 @@
 
 .shown-form{
     display: block;
+}
+
+/* rating */
+.rating-golden{
+    color: gold;
+    font-size: 1em;
+}
+
+.book-container {
+    display: flex;
+    gap: 2em;
+}
+
+.readonly-container{
+    display: flex;
+    gap: 2em;
 }

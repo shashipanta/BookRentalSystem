@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{fragments/utility-fragments :: common_header(~{::title}, ~{::link})}">
+  <meta charset="UTF-8">
+  <title>BRS - Book Rental System</title>
+  <link rel="stylesheet" href="">
+</head>
+<body>
+<!-- SIDEBAR MENU -->
+<th:block th:replace="~{fragments/utility-fragments :: sidebar_toggle}"></th:block>
+<th:block th:replace="~{fragments/off-canvas-menu :: side_menu}"></th:block>
+
+<div class="container">
+  <!--    <form th:action="@{/brs/admin/book/save}" th:object="${bookRequest}" method="post" enctype="multipart/form-data">-->
+
+
+  <!-- Form   -->
+  <form th:action="@{/brs/admin/book/update}" th:object="${bookUpdateRequest}" method="post" enctype="multipart/form-data">
+    <h1 th:text="*{id}? 'Update Book' : 'Register a New Book'"></h1>
+
+    <div class="row">
+      <!-- FIRST ROW-->
+      <div class="col-md-6">
+
+        <input type="text" th:field="*{id}" hidden>
+
+        <div class="form-group">
+          <label for="authorName">Book Name</label>
+          <input th:field="*{bookName}"
+                 th:classappend="*{#fields.hasErrors('bookName')}? 'is-invalid'"
+                 type="text" class="form-control" id="authorName" placeholder="eg: Rich Dad Poor Dad">
+          <span
+                  th:if="${#fields.hasErrors('bookName')}"
+                  th:errors="*{bookName}"
+                  class="invalid-feedback"
+          >Name error</span>
+
+        </div>
+
+        <div class="row">
+          <!--  TOTAL PAGES   -->
+          <div class="form-group col-md-6">
+            <label for="totalPages">Total Pages</label>
+            <input th:field="*{totalPages}"
+                   th:classappend="*{#fields.hasErrors('totalPages')}? 'is-invalid'"
+                   type="number"
+                   min="1"
+                   class="form-control"
+                   id="totalPages" aria-describedby="authorEmailHelp"
+                   placeholder="eg: 1024">
+            <span th:if="${#fields.hasErrors('totalPages')}"
+                  th:errors="*{totalPages}"
+                  class="invalid-feedback"
+            >Page error</span>
+          </div>
+
+          <!--  ISBN NUMBER   -->
+          <div class="form-group col-md-6">
+            <label for="isbn">ISBN</label>
+            <input th:field="*{isbn}"
+                   th:classappend="*{#fields.hasErrors('isbn')}? 'is-invalid'"
+                   class="form-control" type="text" id="isbn" name="isbn" placeholder="eg: 123-4-56-789104-2">
+            <span th:if="${#fields.hasErrors('isbn')}"
+                  th:errors="*{isbn}"
+                  class="invalid-feedback"
+            >ISBN error</span>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <!--       RATING         -->
+          <div class="form-group col-md-6">
+            <label for="bookRating">Rating</label>
+            <input th:field="*{rating}"
+                   min="0.0" max="10.0"
+                   th:classappend="*{#fields.hasErrors('rating')}? 'is-invalid'"
+                   class="form-control" type="text" id="bookRating" name="rating"
+                   placeholder="eg: 10">
+            <span th:if="${#fields.hasErrors('rating')}"
+                  th:errors="*{rating}"
+                  class="invalid-feedback"
+            >Rating error</span>
+          </div>
+
+          <!--  STOCK COUNT -->
+          <div class="form-group col-md-6">
+            <label for="stockCount">Stock Count</label>
+            <input th:field="*{stockCount}"
+                   th:classappend="*{#fields.hasErrors('stockCount')}? 'is-invalid'"
+                   class="form-control" type="text" id="stockCount" name="phone" placeholder="eg: 20">
+            <span th:if="${#fields.hasErrors('stockCount')}"
+                  th:errors="*{stockCount}"
+                  class="invalid-feedback">Stock count error</span>
+          </div>
+        </div>
+
+
+        <!--  PUBLISHED DATE -->
+        <div class="form-group">
+          <label for="publishedDate">Published Date</label>
+          <input th:field="*{publishedDate}"
+                 th:classappend="*{#fields.hasErrors('publishedDate')}? 'is-invalid'"
+                 type="date" id="publishedDate" class="form-control">
+          <span th:if="${#fields.hasErrors('publishedDate')}"
+                th:errors="*{publishedDate}"
+                class="invalid-feedback"
+          >Published Date error</span>
+        </div>
+      </div>
+
+      <!-- SECOND COLUMN -->
+      <div class="col-md-6">
+
+        <!--   SELECT CATEGORY     -->
+        <div class="form-group">
+          <label for="category" class=""> Category</label>
+          <select th:field="*{categoryId}"
+                  th:classappend="*{#fields.hasErrors('categoryId')}? 'is-invalid'"
+                  class="form-select mt-2" aria-label="Default select example"
+                  id="category">
+            <option value="" disabled selected>-- select --</option>
+            <option th:each="category : ${categoryList}"
+                    th:value="${category.id}"
+                    th:text="${category.name}">
+            </option>
+          </select>
+          <span th:if="${#fields.hasErrors('categoryId')}"
+                th:errors="*{categoryId}"
+                class="invalid-feedback"
+          >Category error</span>
+        </div>
+
+        <!--   SELECT AUTHOR     -->
+        <div class="form-group">
+          <label for="author" class=""> Author</label>
+          <select th:field="*{authorId}"
+                  th:classappend="*{#fields.hasErrors('authorId')}? 'is-invalid'"
+                  class="form-select mt-2" aria-label="Default select example"
+                  id="author" multiple>
+            <option value="" disabled selected>-- select --</option>
+            <option th:each="author : ${authorList}"
+                    th:value="${author.id}"
+                    th:text="${author.name}">
+            </option>
+
+          </select>
+          <span th:if="${#fields.hasErrors('authorId')}"
+                th:errors="*{authorId}"
+                class="invalid-feedback"
+          >Author Error</span>
+        </div>
+
+        <!-- MULTIPART FILE -->
+        <div class="form-group">
+          <label for="publishedDate">Book Image (jpg and png only)</label>
+          <input th:field="*{multipartFile}"
+                 th:value="*{photoPath}"
+                 th:classappend="*{#fields.hasErrors('multipartFile')}? 'is-invalid'"
+                 type="file" id="multipartFile" class="form-control">
+          <span th:if="${#fields.hasErrors('multipartFile')}"
+                th:errors="*{multipartFile}"
+                class="invalid-feedback"
+          >Multipart file error</span>
+
+        </div>
+        <th:block th:if="!*{multipartFile} and *{id}">
+          <label for="uploadedImage">Uploaded Book Image</label>
+          <img class="img-thumbnail" id="uploadedImage"
+               th:src="@{/uploads/file} + '?filename=' + ${fileName}" alt="" srcset="">
+
+        </th:block>
+      </div>
+
+      <!--  Submit buttons -->
+      <div class="form-group d-flex justify-content-between flex-fill mt-3 gap-2">
+        <button
+                type="submit"
+                class="btn w-50"
+                th:classappend="*{id}?'btn-info': 'btn-success'"
+                th:text="*{id}? 'Update' : 'Save'"
+        >{{Save}} Author
+        </button>
+
+        <button type="reset" class="btn btn-dark w-50"> Reset</button>
+      </div>
+    </div>
+  </form>
+
+  <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Tooltip on left">
+    Tooltip on left
+  </button>
+
+</div>
+
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+
+
+</body>
+</html>

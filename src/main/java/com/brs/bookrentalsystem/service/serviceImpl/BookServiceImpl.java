@@ -3,6 +3,7 @@ package com.brs.bookrentalsystem.service.serviceImpl;
 import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.book.BookRequest;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
+import com.brs.bookrentalsystem.dto.book.BookUpdateRequest;
 import com.brs.bookrentalsystem.error.codes.ErrorCodes;
 import com.brs.bookrentalsystem.error.exception.impl.NoSuchEntityFoundException;
 import com.brs.bookrentalsystem.model.Author;
@@ -48,6 +49,7 @@ public class BookServiceImpl implements BookService {
         return toBookResponse(book);
     }
 
+    // TODO:: LIKELY TO BREAK CHANGES
     private BookResponse toBookResponse(Book book) {
 
 //        String publishedDate = dateUtil.dateToString(book.getPublishedDate());
@@ -56,11 +58,14 @@ public class BookServiceImpl implements BookService {
         List<Author> authors = book.getAuthor().stream()
                 .toList();
 
+        String fileName = book.getPhoto().substring(book.getPhoto().lastIndexOf("/") + 1);
+
         return BookResponse.builder()
                 .id(book.getId())
                 .bookName(book.getName())
                 .isbn(book.getIsbn())
                 .photoPath(book.getPhoto())
+                .fileName(fileName)
                 .rating(book.getRating())
                 .stockCount(book.getStockCount())
                 .totalPages(book.getTotalPages())
@@ -106,8 +111,9 @@ public class BookServiceImpl implements BookService {
                 .totalPages(book.getTotalPages())
                 .stockCount(book.getStockCount())
                 .rating(book.getRating())
-                .multipartFile(null)
+                .multipartFile(fileStorageUtil.imagePathToMultipartFile(book.getPhoto()))
                 .photoPath(book.getPhoto())
+                .publishedDate(String.valueOf(book.getPublishedDate()))
                 .build();
     }
 
@@ -121,10 +127,38 @@ public class BookServiceImpl implements BookService {
 
     // not used
     @Override
-    public BookResponse updateBook(BookRequest request) {
-        Book book = toBook(request);
-        book = bookRepo.save(book);
-        return toBookResponse(book);
+    public BookResponse updateBook(BookUpdateRequest updateRequest) {
+
+        Category category = categoryService.getCategoryById(updateRequest.getCategoryId());
+        Set<Author> authors = authorService.getAuthorAssociated(updateRequest.getAuthorId());
+        LocalDate publishedDate = dateUtil.stringToDate(updateRequest.getPublishedDate());
+        String fileStorageLocation = null;
+        Book bookToUpdate = this.getBookEntityById(updateRequest.getId());
+        if(!updateRequest.getMultipartFile().isEmpty()){
+            fileStorageLocation = fileStorageUtil.getFileStorageLocation(updateRequest);
+            bookToUpdate.setPhoto(fileStorageLocation);
+        } else {
+            // book has previous photo location
+            bookToUpdate.getPhoto();
+        }
+
+        bookToUpdate.setId(updateRequest.getId());
+        bookToUpdate.setIsbn(fileStorageUtil.changeToStandardIsbn(updateRequest.getIsbn()));
+        bookToUpdate.setName(updateRequest.getBookName());
+        bookToUpdate.setAuthor(authors);
+        bookToUpdate.setCategory(category);
+        bookToUpdate.setRating(updateRequest.getRating());
+        bookToUpdate.setStockCount(updateRequest.getStockCount());
+        bookToUpdate.setTotalPages(updateRequest.getTotalPages());
+        bookToUpdate.setPublishedDate(publishedDate);
+
+        bookToUpdate = bookRepo.save(bookToUpdate);
+
+        // if new file sent then update the file
+        if(!updateRequest.getMultipartFile().isEmpty()){
+            fileStorageUtil.saveMultipartFile(updateRequest.getMultipartFile(), fileStorageLocation);
+        }
+        return toBookResponse(bookToUpdate);
     }
 
     @Override
@@ -145,6 +179,35 @@ public class BookServiceImpl implements BookService {
         return booksAvailableOnStock.stream()
                 .map(this::toBookResponse)
                 .collect(Collectors.toList());
+    }
+
+    // create bookUpdateRequest for updating book * multipart file validation error
+    @Override
+    public BookUpdateRequest getBookUpdateRequest(Integer bookId) {
+
+        Book bookEntityById = this.getBookEntityById(bookId);
+        BookUpdateRequest bookUpdateRequest = toBookUpdateRequest(bookEntityById);
+        return bookUpdateRequest;
+    }
+
+    BookUpdateRequest toBookUpdateRequest(Book book){
+        List<Integer> authorList = book.getAuthor().stream()
+                .map(Author::getId)
+                .collect(Collectors.toList());
+        String isbn = book.getIsbn().replace("-", "");
+        return BookUpdateRequest.builder()
+                .id(book.getId())
+                .bookName(book.getName())
+                .categoryId(book.getCategory().getId())
+                .authorId(authorList)
+                .isbn(isbn)
+                .totalPages(book.getTotalPages())
+                .stockCount(book.getStockCount())
+                .rating(book.getRating())
+                .multipartFile(null)
+                .photoPath(book.getPhoto())
+                .publishedDate(String.valueOf(book.getPublishedDate()))
+                .build();
     }
 
 

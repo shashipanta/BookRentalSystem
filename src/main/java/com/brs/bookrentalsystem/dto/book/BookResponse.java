@@ -27,6 +27,8 @@ public class BookResponse {
 
     private String photoPath;
 
+    private String fileName;
+
     private Category category;
 
     private List<Author> authors;

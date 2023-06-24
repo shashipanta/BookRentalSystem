@@ -16,4 +16,7 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
     @Query("SELECT bookTransaction FROM BookTransaction bookTransaction WHERE " +
             "bookTransaction.code LIKE CONCAT('%',:filterValue, '%')" )
     List<BookTransaction> filterByTransactionCode(String filterValue);
+
+    @Query("SELECT LAST_INSERT_ID()")
+    Long getLastInsertedId();
 }

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+// rent a book
+
 @Data
 @Builder
 @NoArgsConstructor
