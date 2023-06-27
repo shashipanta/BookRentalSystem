@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -22,9 +23,11 @@ public class BookRequest {
     @NotBlank(message = "Book Name cannot be blank")
     private String bookName;
 
+    @Min(value = 1, message = "Book should have at least 1 page")
     private Short totalPages;
 
     @Size(min = 13, max = 13, message = "ISBN should be 13 digits")
+    @Pattern(regexp = "^[0-9]{13}")
     private String isbn;
 
     @Min(value = 0, message = "Min rating should be greater than 0")
@@ -32,10 +35,13 @@ public class BookRequest {
     private Double rating;
 
     @NotNull(message = "StockCount should be provided")
+    @Min(value = 1, message = "Min stock should be 1")
+    @Max(value = 1000, message = "Stock should not be greater than 1000")
     private Integer stockCount;
 
-    @NotBlank(message = "Published date cannot be empty")
-    private String publishedDate;
+    @NotNull(message = "Published date cannot be empty")
+    @PastOrPresent(message = "Published date should be either present or past one")
+    private LocalDate publishedDate;
 
 //    @NotBlank(message = "Photo should be provided")
     private String photoPath;

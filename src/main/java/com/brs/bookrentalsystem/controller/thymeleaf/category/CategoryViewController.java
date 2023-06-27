@@ -1,5 +1,6 @@
 package com.brs.bookrentalsystem.controller.thymeleaf.category;
 
+import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.category.CategoryRequest;
 import com.brs.bookrentalsystem.dto.category.CategoryResponse;
 import com.brs.bookrentalsystem.model.Category;
@@ -21,12 +22,14 @@ public class CategoryViewController {
 
     private final CategoryService categoryService;
 
-    @GetMapping(value = "/")
+    @GetMapping(value = {"/", ""})
     public String openCategoryPage(Model model) {
 
-        if(!model.containsAttribute("categoryRequest")){
+        if(model.getAttribute("categoryRequest") == null){
             model.addAttribute("categoryRequest", new CategoryRequest());
+            model.addAttribute("showModal", false);
         } else {
+            // display category edit form
             model.addAttribute("showModal", true);
         }
         // else edit response
@@ -42,22 +45,33 @@ public class CategoryViewController {
     public String saveNewCategory(
             @Valid @ModelAttribute("categoryRequest") CategoryRequest request,
             BindingResult bindingResult,
-            RedirectAttributes ra
+            RedirectAttributes ra,
+            Model model
     ) {
         if (bindingResult.hasErrors()) {
             System.out.println("Binding errors" + bindingResult.getFieldErrors());
-            return "redirect:/brs/admin/category/";
+            model.addAttribute("categoryRequest", model.getAttribute("categoryRequest"));
+            List<CategoryResponse> allCategories = categoryService.getAllCategories();
+            model.addAttribute("categoriesList", allCategories);
+            // for form popup
+            model.addAttribute("showForm", true);
+            return "/category/category-page";
         }
 
         CategoryResponse category = categoryService.createCategory(request);
 
-        ra.addFlashAttribute("message", category);
+        if(request.getId() == null){
+            ra.addFlashAttribute("message", new Message("CREATED", "Category created successfully"));
+        } else {
+            ra.addFlashAttribute("message", new Message("UPDATED", "Category updated successfully"));
+        }
+
 
         return "redirect:/brs/admin/category/";
     }
 
     // http://localhost:8080/brs/admin/category/{id}/edit
-    @RequestMapping(value = "/{id}/edit")
+    @GetMapping(value = "/{id}/edit")
     public String editCategory(
             @PathVariable("id") Short categoryId,
             RedirectAttributes ra
@@ -66,6 +80,19 @@ public class CategoryViewController {
         Category categoryById = categoryService.getCategoryById(categoryId);
 
         ra.addFlashAttribute("categoryRequest", categoryById);
+
+        return "redirect:/brs/admin/category/";
+    }
+
+    @GetMapping(value = "/{id}/delete")
+    public String deleteCategory(
+            @PathVariable("id") Short categoryId,
+            RedirectAttributes ra
+    ) {
+
+        Message message = categoryService.deleteCategoryById(categoryId);
+
+        ra.addFlashAttribute("message", message);
 
         return "redirect:/brs/admin/category/";
     }

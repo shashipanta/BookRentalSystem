@@ -54,22 +54,25 @@
                        disabled
                        type="text" class="form-control" id="memberName">
             </div>
-            <!-- VIEW RENTED DATE-->
-            <div class="form-group">
-                <label for="rentFrom">Book Rented From</label>
-                <input
-                        disabled
-                        th:value="${rentedDate}"
-                        type="text" class="form-control" id="rentFrom" placeholder="eg: Rich Dad Poor Dad">
+            <div class="wrapper">
+                <!-- VIEW RENTED DATE-->
+                <div class="form-group">
+                    <label for="rentFrom">Book Rented From</label>
+                    <input
+                            disabled
+                            th:value="${rentedDate}"
+                            type="text" class="form-control" id="rentFrom">
+                </div>
+
+                <div class="form-group">
+                    <label for="rentTo">Book Rented Expiration</label>
+                    <input
+                            disabled
+                            th:value="${expiryDate}"
+                            type="text" class="form-control" id="rentTo" placeholder="">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="rentTo">Book Rented Expiration</label>
-                <input
-                        disabled
-                        th:value="${expiryDate}"
-                        type="text" class="form-control" id="rentTo" placeholder="">
-            </div>
         </div>
 
 

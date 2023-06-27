@@ -2,6 +2,7 @@ package com.brs.bookrentalsystem.util;
 
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -28,8 +29,16 @@ public class DateUtil {
         return htmlDateFormatter.format(date);
     }
 
+    public LocalDate formatLocalDate(LocalDate date){
+        String passedDate = dateFormatter.format(date);
+
+        return LocalDate.parse(passedDate);
+    }
+
     public LocalDate addDayToDate(Integer dayToAdd){
         return getCurrentDate(dateFormatter).plusDays(dayToAdd);
     }
+
+
 
 }

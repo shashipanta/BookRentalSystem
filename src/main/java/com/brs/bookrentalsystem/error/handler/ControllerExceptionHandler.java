@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,13 +26,13 @@ public class ControllerExceptionHandler {
     public ModelAndView handleUserException(final NoSuchEntityFoundException ex){
         ErrorResponse errorResponse = null;
 
-        if(ex instanceof NoSuchEntityFoundException){
+        if(ex != null){
             errorResponse = new ErrorResponse("BAD_REQUEST",ex.getLocalizedMessage());
         }
         logger.error("Bad user request");
 
         ModelAndView mv = new ModelAndView();
-        mv.addObject("errorResponse", errorResponse );
+        mv.addObject("message", errorResponse );
         mv.setViewName("exception-page");
         return mv;
     }
@@ -41,6 +42,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler({DataIntegrityViolationException.class})
     public String handleDatabaseException(final DataIntegrityViolationException ex,
                                           HttpServletRequest request,
+                                          Model model,
                                           RedirectAttributes ra){
         ErrorResponse errorResponse = new ErrorResponse();
 
@@ -66,7 +68,11 @@ public class ControllerExceptionHandler {
 
         logger.error(errorResponse.getMessage());
 
-        return "redirect:"+redirectionURI;
+        if (model.containsAttribute("authorRequest")) {
+            System.out.println("Model " + model.getAttribute("authorRequest"));
+        }
+
+        return "redirect:" + redirectionURI;
     }
 
 

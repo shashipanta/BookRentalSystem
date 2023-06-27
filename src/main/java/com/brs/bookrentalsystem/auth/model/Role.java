@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 
 
 @Entity
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tbl_role",
         uniqueConstraints = {

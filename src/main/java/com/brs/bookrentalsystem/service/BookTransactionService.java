@@ -1,6 +1,7 @@
 package com.brs.bookrentalsystem.service;
 
 import com.brs.bookrentalsystem.dto.Message;
+import com.brs.bookrentalsystem.dto.book.BookMessage;
 import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.model.BookTransaction;
 
@@ -26,6 +27,9 @@ public interface BookTransactionService {
     String getBookReturnDate(Integer days);
 
     TransactionResponse getTransaction(String transactionCode);
+
+    // get top 5 rented books
+    List<BookMessage> getTopRatedBooks();
 
 
 

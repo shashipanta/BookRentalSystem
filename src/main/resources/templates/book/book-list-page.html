@@ -14,6 +14,7 @@
 
 <div class="container">
 
+  <h1>Book Inventory</h1>
 
   <div class="row">
     <div class="col-md-12">
@@ -22,11 +23,11 @@
         <tr>
           <th scope="col">S.N</th>
           <th scope="col">Name</th>
-          <th scope="col">Cover</th>
+          <th scope="col">Category</th>
           <th scope="col">Published</th>
           <th scope="col">Rating</th>
           <th scope="col">Stock</th>
-          <th scope="col">Soft Deleted</th>
+          <th scope="col">ISBN</th>
           <th scope="col" class="th-sm">Action</th>
         </tr>
         </thead>
@@ -36,11 +37,11 @@
           <th th:text="${book.id}" hidden></th>
           <th th:text="${index.count}" scope="row">count</th>
           <th th:text="${book.bookName}" scope="row">Book Name</th>
-          <td th:text="${book.photoPath}">/home/some/path</td>
+          <td th:if="${book.category} != null" th:text="*{book.category.name}">category</td>
           <td th:text="${book.publishedDate}">2023-12-12</td>
           <td th:text="${book.rating}">7.8</td>
           <td th:text="${book.stockCount}">200</td>
-          <td th:text="${book.totalPages}">2525</td>
+          <td th:text="${book.isbn}">2525</td>
 
           <td class="d-flex gap-1">
             <a th:href="@{/brs/admin/book/delete/} + ${book.id}"

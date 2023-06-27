@@ -1,6 +1,7 @@
 package com.brs.bookrentalsystem.service.serviceImpl;
 
 import com.brs.bookrentalsystem.dto.Message;
+import com.brs.bookrentalsystem.dto.book.BookMessage;
 import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.enums.RentStatus;
 import com.brs.bookrentalsystem.model.Book;
@@ -180,6 +181,19 @@ public class BookTransactionServiceImpl implements BookTransactionService {
                 .expiryDate(dateUtil.dateToString(bookTransactionByCode.getRentTo()))
                 .build();
 
+    }
+
+    @Override
+    public List<BookMessage> getTopRatedBooks() {
+        List<BookTransaction> bookTransactionByRentStatus = bookTransactionRepo.findBookTransactionByRentStatus(RentStatus.RENTED);
+        bookTransactionByRentStatus.sort(Comparator.comparing(o -> o.getBook().getRating()));
+
+        List<BookTransaction> list = bookTransactionByRentStatus.stream().distinct().toList();
+
+        List<BookTransaction> limit = list.stream().distinct().limit(5).collect(Collectors.toList());
+//        return limit.stream()
+//                .map(bookTransaction -> new BookMessage(bookTransaction.getBook().getName(), ))
+        return null;
     }
 
     private BookTransaction toBookTransaction(BookTransactionRequest request) {

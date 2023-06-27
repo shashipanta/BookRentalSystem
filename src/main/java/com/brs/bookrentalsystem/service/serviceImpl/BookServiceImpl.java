@@ -113,7 +113,8 @@ public class BookServiceImpl implements BookService {
                 .rating(book.getRating())
                 .multipartFile(fileStorageUtil.imagePathToMultipartFile(book.getPhoto()))
                 .photoPath(book.getPhoto())
-                .publishedDate(String.valueOf(book.getPublishedDate()))
+//                .publishedDate(String.valueOf(book.getPublishedDate()))
+                .publishedDate(book.getPublishedDate())
                 .build();
     }
 
@@ -215,7 +216,9 @@ public class BookServiceImpl implements BookService {
 
         Category category = categoryService.getCategoryById(request.getCategoryId());
         Set<Author> authors = authorService.getAuthorAssociated(request.getAuthorId());
-        LocalDate publishedDate = dateUtil.stringToDate(request.getPublishedDate());
+//        LocalDate publishedDate = dateUtil.stringToDate(request.getPublishedDate());
+        LocalDate publishedDate = dateUtil.formatLocalDate(request.getPublishedDate());
+
         String photoFilePath = null;
         Book book = new Book();
         if (request.getId() != null) {
@@ -229,7 +232,7 @@ public class BookServiceImpl implements BookService {
         if (request.getTotalPages() != null) book.setTotalPages(request.getTotalPages());
         if (request.getIsbn() != null) book.setIsbn(request.getIsbn());
         book.setStockCount(request.getStockCount());
-        if (request.getPublishedDate() != null) book.setPublishedDate(publishedDate);
+        book.setPublishedDate(publishedDate);
         if (request.getRating() != null) book.setRating(request.getRating());
         book.setCategory(category);
         book.setAuthor(authors);

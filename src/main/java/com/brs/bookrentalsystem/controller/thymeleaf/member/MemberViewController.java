@@ -31,11 +31,11 @@ public class MemberViewController {
 
     @GetMapping("/")
     public String openMemberPage(Model model) {
-        if (!model.containsAttribute("memberRequest")) {
+        if(!model.containsAttribute("memberRequest")){
             model.addAttribute("memberRequest", new MemberRequest());
-        } else {
-            model.addAttribute("showModal", true);
+
         }
+
         // else edit response
 
         List<MemberResponse> allMembers = memberService.getRegisteredMembers();
@@ -45,26 +45,29 @@ public class MemberViewController {
         return "/member/member-page";
     }
 
-    @RequestMapping(value = "/save")
+    @GetMapping(value = "/save")
     public String registerNewMember(
             @Valid @ModelAttribute("memberRequest") MemberRequest request,
             BindingResult bindingResult,
-            RedirectAttributes ra
+            Model model
     ) {
         if (bindingResult.hasErrors()) {
             System.out.println("Binding errors" + bindingResult.getFieldErrors());
-            return "redirect:/brs/admin/member/";
+            List<MemberResponse> allMembers = memberService.getRegisteredMembers();
+            model.addAttribute("memberList", allMembers);
+            model.addAttribute("memberRequest", request);
+            return "/member/member-page";
         }
 
         MemberResponse memberResponse = memberService.registerNewMember(request);
 
-        if(request.getId() == null){
-            ra.addFlashAttribute("message", new Message("CREATED", "Member created successfully"));
-            ra.addFlashAttribute("messageType", "create");
-        } else {
-            ra.addFlashAttribute("message", new Message("UPDATED", "Member updated successfully"));
-            ra.addFlashAttribute("messageType", "update");
-        }
+//        if(request.getId() == null){
+//            ra.addFlashAttribute("message", new Message("CREATED", "Member created successfully"));
+//            ra.addFlashAttribute("messageType", "create");
+//        } else {
+//            ra.addFlashAttribute("message", new Message("UPDATED", "Member updated successfully"));
+//            ra.addFlashAttribute("messageType", "update");
+//        }
 
         return "redirect:/brs/admin/member/";
     }

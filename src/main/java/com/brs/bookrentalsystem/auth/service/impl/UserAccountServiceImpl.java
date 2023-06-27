@@ -10,6 +10,7 @@ import com.brs.bookrentalsystem.auth.repo.UserAccountRepo;
 import com.brs.bookrentalsystem.auth.service.UserAccountService;
 import com.brs.bookrentalsystem.dto.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -21,6 +22,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserAccountRepo userAccountRepo;
     private final RoleRepo roleRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Message registerNewUser(RegistrationRequest request) {
@@ -29,10 +31,9 @@ public class UserAccountServiceImpl implements UserAccountService {
 
         // Assign default role to newly registered user
 
-        userAccount.setRoles(Set.of(roleRepo.findById(Short.valueOf("1")).get()));
+        userAccount.setRole(RoleNames.ROLE_LIBRARIAN);
 
         userAccountRepo.save(userAccount);
-
 
         return new Message("CREATED", "User Account created successfully");
     }
@@ -55,7 +56,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
         userAccount.setUserName(request.getUserName());
         userAccount.setEmail(request.getEmail());
-        userAccount.setPassword(request.getPassword());
+        userAccount.setPassword(passwordEncoder.encode(request.getPassword()));
         userAccount.setIp(request.getIp());
 
         return userAccount;

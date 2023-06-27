@@ -17,7 +17,8 @@
     <!-- category list -->
     <h4>Available Categories</h4>
 
-    <div class="table-responsive">
+    <div
+            class="table-responsive">
 
         <div class="filter-container">
             <form action="" class="d-flex align-items-center gap-2 search-form">
@@ -38,7 +39,7 @@
             <tr>
                 <th scope="col">S.N</th>
                 <th scope="col">Name</th>
-                <th scope="col">Description</th>
+                <th scope="col" class="long-desc">Description</th>
                 <th scope="col" class="th-sm">Action</th>
             </tr>
             </thead>
@@ -48,9 +49,10 @@
                 <th th:text="${category.id}" hidden></th>
                 <th th:text="${index.count}" scope="row">1</th>
                 <td th:text="${category.name}">Mark</td>
-                <td th:text="${category.description}">Otto</td>
+                <td th:text="${category.description}" class="long-desc">Otto</td>
                 <td>
-                    <a class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
+                    <a th:href="@{/brs/admin/category/} + ${category.id} + '/delete'"
+                       class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
                     <a th:href="@{/brs/admin/category/} + ${category.id} + '/edit'"
                        class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
                 </td>
@@ -60,45 +62,80 @@
 
     </div>
 
-    <!--    pagination -->
-    <nav aria-label="...">
-        <ul class="pagination">
-            <li class="page-item disabled">
-                <a class="page-link">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item active" aria-current="page">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
+    <!-- category edit page -->
+    <form
+            method="post"
+            th:if="${showModal}"
+            action="/brs/admin/category/save"
+            th:object="${categoryRequest}"
+            class="d-flex flex-column gap-4"
+    >
+        <h1 th:text="${categoryRequest.id} ? 'Update Category' : 'Register a New Category'"></h1>
+
+        <input type="text" th:field="*{id}" hidden>
+
+        <div class="form-group">
+            <label for="categoryName">Category Name</label>
+            <input th:field="*{name}"
+                   th:classappend="*{#fields.hasErrors('name')}? 'is-invalid'"
+                   type="text" class="form-control" id="">
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback">Name error</span>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input th:field="*{description}"
+                   th:classappend="*{#fields.hasErrors('description')}? 'is-invalid'"
+                   type="text" class="form-control" id="description" placeholder="eg: Shashi Kumar Panta">
+            <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="invalid-feedback">Name error</span>
+        </div>
+
+
+        <button
+                type="submit"
+                class="btn"
+                th:classappend="*{id}?'btn-info': 'btn-success'"
+                th:text="*{id}? 'Update' : 'Save'"
+        >{{Save}} Category
+        </button>
+
+        <div th:object="${categoryRequest}"
+             class="alert alert-danger alert-dismissible fade show mt-3" th:if="${#fields.hasAnyErrors()}">
+            <strong>Error! </strong>
+            <hr>
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </form>
+
 
     <!-- floating toast -->
     <th:block
-            th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">
+            th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${message})}">
     </th:block>
 
     <!-- Modal -->
 
-    <div class="modal fade" th:classappend="${showModal}?'show':''" id="staticBackdrop"
+    <div class="modal fade" id="staticBackdrop"
          data-bs-backdrop="static"
          data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
 
         <div class="modal-dialog">
             <div class="modal-content">
-                <form th:action="@{/brs/admin/category/save}" th:object="${categoryRequest}">
+                <form th:action="@{/brs/admin/category/save}" th:object="${categoryRequest}"
+                      th:classappend="${showForm}? 'error-modal':''"
+                      th:attrappend="update-form=${showModal}"
+                >
                     <div class="modal-header">
                         <th:block th:if="${showModal}">
                             <h1 class="modal-title fs-5" id="staticBackdropLabel">Update category</h1>
                         </th:block>
-                        <th:block>
+                        <th:block th:unless="${showModal}">
                             <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New category</h1>
-
                         </th:block>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
@@ -109,14 +146,29 @@
 
                         <div class="form-group">
                             <label for="categoryName">Category Name</label>
-                            <input th:field="*{name}" type="text" class="form-control" id="categoryName"
+                            <input th:field="*{name}"
+                                   th:classappend="*{#fields.hasErrors('name')}? 'is-invalid'"
+                                   type="text" class="form-control" id="categoryName"
                                    placeholder="eg:Science & Technology">
-                            <span th:if="${#fields.hasErrors('name')}" th:errors="${name}"></span>
+                            <span
+                                    th:if="${#fields.hasErrors('name')}"
+                                    th:errors="*{name}"
+                                    class="invalid-feedback"
+                            >Field Error</span>
                         </div>
                         <div class="form-group">
                             <label for="categoryDescription">Description</label>
-                            <textarea th:field="*{description}" class="form-control" id="categoryDescription"
-                                      rows="3"></textarea>
+                            <textarea th:field="*{description}"
+                                      th:classappend="*{#fields.hasErrors('description')}? 'is-invalid'"
+                                      class="form-control error-field" id="categoryDescription"
+                                      rows="3">
+                            </textarea>
+                            <span
+                                    th:if="${#fields.hasErrors('description')}"
+                                    th:errors="*{description}"
+                                    class="invalid-feedback"
+                            >Name error</span>
+                            <!--                            <span th:if="${#fields.hasErrors('description')}" th:errors="${description}"></span>-->
                         </div>
 
                     </div>
@@ -128,10 +180,23 @@
                         </button>
                         <button type="reset" class="btn btn-sm btn-info">Reset</button>
                     </div>
+
+                    <div th:object="${categoryRequest}"
+                         class="alert alert-danger alert-dismissible fade show mt-3" th:if="${#fields.hasAnyErrors()}">
+                        <strong>Error! </strong>
+                        <hr>
+                        <ul>
+                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                        </ul>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 </form>
             </div>
 
         </div>
+
+
     </div>
 
 
@@ -139,6 +204,34 @@
 
 
 </div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+    });
+
+    $(document).ready(function () {
+
+        var hasClass = $(".modal-content form").hasClass("error-modal");
+
+        console.log("error Parent", $(".modal-content form"))
+
+
+        if(hasClass){
+            $("#staticBackdrop").modal('show');
+        }
+        let isUpdateForm = $(".modal-content form").attr("update-form");
+        console.log("update-form", typeof isUpdateForm)
+
+        if(isUpdateForm == "true"){
+            console.log("inside is update")
+            $("#staticBackdrop").modal('show');
+        }
+    })
+</script>
+
 
 </body>
 </html>

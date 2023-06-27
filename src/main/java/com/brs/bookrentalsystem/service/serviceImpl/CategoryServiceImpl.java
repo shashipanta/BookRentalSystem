@@ -54,7 +54,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Message deleteCategoryById(Short categoryId) {
-        return null;
+        categoryRepo.deleteById(categoryId);
+        return new Message("DELETED", "Category deleted successfully");
     }
 
     private CategoryResponse toCategoryResponse(Category category){

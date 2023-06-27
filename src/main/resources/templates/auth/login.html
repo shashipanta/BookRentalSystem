@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <title>Login </title>
 
-    <link rel="stylesheet" href="/login.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
 
 <div class="container">
-    <form   th:object="${loginRequest}"
-            th:action="@{/login}"
-            class="form-signin">
+    <form
+          th:action="@{/login}"
+          th:method="POST"
+          class="form-signin">
 
         <div class="text-center mb-2">
             <img class="mb-2" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72"
@@ -21,22 +22,23 @@
         </div>
 
         <div class="form-label-group">
-            <input th:field="*{email}"
-                   th:method="POST"
-                    type="email" id="inputEmail" class="form-control" placeholder="Email address" required=""
+            <input
+                   name="username"
+                   type="email" id="inputEmail" class="form-control" placeholder="Email address" required=""
                    autofocus="">
             <label for="inputEmail">Email address</label>
         </div>
 
         <div class="form-label-group">
-            <input th:field="*{password}"
-                    type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+            <input
+                   name="password"
+                   type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
             <label for="inputPassword">Password</label>
         </div>
 
         <div class="checkbox mb-3">
             <label>
-                <input type="checkbox" value="remember-me"> Remember me
+                <input type="checkbox" value="remember-me" name="remember-me"> Remember me
             </label>
         </div>
         <button class="btn btn-md btn-primary btn-block" type="submit">Sign in</button>
@@ -45,16 +47,32 @@
             <a th:href="@{/brs/auth/register}">Don't have account?</a>
         </div>
 
-        <p class="mt-1 mb-3 text-muted text-center">© 2017-2018</p>
+        <p th:text
+                class="mt-1 mb-3 text-muted text-center">© 2017-2018</p>
 
 
     </form>
 </div>
 
-<!-- floating toast -->
-<th:block
-        th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">
-</th:block>
+
+<div th:if="${param.error}"
+        class="toast position-absolute floating-toast show" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <img src="..." class="rounded me-2" alt="...">
+        <strong class="me-auto">Bootstrap</strong>
+        <small>11 mins ago</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body bg-danger">
+        Sorry! Something went wrong
+    </div>
+</div>
+
+
+<!--        th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${errorResponse})}">-->
+
+<!-- Common Scripts-->
+<th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
 
 </body>
 </html>

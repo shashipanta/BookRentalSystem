@@ -2,6 +2,7 @@ package com.brs.bookrentalsystem.dto.author;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class AuthorRequest {
 
     @Email(message = "Email format is wrong")
     @Length(max = 150, message = "Email length exceeded : 150")
+    @NotEmpty(message = "Email Field cannot be empty")
     private String email;
 
     @NotBlank(message = "Mobile number cannot be blank")

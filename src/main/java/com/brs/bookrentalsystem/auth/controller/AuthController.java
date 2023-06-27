@@ -51,6 +51,6 @@ public class AuthController {
         Message message = userAccountService.registerNewUser(request);
 
         ra.addFlashAttribute("errorResponse", new ErrorResponse(message.getCode(), message.getMessage()));
-        return "redirect:brs/auth/login";
+        return "redirect:/brs/auth/login";
     }
 }

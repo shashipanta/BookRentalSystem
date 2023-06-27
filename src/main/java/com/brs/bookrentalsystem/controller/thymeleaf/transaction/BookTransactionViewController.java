@@ -2,6 +2,7 @@ package com.brs.bookrentalsystem.controller.thymeleaf.transaction;
 
 
 import com.brs.bookrentalsystem.dto.Message;
+import com.brs.bookrentalsystem.dto.book.BookMessage;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
 import com.brs.bookrentalsystem.dto.transaction.BookReturnRequest;
 import com.brs.bookrentalsystem.dto.member.MemberResponse;
@@ -33,6 +34,14 @@ public class BookTransactionViewController {
     private final MemberService memberService;
 
     private final BookTransactionService bookTransactionService;
+
+    @GetMapping("/")
+    public String getTransactionViewPage(Model model){
+        List<BookTransactionResponse> allTransactions = bookTransactionService.getAllTransactions();
+        model.addAttribute("transactionList", allTransactions);
+        return "/bookTransaction/transactions-view-page";
+
+    }
 
 
     @GetMapping("/rent")
@@ -132,6 +141,18 @@ public class BookTransactionViewController {
     @ResponseBody
     public String generateBookReturnDate(@RequestParam("totalDays") Integer totalDays){
         return bookTransactionService.getBookReturnDate(totalDays);
+    }
+
+
+    // top 5 rented books
+    @GetMapping("/top-rented")
+    @ResponseBody
+    public ResponseEntity<List<BookMessage>> getTopRentedBooks(){
+
+        List<BookMessage> topRentedBooks = bookTransactionService.getTopRatedBooks();
+
+        return ResponseEntity.ok(topRentedBooks);
+
     }
 
 }

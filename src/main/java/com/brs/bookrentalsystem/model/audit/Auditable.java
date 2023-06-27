@@ -14,14 +14,14 @@ import java.util.Date;
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Auditable<U> {
+public class Auditable<U> {
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)
     protected U createdBy;
 
     @CreatedDate
-    @Column(name = "created_on", nullable = false)
+    @Column(name = "created_on", updatable = false)
     protected Date creationDate;
 
     @LastModifiedBy
@@ -31,7 +31,7 @@ public abstract class Auditable<U> {
     protected Date lastModificationDate;
 
     @Column(name = "is_active", columnDefinition = "boolean default true", insertable = false)
-    protected Boolean isActive;
+    protected Boolean isActive = true;
 
 //    @PrePersist
 //    public void populateIsActive(){

@@ -1,4 +1,6 @@
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+>
 
 
 <div th:fragment="side_menu"
@@ -18,9 +20,15 @@
                 aria-label="Close"
         ></button>
     </div>
+
+<!--    ROLE_ADMIN,-->
+<!--    ROLE_LIBRARIAN,-->
+<!--    ROLE_SUPER_ADMIN-->
+
     <div class="offcanvas-body d-flex flex-column">
         <!-- ALTERNATE MENU OPTION -->
-        <div class="card mt-2 menu-header" style="width: 18rem">
+        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')"
+                class="card mt-2 menu-header" style="width: 18rem">
             <div class="card-header">Master Data Setup</div>
             <ul class="list-group list-group-flush">
                 <li><a class="list-group-item" th:href="@{/brs/admin/category/}">Category Setup</a></li>
@@ -28,13 +36,14 @@
                 <li><a class="list-group-item" th:href="@{/brs/admin/member/}">Customer Setup</a></li>
                 <li><a class="list-group-item" th:href="@{/brs/admin/book/}">Book Setup</a></li>
                 <li><a class="list-group-item" th:href="@{/brs/admin/book/inventory}">View Book Inventory</a></li>
-                <li><a class="list-group-item disabled" href="#">Additional Setup</a></li>
+                <li><a class="list-group-item" th:href="@{/brs/library/book/}">Transaction View</a></li>
             </ul>
         </div>
 
         <hr class="divider"/>
 
-        <div class="card menu-header" style="width: 18rem">
+        <div    sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_LIBRARIAN', 'ROLE_SUPER_ADMIN')"
+                class="card menu-header" style="width: 18rem">
             <div class="card-header">Transaction</div>
             <ul class="list-group list-group-flush">
                 <li><a class="list-group-item" th:href="@{/brs/library/book/rent}">Rent a Book</a></li>
@@ -48,7 +57,7 @@
         <!-- PROFILE IMAGE -->
         <div class="profile-container">
             <div class="position-relative profile-header">
-                <img src="https://moewalls.com/wp-content/uploads/2022/01/itachi-uchiha-mangekyou-sharingan-naruto-shippuden-thumb.jpg"
+                <img th:src="@{/img/profile.jpeg}"
                      alt="" class="profile-img"/>
                 <span class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-danger p-2"></span>
                 <span class="visually-hidden">New alerts</span>
@@ -57,7 +66,8 @@
         </div>
 
         <!-- UserName -->
-        <p class="flex-fill text-center mb-0 pt-2">Shashi Panta</p>
+        <p sec:authentication="principal.username"
+                class="flex-fill text-center mb-0 pt-2">Shashi Panta</p>
 
         <button
                 type="button"
@@ -73,7 +83,7 @@
             <li>
                 <hr class="dropdown-divider"/>
             </li>
-            <li><a class="dropdown-item" href="#">LogOut</a></li>
+            <li><a class="dropdown-item" th:href="@{/logout}">LogOut</a></li>
         </ul>
     </div>
 </div>

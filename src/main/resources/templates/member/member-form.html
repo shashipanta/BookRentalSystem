@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<!-- Member form -->
+<form th:fragment="member_form"
+      th:object="${memberRequest}"
+      action="/brs/admin/member/save"
+      class="d-flex flex-column gap-4"
+>
+    <h4 th:text="${memberRequest.id}? 'Update Member' : 'Register a New member'" class="m-0"></h4>
+
+    <input type="text" th:field="*{id}" hidden>
+
+    <div class="form-group">
+        <label for="memberName">Member Name</label>
+        <input th:field="*{name}"
+               th:classappend="*{#fields.hasErrors('name')}? 'is-invalid'"
+               type="text" class="form-control" id="memberName" placeholder="eg: Shashi Kumar Panta">
+        <span
+                th:if="${#fields.hasErrors('name')}"
+                th:errors="*{name}"
+                class="invalid-feedback"
+        >Name error</span>
+    </div>
+
+    <div class="form-group">
+        <label for="memberEmail">Email</label>
+        <input th:field="*{email}"
+               th:classappend="*{#fields.hasErrors('email')}? 'is-invalid'"
+               type="email" class="form-control" id="memberEmail" aria-describedby="authorEmailHelp"
+               placeholder="Enter email">
+        <span
+                th:if="${#fields.hasErrors('email')}"
+                th:errors="*{email}"
+                class="invalid-feedback"
+        >Name error</span>
+    </div>
+
+<!--    <div class="form-group">-->
+<!--        <label for="memberPhoneNumber">Phone Number</label>-->
+<!--        <input th:field="*{mobileNumber}"-->
+<!--               class="form-control" type="text" id="memberPhoneNumber" name="phone" placeholder="eg: 9812347567">-->
+<!--        <span-->
+<!--                th:if="${#fields.hasErrors('mobileNumber')}"-->
+<!--                th:errors="*{mobileNumber}"-->
+<!--                class="invalid-feedback"-->
+<!--        >Name error</span>-->
+<!--    </div>-->
+
+    <div class="form-group">
+        <label for="authorPhoneNo">Phone Number</label>
+        <input th:field="*{mobileNumber}"
+               th:classappend="*{#fields.hasErrors('mobileNumber')}? 'is-invalid'"
+               class="form-control" type="text" id="authorPhoneNo" placeholder="eg: 9812347567">
+        <span th:if="${#fields.hasErrors('mobileNumber')}" th:errors="*{mobileNumber}" class="invalid-feedback">Name error</span>
+    </div>
+    <div class="form-group">
+        <label for="memberAddress">Address</label>
+        <input th:field="*{address}"
+               class="form-control" type="text" id="memberAddress" name="phone" placeholder="eg: Nayabasti">
+        <span
+                th:if="${#fields.hasErrors('address')}"
+                th:errors="*{address}"
+                class="invalid-feedback"
+        >Name error</span>
+
+
+    </div>
+
+    <div>
+        <button
+                type="submit"
+                class="btn"
+                th:classappend="*{id}?'btn-info': 'btn-success'"
+                th:text="*{id}? 'Update' : 'Save'"
+        >{{Save}} Member
+        </button>
+        <button type="reset" class="btn btn-dark">Reset</button>
+
+        <div class="alert alert-danger alert-dismissible fade show mt-3" th:if="${#fields.hasErrors('*')}">
+            <strong>Error! </strong>
+            <hr>
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+    </div>
+
+</form>
+
+</body>
+</html>

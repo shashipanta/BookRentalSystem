@@ -29,11 +29,6 @@ public class AuthorViewController {
             model.addAttribute("authorRequest", new AuthorRequest());
         }
 
-//        if(model.containsAttribute("bindingResult")){
-//            BindingResult bindingResult = (BindingResult) model.getAttribute("bindingResult");
-//            model.addAttribute("BindingResult", bindingResult);
-//        }
-
         System.out.println(model.asMap());
 
         // get registered authors
@@ -43,7 +38,7 @@ public class AuthorViewController {
         return "/author/author-page";
     }
 
-    @GetMapping("/save")
+    @PostMapping("/save")
     public String saveNewAuthor(
             @Valid @ModelAttribute("authorRequest") AuthorRequest request,
             BindingResult bindingResult,
