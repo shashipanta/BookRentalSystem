@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 

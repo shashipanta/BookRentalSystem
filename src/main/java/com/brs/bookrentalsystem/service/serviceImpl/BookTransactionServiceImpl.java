@@ -6,6 +6,7 @@ import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.enums.RentStatus;
 import com.brs.bookrentalsystem.model.Book;
 import com.brs.bookrentalsystem.model.BookTransaction;
+import com.brs.bookrentalsystem.model.Category;
 import com.brs.bookrentalsystem.model.Member;
 import com.brs.bookrentalsystem.repo.BookTransactionRepo;
 import com.brs.bookrentalsystem.service.BookService;
@@ -194,6 +195,37 @@ public class BookTransactionServiceImpl implements BookTransactionService {
 //        return limit.stream()
 //                .map(bookTransaction -> new BookMessage(bookTransaction.getBook().getName(), ))
         return null;
+    }
+
+    @Override
+    public List<TransactionExcelResponse> getAllTransactionsForExcel() {
+        List<BookTransaction> all = bookTransactionRepo.findAll();
+        return all.stream()
+                .map(this::toTransactionExcelResponse)
+                .collect(Collectors.toList());
+    }
+
+    private TransactionExcelResponse toTransactionExcelResponse(BookTransaction bookTransaction){
+        Book book = bookTransaction.getBook();
+        Member member = bookTransaction.getMember();
+        String categoryName = bookTransaction.getBook().getCategory().getName();
+        String publishedDate = dateUtil.dateToString(book.getPublishedDate());
+        String rentedDate = dateUtil.dateToString(bookTransaction.getRentFrom());
+        String expiryDate = dateUtil.dateToString(bookTransaction.getRentTo());
+        return TransactionExcelResponse.builder()
+                .transactionId(bookTransaction.getTransactionId())
+                .transactionCode(bookTransaction.getCode())
+                .bookName(book.getName())
+                .publishedDate(publishedDate)
+                .isbn(book.getIsbn())
+                .categoryName(categoryName)
+                .stockCount(book.getStockCount())
+                .rentFrom(rentedDate)
+                .rentTo(expiryDate)
+                .rentStatus(bookTransaction.getRentStatus().name())
+                .memberName(member.getName())
+                .memberMobileNumber(member.getMobileNumber())
+                .build();
     }
 
     private BookTransaction toBookTransaction(BookTransactionRequest request) {

@@ -14,7 +14,12 @@
 
 <div class="container">
 
-        <h1>Transaction Details</h1>
+    <h1>Transaction Details</h1>
+
+    <a th:href="@{/brs/excel/export-to-excel}" class="btn btn-md btn-info">
+        Export
+        <i class="fa-solid fa-file-excel"></i>
+    </a>
 
     <div class="row">
         <div class="col-md-12">
@@ -28,15 +33,15 @@
                     <th scope="col">Status</th>
                     <th scope="col">Member</th>
                     <th scope="col">BookName</th>
-<!--                    <th scope="col" class="th-sm">Action</th>-->
+                    <!--                    <th scope="col" class="th-sm">Action</th>-->
                 </tr>
                 </thead>
                 <tbody>
                 <!--/*@thymesVar id="categoriesList" type="List<CategoryResponse>"*/-->
                 <tr th:each="trn, index :${transactionList}">
-<!--                    <th th:text="${book.id}" hidden></th>-->
+                    <!--                    <th th:text="${book.id}" hidden></th>-->
                     <th th:text="${index.count}" scope="row">count</th>
-                    <th th:text="${trn.code}" >Transaction Code</th>
+                    <th th:text="${trn.code}">Transaction Code</th>
                     <td th:text="${trn.rentFrom}">Rented Date</td>
                     <td th:text="${trn.rentTo}">Rent Expiry</td>
 
@@ -44,18 +49,18 @@
                     <td th:text="${trn.member.name}">Member</td>
                     <td th:text="${trn.book.getName()}">Book Name</td>
 
-<!--                    <td class="d-flex gap-1">-->
-<!--                        <a th:href="@{/brs/admin/book/delete/} + ${book.id}"-->
-<!--                           class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>-->
-<!--                        <a th:href="@{/brs/admin/book/} + ${book.id} + '/edit'"-->
-<!--                           class="btn btn-sm btn-warning">-->
-<!--                            <i class="fa-solid fa-pen-to-square"></i>-->
-<!--                        </a>-->
-<!--                        <a th:href="@{/brs/admin/book/view/} + ${book.id}"-->
-<!--                           class="btn btn-sm btn-info">-->
-<!--                            <i class="fa-solid fa-eye icon-view"></i>-->
-<!--                        </a>-->
-<!--                    </td>-->
+                    <!--                    <td class="d-flex gap-1">-->
+                    <!--                        <a th:href="@{/brs/admin/book/delete/} + ${book.id}"-->
+                    <!--                           class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>-->
+                    <!--                        <a th:href="@{/brs/admin/book/} + ${book.id} + '/edit'"-->
+                    <!--                           class="btn btn-sm btn-warning">-->
+                    <!--                            <i class="fa-solid fa-pen-to-square"></i>-->
+                    <!--                        </a>-->
+                    <!--                        <a th:href="@{/brs/admin/book/view/} + ${book.id}"-->
+                    <!--                           class="btn btn-sm btn-info">-->
+                    <!--                            <i class="fa-solid fa-eye icon-view"></i>-->
+                    <!--                        </a>-->
+                    <!--                    </td>-->
                 </tr>
 
                 </tbody>
@@ -68,7 +73,8 @@
         </th:block>
 
         <!-- toast message -->
-        <th:normal-toast th:replace="~{fragments/toast-msg-fragment :: toast_message(message=${message}, type=${type})}">
+        <th:normal-toast
+                th:replace="~{fragments/toast-msg-fragment :: toast_message(message=${message}, type=${type})}">
 
         </th:normal-toast>
 
@@ -78,7 +84,6 @@
 
     <!-- Common Scripts-->
     <th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
-
 
 
 </body>

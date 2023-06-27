@@ -31,6 +31,9 @@ public interface BookTransactionService {
     // get top 5 rented books
     List<BookMessage> getTopRatedBooks();
 
+    // excel report
+    List<TransactionExcelResponse> getAllTransactionsForExcel();
+
 
 
 }
