@@ -32,4 +32,6 @@ public class BookResponse {
     private Category category;
 
     private List<Author> authors;
+
+    private boolean isActive;
 }

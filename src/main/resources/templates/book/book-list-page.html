@@ -44,9 +44,20 @@
           <td th:text="${book.isbn}">2525</td>
 
           <td class="d-flex gap-1">
-            <a th:href="@{/brs/admin/book/delete/} + ${book.id}"
-               class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
+            <a th:if="${book.isActive}"
+                    th:href="@{/brs/admin/book/delete/} + ${book.id}"
+               data-toggle="tooltip" title="Soft Delete"
+               class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i>
+            </a>
+            <a th:unless="${book.isActive}"
+               data-toggle="tooltip" title="Revive"
+               th:href="@{/brs/admin/book/revive-deleted/} + ${book.id}"
+               class="btn btn-sm btn-secondary"><i class="fa-solid fa-arrow-up"></i>
+            </a>
             <a th:href="@{/brs/admin/book/} + ${book.id} + '/edit'"
+               data-toggle="tooltip" title="Edit"
+               th:disabled="${book.isActive}"
+               th:classappend="!${book.isActive}?'disabled'"
                class="btn btn-sm btn-warning">
               <i class="fa-solid fa-pen-to-square"></i>
             </a>

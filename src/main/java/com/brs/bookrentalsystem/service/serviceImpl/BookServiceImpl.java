@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -72,6 +73,7 @@ public class BookServiceImpl implements BookService {
                 .publishedDate(publishedDate)
                 .category(book.getCategory())
                 .authors(authors)
+                .isActive(book.getIsActive())
                 .build();
     }
 
@@ -164,7 +166,36 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Message deleteBookById(Integer bookId) {
-        return null;
+        bookRepo.deleteById(bookId);
+        Optional<Book> byId = bookRepo.findById(bookId);
+        Message message = new Message();
+        if(byId.isPresent()){
+            message.setCode("ERROR");
+            message.setMessage("Book with id : " + bookId + " could not be deleted");
+        } else {
+            message.setCode("DEL-BOOK");
+            message.setMessage("Book with id : " + bookId + " deleted successfully");
+        }
+        return message;
+    }
+
+    @Override
+    public Message reviveDeletedBookById(Integer bookId) {
+        Message message = new Message();
+        bookRepo.reviveDeletedBookById(bookId);
+//
+//        if(isBookRevived){
+//            message.setCode("SUCCESS");
+//            message.setMessage("Deleted Book revived successfully");
+//        }else {
+//            message.setCode("FAILURE");
+//            message.setMessage("Deleted Book couldn't be revived");
+//        }
+
+        message.setCode("SUCCESS");
+        message.setMessage("Deleted Book revived successfully");
+
+        return message;
     }
 
     @Override
@@ -189,6 +220,14 @@ public class BookServiceImpl implements BookService {
         Book bookEntityById = this.getBookEntityById(bookId);
         BookUpdateRequest bookUpdateRequest = toBookUpdateRequest(bookEntityById);
         return bookUpdateRequest;
+    }
+
+    @Override
+    public List<BookResponse> getAllBooks() {
+        List<Book> allBooks = bookRepo.findAllBooks();
+        return allBooks.stream()
+                .map(this::toBookResponse)
+                .collect(Collectors.toList());
     }
 
     BookUpdateRequest toBookUpdateRequest(Book book){

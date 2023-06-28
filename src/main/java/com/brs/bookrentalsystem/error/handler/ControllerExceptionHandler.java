@@ -58,6 +58,8 @@ public class ControllerExceptionHandler {
         } else if(errorReceived.contains("null")){      // remove
             errorResponse.setCode("S003");
             errorResponse.setMessage("");
+        } else {
+            throw ex;
         }
 
         System.out.println("Context Path : " + request.getRequestURI());

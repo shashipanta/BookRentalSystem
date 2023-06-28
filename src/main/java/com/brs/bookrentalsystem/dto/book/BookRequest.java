@@ -26,8 +26,7 @@ public class BookRequest {
     @Min(value = 1, message = "Book should have at least 1 page")
     private Short totalPages;
 
-    @Size(min = 13, max = 13, message = "ISBN should be 13 digits")
-    @Pattern(regexp = "^[0-9]{13}")
+    @Pattern(regexp = "^[0-9]{13}", message = "ISBN should be 13 digits")
     private String isbn;
 
     @Min(value = 0, message = "Min rating should be greater than 0")

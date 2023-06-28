@@ -34,6 +34,9 @@ public interface BookTransactionService {
     // excel report
     List<TransactionExcelResponse> getAllTransactionsForExcel();
 
+    // check if book is rented
+    Boolean isBookRented(Integer bookId);
+
 
 
 }

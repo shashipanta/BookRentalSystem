@@ -30,7 +30,7 @@ public class Auditable<U> {
     @LastModifiedDate
     protected Date lastModificationDate;
 
-    @Column(name = "is_active", columnDefinition = "boolean default true", insertable = false)
+    @Column(name = "is_active", columnDefinition = "boolean default true")
     protected Boolean isActive = true;
 
 //    @PrePersist

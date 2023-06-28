@@ -8,6 +8,7 @@ import com.brs.bookrentalsystem.dto.book.BookUpdateRequest;
 import com.brs.bookrentalsystem.dto.category.CategoryResponse;
 import com.brs.bookrentalsystem.service.AuthorService;
 import com.brs.bookrentalsystem.service.BookService;
+import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class BookViewController {
     private final BookService bookService;
     private final CategoryService categoryService;
     private final AuthorService authorService;
+    private final BookTransactionService bookTransactionService;
 
     @GetMapping(value = {"/", ""})
     public String openBookRegistrationPage(Model model) {
@@ -81,9 +83,10 @@ public class BookViewController {
     @GetMapping(value = "/inventory")
     public String openBookInventory(Model model) {
 
-        List<BookResponse> savedBooks = bookService.getSavedBooks();
+//        List<BookResponse> savedBooks = bookService.getSavedBooks();
+        List<BookResponse> allBooks = bookService.getAllBooks();
 
-        model.addAttribute("savedBooks", savedBooks);
+        model.addAttribute("savedBooks", allBooks);
 
         return "/book/book-list-page";
     }
@@ -156,5 +159,30 @@ public class BookViewController {
         return "/book/single-book-page";
     }
 
+    // http://localhost:8080/brs/book/admin/{id}/delete
+    @GetMapping(value = "/delete/{id}")
+    public String deleteBook(RedirectAttributes ra, @PathVariable("id") Integer bookId){
+        Boolean bookRented = bookTransactionService.isBookRented(bookId);
+        Message message = new Message();
+        if(bookRented){
+            message.setCode("DEL-BOOK");
+            message.setMessage("Book is rented and not returned yet");
+        } else {
+            message = bookService.deleteBookById(bookId);
+        }
+        ra.addFlashAttribute("message", message);
+
+        return "redirect:/brs/admin/book/inventory";
+    }
+
+    @GetMapping(value = "/revive-deleted/{id}")
+    public String reviveDeletedBook(RedirectAttributes ra, @PathVariable("id") Integer bookId){
+
+        Message message = bookService.reviveDeletedBookById(bookId);
+
+        ra.addFlashAttribute("message", message);
+
+        return "redirect:/brs/admin/book/inventory";
+    }
 
 }

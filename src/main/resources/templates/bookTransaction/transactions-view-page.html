@@ -16,7 +16,7 @@
 
     <h1>Transaction Details</h1>
 
-    <a th:href="@{/brs/excel/export-to-excel}" class="btn btn-md btn-info">
+    <a th:href="@{/brs/excel/export-to-excel}" class="btn btn-md btn-info export-btn">
         Export
         <i class="fa-solid fa-file-excel"></i>
     </a>
@@ -46,8 +46,8 @@
                     <td th:text="${trn.rentTo}">Rent Expiry</td>
 
                     <td th:text="${trn.rentStatus}">Rent status</td>
-                    <td th:text="${trn.member.name}">Member</td>
-                    <td th:text="${trn.book.getName()}">Book Name</td>
+                    <td th:text="${trn.memberName}">Member</td>
+                    <td th:text="${trn.bookName}">Book Name</td>
 
                     <!--                    <td class="d-flex gap-1">-->
                     <!--                        <a th:href="@{/brs/admin/book/delete/} + ${book.id}"-->

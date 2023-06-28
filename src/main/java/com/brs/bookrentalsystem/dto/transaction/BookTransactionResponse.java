@@ -24,9 +24,9 @@ public class BookTransactionResponse {
 
     private RentStatus rentStatus;
 
-    private Book book;
+    private String bookName;
 
     private String expiryDate;
 
-    private Member member;
+    private String memberName;
 }

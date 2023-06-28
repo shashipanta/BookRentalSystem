@@ -8,7 +8,11 @@ import com.brs.bookrentalsystem.model.Book;
 import com.brs.bookrentalsystem.model.BookTransaction;
 import com.brs.bookrentalsystem.model.Category;
 import com.brs.bookrentalsystem.model.Member;
+import com.brs.bookrentalsystem.projections.BookTransactionProjection;
+import com.brs.bookrentalsystem.repo.BookRepo;
 import com.brs.bookrentalsystem.repo.BookTransactionRepo;
+import com.brs.bookrentalsystem.repo.CategoryRepo;
+import com.brs.bookrentalsystem.repo.MemberRepo;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.MemberService;
@@ -33,6 +37,9 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     private final BookService bookService;
     private final MemberService memberService;
     private final BookTransactionRepo bookTransactionRepo;
+    private final BookRepo bookRepo;
+    private final CategoryRepo categoryRepo;
+    private final MemberRepo memberRepo;
     private final RandomAlphaNumericString randomAlphaNumericString;
 
     private final DateUtil dateUtil;
@@ -115,9 +122,9 @@ public class BookTransactionServiceImpl implements BookTransactionService {
 
     @Override
     public List<BookTransactionResponse> getAllTransactions() {
-
-        List<BookTransaction> all = bookTransactionRepo.findAll();
-        return all.stream()
+        List<Book> allBooks = bookRepo.findAllBooks();
+        List<BookTransactionProjection> allTransactions = bookTransactionRepo.getAllTransactions();
+        return allTransactions.stream()
                 .map(this::toBookTransactionResponse)
                 .collect(Collectors.toList());
     }
@@ -199,10 +206,23 @@ public class BookTransactionServiceImpl implements BookTransactionService {
 
     @Override
     public List<TransactionExcelResponse> getAllTransactionsForExcel() {
-        List<BookTransaction> all = bookTransactionRepo.findAll();
+        List<BookTransactionProjection> all = bookTransactionRepo.getAllTransactions();
         return all.stream()
                 .map(this::toTransactionExcelResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean isBookRented(Integer bookId) {
+        List<BookTransactionProjection> allTransactions = bookTransactionRepo.getAllTransactions();
+        long rentedCount = allTransactions.stream()
+                .filter(p -> p.getRentStatus().equals("RENTED") && p.getBookId().equals(bookId))
+                .count();
+        long returnedCount = allTransactions.stream()
+                .filter(p -> p.getRentStatus().equals("RETURNED") && p.getBookId().equals(bookId))
+                .count();
+
+        return returnedCount != rentedCount;
     }
 
     private TransactionExcelResponse toTransactionExcelResponse(BookTransaction bookTransaction){
@@ -225,6 +245,25 @@ public class BookTransactionServiceImpl implements BookTransactionService {
                 .rentStatus(bookTransaction.getRentStatus().name())
                 .memberName(member.getName())
                 .memberMobileNumber(member.getMobileNumber())
+                .build();
+    }
+
+    // for exporting into excel
+    private TransactionExcelResponse toTransactionExcelResponse(BookTransactionProjection projection){
+
+        return TransactionExcelResponse.builder()
+                .transactionId(projection.getBookTransactionId())
+                .transactionCode(projection.getTransactionCode())
+                .bookName(projection.getBookName())
+                .publishedDate(projection.getPublishedDate())
+                .isbn(projection.getIsbn())
+                .categoryName(projection.getCategoryName())
+                .stockCount(projection.getStockCount())
+                .rentFrom(projection.getRentFrom())
+                .rentTo(projection.getRentTo())
+                .rentStatus(projection.getRentStatus())
+                .memberName(projection.getMemberName())
+                .memberMobileNumber(projection.getMemberMobileNumber())
                 .build();
     }
 
@@ -252,9 +291,29 @@ public class BookTransactionServiceImpl implements BookTransactionService {
                 .code(bookTransaction.getCode())
                 .rentFrom(bookTransaction.getRentFrom())
                 .rentTo(bookTransaction.getRentTo())
-                .book(bookTransaction.getBook())
-                .member(bookTransaction.getMember())
+                .bookName(bookTransaction.getBook().getName())
+                .memberName(bookTransaction.getMember().getName())
                 .rentStatus(bookTransaction.getRentStatus())
+                .build();
+    }
+
+
+    // BookTransactionProjection to BookTransactionResponse
+    private BookTransactionResponse toBookTransactionResponse(BookTransactionProjection projection){
+        LocalDate rentedFrom = dateUtil.stringToDate(projection.getRentFrom());
+        LocalDate rentExpiry = dateUtil.stringToDate(projection.getRentTo());
+        LocalDate bookPublishedOn = dateUtil.stringToDate(projection.getPublishedDate());
+//        Book book = bookRepo.findById(projection.getBookId()).get();                    // TODO: check this
+//        Category category = categoryRepo.findById(projection.getCategoryId()).get();
+//        Member member = memberRepo.findById(projection.getMemberId()).get();
+        return BookTransactionResponse.builder()
+                .transactionId(projection.getBookTransactionId())
+                .code(projection.getTransactionCode())
+                .rentFrom(rentedFrom)
+                .rentTo(rentExpiry)
+                .bookName(projection.getBookName())
+                .memberName(projection.getMemberName())
+                .rentStatus(RentStatus.valueOf(projection.getRentStatus()))
                 .build();
     }
 }

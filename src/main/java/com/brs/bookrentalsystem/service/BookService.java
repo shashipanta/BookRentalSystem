@@ -24,9 +24,13 @@ public interface BookService {
 
         Message deleteBookById(Integer bookId);
 
+        Message reviveDeletedBookById(Integer bookId);
+
         void updateStock(Integer bookId, Integer stockUpdateNumber);
 
         List<BookResponse> getBooksAvailableOnStock();
 
         BookUpdateRequest getBookUpdateRequest(Integer bookId);
+
+        List<BookResponse> getAllBooks();
 }

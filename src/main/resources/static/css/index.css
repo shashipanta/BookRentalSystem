@@ -125,3 +125,10 @@
 .long-desc{
     max-width: 400px;
 }
+
+/* export button on transaction view page */
+.btn.btn-md.btn-info.export-btn{
+    position: absolute;
+    right: 8em;
+    top: 5em;
+}

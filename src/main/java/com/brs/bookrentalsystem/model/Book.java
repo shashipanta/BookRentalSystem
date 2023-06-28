@@ -1,8 +1,13 @@
 package com.brs.bookrentalsystem.model;
 
+import com.brs.bookrentalsystem.model.audit.Auditable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.NamedNativeQuery;
+import jakarta.persistence.Table;
 import lombok.Data;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -19,8 +24,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
                 @UniqueConstraint(name = "uk_book_isbn", columnNames = "isbn_no")
         }
 )
-
-public class Book {
+@SQLDelete(sql = "UPDATE tbl_book SET is_active=false WHERE id = ?")
+@Where(clause = "is_active = true")
+public class Book extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
