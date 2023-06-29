@@ -21,6 +21,7 @@ public class BookRequest {
     private Integer id;
 
     @NotBlank(message = "Book Name cannot be blank")
+    @Pattern(regexp = "^[a-zA-Z].*[\\s\\.]*$", message = "Book name is not valid")
     private String bookName;
 
     @Min(value = 1, message = "Book should have at least 1 page")

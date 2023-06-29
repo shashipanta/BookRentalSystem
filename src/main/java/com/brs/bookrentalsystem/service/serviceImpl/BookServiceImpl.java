@@ -312,13 +312,21 @@ public class BookServiceImpl implements BookService {
 
 
     // book import
-    public void importBooks(MultipartFile file) throws IOException {
+    public Integer importBooks(MultipartFile file) throws IOException {
+        Integer successfullBookImport = 0;
         List<BookRequest> bookRequests = bookImportHelper.readBookRequestsFromExcel(file);
         for (BookRequest b : bookRequests) {
             Book book = importedBookRequstToBook(b);
             book.setPhoto(fileStorageUtil.saveImageFromFilePath(b, b.getPhotoPath()));
-            bookRepo.save(importedBookRequstToBook(b));
+            try{
+                bookRepo.save(importedBookRequstToBook(b));
+                successfullBookImport++;
+            } catch (Exception e){
+                e.getMessage();
+            }
         }
+
+        return successfullBookImport;
 
     }
 }

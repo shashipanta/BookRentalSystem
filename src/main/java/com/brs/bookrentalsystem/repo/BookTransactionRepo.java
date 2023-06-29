@@ -31,7 +31,8 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
                     "    tb.category_id as categoryId,\n" +
                     "    tc.category_name as categoryName,\n" +
                     "    tm.id as memberId,\n" +
-                    "    tm.name as memberName\n" +
+                    "    tm.name as memberName,\n" +
+                    "    tm.mobile_number as memberMobileNumber" +
                     "\n" +
                     "from tbl_book_transaction bt\n" +
                     "    inner join tbl_book tb on bt.book_id = tb.id\n" +

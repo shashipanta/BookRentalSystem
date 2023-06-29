@@ -69,7 +69,7 @@ public class BookImportHelper {
                             bookRequest.setBookName(singleCell.getStringCellValue());
                             break;
                         case 2:
-                            bookRequest.setIsbn(String.valueOf(singleCell.getNumericCellValue()));
+                            bookRequest.setIsbn(String.valueOf(singleCell.getStringCellValue()));
                             break;
                         case 3:
                             bookRequest.setRating(singleCell.getNumericCellValue());

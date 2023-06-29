@@ -137,9 +137,9 @@ public class BookViewController {
 
 //        BookResponse bookResponse = bookService.saveBook(updateRequest);
 
-        Message createdMessage = new Message("U100", "Book updated successfully");
-        ra.addAttribute("message", createdMessage);
-        ra.addAttribute("messageType", "create");
+//        Message createdMessage = new Message("U100", "Book updated successfully");
+//        ra.addAttribute("message", createdMessage);
+//        ra.addAttribute("messageType", "create");
 
         return "redirect:/brs/admin/book/inventory";
     }
@@ -196,11 +196,11 @@ public class BookViewController {
         Message message = new Message();
         if (BookImportHelper.isUploadedFileValid(request.getExcelFile())) {
             // save
-            bookService.importBooks(request.getExcelFile());
-            message.setMessage("Import successful");
-            message.setCode("CREATED");
+            int importedBooks = bookService.importBooks(request.getExcelFile());
+            message.setMessage(importedBooks + " books imported successfully.");
+            message.setCode("IMPORTED");
         } else {
-            message.setMessage("Import failled");
+            message.setMessage("Invalid Excel format. Please check your file and try again.");
             message.setMessage("FAILLED");
         }
         ra.addFlashAttribute("message", message);

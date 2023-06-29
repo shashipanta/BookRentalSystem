@@ -20,14 +20,17 @@ public class MemberRequest {
     private Integer id;
 
     @NotEmpty(message = "Email field cannot be blank")
+    @Email(message = "Invalid Email Format")
     private String email;
 
     @NotBlank(message = "Name cannot be blank")
+    @Pattern(regexp = "^[a-zA-Z].*[\\s\\.]*$", message = "Member name is not valid")
     private String name;
 
 //    @NotNull(message = "Mobile number should not be blank")
 //    @Size(min = 10, max = 10)
     @Digits(fraction = 0, integer = 10, message = "Mobile number should be 10 digits long")
+    @Pattern(regexp = "\\d{10}", message = "Mobile number should contain digits only")
     private String mobileNumber;
 
     private String address;

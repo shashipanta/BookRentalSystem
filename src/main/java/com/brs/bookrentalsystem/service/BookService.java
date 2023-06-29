@@ -36,5 +36,5 @@ public interface BookService {
 
         List<BookResponse> getAllBooks();
 
-        void importBooks(MultipartFile file) throws IOException;
+        Integer importBooks(MultipartFile file) throws IOException;
 }

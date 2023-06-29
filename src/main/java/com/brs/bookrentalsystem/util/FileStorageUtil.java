@@ -100,7 +100,7 @@ public class FileStorageUtil {
         String fileStorageLocation = getFileStorageLocation(request);
         File srcFile = new File(filePath);
         File dirFilePath = new File(ROOT_LOCATION);
-        File destFile = new File(ROOT_LOCATION + File.separator + fileStorageLocation);
+        File destFile = new File(fileStorageLocation);
 
         //TODO: check file type
 

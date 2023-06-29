@@ -6,7 +6,6 @@ import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.enums.RentStatus;
 import com.brs.bookrentalsystem.model.Book;
 import com.brs.bookrentalsystem.model.BookTransaction;
-import com.brs.bookrentalsystem.model.Category;
 import com.brs.bookrentalsystem.model.Member;
 import com.brs.bookrentalsystem.projections.BookTransactionProjection;
 import com.brs.bookrentalsystem.repo.BookRepo;
@@ -24,9 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Service
