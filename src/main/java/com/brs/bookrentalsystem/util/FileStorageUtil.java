@@ -4,13 +4,13 @@ import com.brs.bookrentalsystem.dto.book.BookRequest;
 import com.brs.bookrentalsystem.dto.book.BookUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDate;
 
 @Component
@@ -87,18 +87,48 @@ public class FileStorageUtil {
 
     public MultipartFile imagePathToMultipartFile(String filePath)  {
         File imageFile = new File(filePath);
-//        String mimeType = Files.probeContentType(imageFile.toPath());
-//        String fileName = filePath.substring(filePath.lastIndexOf("/"));
-//        DiskFileItem diskFileItem = new DiskFileItem("file",
-//                mimeType, false, fileName, (int) imageFile.length(), imageFile.getParentFile());
-//
-//        diskFileItem.getOutputStream().write(FileUtils.readFileToByteArray(imageFile));
 
         try {
             return new CustomMultipartFile(FileUtils.readFileToByteArray(imageFile));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String saveImageFromFilePath(BookRequest request, String filePath) throws IOException {
+
+        String fileStorageLocation = getFileStorageLocation(request);
+        File srcFile = new File(filePath);
+        File dirFilePath = new File(ROOT_LOCATION);
+        File destFile = new File(ROOT_LOCATION + File.separator + fileStorageLocation);
+
+        //TODO: check file type
+
+        if(!dirFilePath.exists()){
+            dirFilePath.mkdir();
+        }
+
+        FileUtils.copyFile(srcFile, destFile);
+
+//        FileInputStream fis = null;
+//        FileOutputStream fos = null;
+//        try{
+//            fis = new FileInputStream(srcFile);
+//            fos = new FileOutputStream(destFile, false);
+//
+//            byte[] buffer = new byte[1024];
+//            int bytesRead;
+//            while((bytesRead = fis.read(buffer)) > 0){
+//                fos.write(buffer, 0, bytesRead);
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            if(fos != null) fos.close();
+//            if(fis != null) fis.close();
+//        }
+
+        return fileStorageLocation;
     }
 
 }

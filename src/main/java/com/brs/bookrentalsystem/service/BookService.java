@@ -5,7 +5,9 @@ import com.brs.bookrentalsystem.dto.book.BookRequest;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
 import com.brs.bookrentalsystem.dto.book.BookUpdateRequest;
 import com.brs.bookrentalsystem.model.Book;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface BookService {
@@ -33,4 +35,6 @@ public interface BookService {
         BookUpdateRequest getBookUpdateRequest(Integer bookId);
 
         List<BookResponse> getAllBooks();
+
+        void importBooks(MultipartFile file) throws IOException;
 }

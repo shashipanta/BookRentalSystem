@@ -6,6 +6,7 @@ import com.brs.bookrentalsystem.dto.book.BookResponse;
 import com.brs.bookrentalsystem.dto.book.BookUpdateRequest;
 import com.brs.bookrentalsystem.error.codes.ErrorCodes;
 import com.brs.bookrentalsystem.error.exception.impl.NoSuchEntityFoundException;
+import com.brs.bookrentalsystem.excel.BookImportHelper;
 import com.brs.bookrentalsystem.model.Author;
 import com.brs.bookrentalsystem.model.Book;
 import com.brs.bookrentalsystem.model.Category;
@@ -17,7 +18,9 @@ import com.brs.bookrentalsystem.util.DateUtil;
 import com.brs.bookrentalsystem.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +37,8 @@ public class BookServiceImpl implements BookService {
     private final AuthorService authorService;
     private final DateUtil dateUtil;
     private final FileStorageUtil fileStorageUtil;
+
+    private final BookImportHelper bookImportHelper;
 
 
     @Override
@@ -250,6 +255,25 @@ public class BookServiceImpl implements BookService {
                 .build();
     }
 
+    public Book importedBookRequstToBook(BookRequest request){
+        Category categoryById = categoryService.getCategoryById(request.getCategoryId());
+        Set<Author> authorAssociated = authorService.getAuthorAssociated(request.getAuthorId());
+
+        String photoFilePath = fileStorageUtil.getFileStorageLocation(request);
+
+        Book book = new Book();
+        book.setName(request.getBookName());
+        book.setIsbn(fileStorageUtil.changeToStandardIsbn(request.getIsbn()));
+        book.setRating(request.getRating());
+        book.setTotalPages(request.getTotalPages());
+        book.setCategory(categoryById);
+        book.setAuthor(authorAssociated);
+        book.setPublishedDate(request.getPublishedDate());
+        book.setStockCount(request.getStockCount());
+        book.setPhoto(photoFilePath);
+        return book;
+    }
+
 
     public Book toBook(BookRequest request) {
 
@@ -284,5 +308,17 @@ public class BookServiceImpl implements BookService {
         // update
 
         return book;
+    }
+
+
+    // book import
+    public void importBooks(MultipartFile file) throws IOException {
+        List<BookRequest> bookRequests = bookImportHelper.readBookRequestsFromExcel(file);
+        for (BookRequest b : bookRequests) {
+            Book book = importedBookRequstToBook(b);
+            book.setPhoto(fileStorageUtil.saveImageFromFilePath(b, b.getPhotoPath()));
+            bookRepo.save(importedBookRequstToBook(b));
+        }
+
     }
 }

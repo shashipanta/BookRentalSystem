@@ -5,7 +5,9 @@ import com.brs.bookrentalsystem.dto.author.AuthorResponse;
 import com.brs.bookrentalsystem.dto.book.BookRequest;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
 import com.brs.bookrentalsystem.dto.book.BookUpdateRequest;
+import com.brs.bookrentalsystem.dto.book.ExcelBookUploadRequest;
 import com.brs.bookrentalsystem.dto.category.CategoryResponse;
+import com.brs.bookrentalsystem.excel.BookImportHelper;
 import com.brs.bookrentalsystem.service.AuthorService;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
@@ -15,12 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +33,7 @@ public class BookViewController {
     private final CategoryService categoryService;
     private final AuthorService authorService;
     private final BookTransactionService bookTransactionService;
+    private final BookImportHelper bookImportHelper;
 
     @GetMapping(value = {"/", ""})
     public String openBookRegistrationPage(Model model) {
@@ -79,7 +80,6 @@ public class BookViewController {
     }
 
 
-
     @GetMapping(value = "/inventory")
     public String openBookInventory(Model model) {
 
@@ -87,6 +87,7 @@ public class BookViewController {
         List<BookResponse> allBooks = bookService.getAllBooks();
 
         model.addAttribute("savedBooks", allBooks);
+        model.addAttribute("fileUpload", new ExcelBookUploadRequest());
 
         return "/book/book-list-page";
     }
@@ -145,13 +146,13 @@ public class BookViewController {
 
     // view single book
     @GetMapping(value = "/view/{id}")
-    public String viewSingleBook(@PathVariable("id") Integer bookId, Model model){
+    public String viewSingleBook(@PathVariable("id") Integer bookId, Model model) {
         BookResponse bookById = bookService.getBookById(bookId);
-        model.addAttribute("bookTitle",bookById.getBookName() );
+        model.addAttribute("bookTitle", bookById.getBookName());
         model.addAttribute("bookResponse", bookById);
         List<Integer> ratings = new ArrayList<>();
         // for rating : temporary solution
-        for(int i=0; i<bookById.getRating(); i++){
+        for (int i = 0; i < bookById.getRating(); i++) {
             ratings.add(i);
         }
         model.addAttribute("ratings", ratings);
@@ -161,10 +162,10 @@ public class BookViewController {
 
     // http://localhost:8080/brs/book/admin/{id}/delete
     @GetMapping(value = "/delete/{id}")
-    public String deleteBook(RedirectAttributes ra, @PathVariable("id") Integer bookId){
+    public String deleteBook(RedirectAttributes ra, @PathVariable("id") Integer bookId) {
         Boolean bookRented = bookTransactionService.isBookRented(bookId);
         Message message = new Message();
-        if(bookRented){
+        if (bookRented) {
             message.setCode("DEL-BOOK");
             message.setMessage("Book is rented and not returned yet");
         } else {
@@ -176,10 +177,32 @@ public class BookViewController {
     }
 
     @GetMapping(value = "/revive-deleted/{id}")
-    public String reviveDeletedBook(RedirectAttributes ra, @PathVariable("id") Integer bookId){
+    public String reviveDeletedBook(RedirectAttributes ra, @PathVariable("id") Integer bookId) {
 
         Message message = bookService.reviveDeletedBookById(bookId);
 
+        ra.addFlashAttribute("message", message);
+
+        return "redirect:/brs/admin/book/inventory";
+    }
+
+    // import books from excel
+    @PostMapping(value = "/import")
+    public String importBooksFromExcel(
+            @Valid @ModelAttribute("fileUpload") ExcelBookUploadRequest request,
+            RedirectAttributes ra
+    ) throws IOException {
+
+        Message message = new Message();
+        if (BookImportHelper.isUploadedFileValid(request.getExcelFile())) {
+            // save
+            bookService.importBooks(request.getExcelFile());
+            message.setMessage("Import successful");
+            message.setCode("CREATED");
+        } else {
+            message.setMessage("Import failled");
+            message.setMessage("FAILLED");
+        }
         ra.addFlashAttribute("message", message);
 
         return "redirect:/brs/admin/book/inventory";

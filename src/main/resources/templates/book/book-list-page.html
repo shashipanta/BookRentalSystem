@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Book Inventory</title>
 
-  <link rel="stylesheet" href="">
+  <link rel="stylesheet" href="/css/book-page.css">
 </head>
 <body>
 
@@ -15,6 +15,19 @@
 <div class="container">
 
   <h1>Book Inventory</h1>
+
+  <form th:action="@{/brs/admin/book/import}"
+        th:object="${fileUpload}"
+        th:method="POST" enctype="multipart/form-data"
+        class="position-absolute file-upload"  >
+    <div class="file-upload-form" >
+      <input th:field="*{excelFile}"
+              type="file" class="" >
+      <p>(XLSX file)</p>
+      <button type="submit">Import</button>
+
+    </div>
+  </form>
 
   <div class="row">
     <div class="col-md-12">
