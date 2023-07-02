@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Component
 public class DatabaseInitializer implements CommandLineRunner {
 
     private final UserAccountRepo userAccountRepo;

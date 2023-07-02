@@ -4,6 +4,7 @@ import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.book.BookMessage;
 import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.model.BookTransaction;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -36,6 +37,8 @@ public interface BookTransactionService {
 
     // check if book is rented
     Boolean isBookRented(Integer bookId);
+
+    Page<BookTransactionResponse> getPaginatedTransaction(Integer pageNo, Integer pageSize);
 
 
 

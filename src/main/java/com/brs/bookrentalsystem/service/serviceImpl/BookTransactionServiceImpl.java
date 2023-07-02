@@ -18,6 +18,10 @@ import com.brs.bookrentalsystem.service.MemberService;
 import com.brs.bookrentalsystem.util.DateUtil;
 import com.brs.bookrentalsystem.util.RandomAlphaNumericString;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -222,7 +226,21 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         return returnedCount != rentedCount;
     }
 
-    private TransactionExcelResponse toTransactionExcelResponse(BookTransaction bookTransaction){
+    @Override
+    public Page<BookTransactionResponse> getPaginatedTransaction(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo -1, pageSize);
+        Page<BookTransaction> allTransactions = this.bookTransactionRepo.findAll(pageable);
+
+        List<BookTransactionResponse> collect = allTransactions.stream()
+                .map(this::toBookTransactionResponse)
+                .collect(Collectors.toList());
+
+        Page<BookTransactionResponse> map = allTransactions.map(this::toBookTransactionResponse);
+
+        return map;
+    }
+
+    private TransactionExcelResponse toTransactionExcelResponse(BookTransaction bookTransaction) {
         Book book = bookTransaction.getBook();
         Member member = bookTransaction.getMember();
         String categoryName = bookTransaction.getBook().getCategory().getName();
@@ -246,7 +264,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     }
 
     // for exporting into excel
-    private TransactionExcelResponse toTransactionExcelResponse(BookTransactionProjection projection){
+    private TransactionExcelResponse toTransactionExcelResponse(BookTransactionProjection projection) {
 
         return TransactionExcelResponse.builder()
                 .transactionId(projection.getBookTransactionId())
@@ -296,7 +314,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
 
 
     // BookTransactionProjection to BookTransactionResponse
-    private BookTransactionResponse toBookTransactionResponse(BookTransactionProjection projection){
+    private BookTransactionResponse toBookTransactionResponse(BookTransactionProjection projection) {
         LocalDate rentedFrom = dateUtil.stringToDate(projection.getRentFrom());
         LocalDate rentExpiry = dateUtil.stringToDate(projection.getRentTo());
         LocalDate bookPublishedOn = dateUtil.stringToDate(projection.getPublishedDate());

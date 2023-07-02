@@ -22,6 +22,7 @@
     </a>
 
     <div class="row">
+
         <div class="col-md-12">
             <table class="table table-primary table-bordered table-hover">
                 <thead>
@@ -48,23 +49,59 @@
                     <td th:text="${trn.rentStatus}">Rent status</td>
                     <td th:text="${trn.memberName}">Member</td>
                     <td th:text="${trn.bookName}">Book Name</td>
-
-                    <!--                    <td class="d-flex gap-1">-->
-                    <!--                        <a th:href="@{/brs/admin/book/delete/} + ${book.id}"-->
-                    <!--                           class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>-->
-                    <!--                        <a th:href="@{/brs/admin/book/} + ${book.id} + '/edit'"-->
-                    <!--                           class="btn btn-sm btn-warning">-->
-                    <!--                            <i class="fa-solid fa-pen-to-square"></i>-->
-                    <!--                        </a>-->
-                    <!--                        <a th:href="@{/brs/admin/book/view/} + ${book.id}"-->
-                    <!--                           class="btn btn-sm btn-info">-->
-                    <!--                            <i class="fa-solid fa-eye icon-view"></i>-->
-                    <!--                        </a>-->
-                    <!--                    </td>-->
                 </tr>
 
                 </tbody>
             </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li th:if="${currentPage > 0}" th:href="@{'/brs/library/book/page/' + ${currentPage - 1}}"
+                            class="page-item">
+                        <a class="page-link">Previous</a>
+                    </li>
+                    <li th:each="i: ${#numbers.sequence(1, totalPages)}"
+                            class="page-item">
+                        <a  th:href="@{'/brs/library/book/page/' + ${i}}"
+                                class="page-link"
+                           th:classappend="${currentPage == i}?'active':''"
+                        >[[${i}]]</a>
+                    </li>
+<!--                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+                    <li class="page-item">
+                        <a th:if="${currentPage < totalPages + 1}" th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}"
+                                class="page-link"
+                           th:disabled="${currentPage == totalPages + 1}"
+                        >Next</a>
+                    </li>
+                </ul>
+            </nav>
+
+
+            <div th:if="${totalPages > 1}">
+                <div class="row col-sm-10">
+                    <div class="col-sm-2">
+                        Total Rows: [[${totalItems}]]
+                    </div>
+                    <div class="col-sm-1">
+            <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+      <a th:if="${currentPage != i}" th:href="@{'/brs/library/book/page/' + ${i}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+            </span>
+                    </div>
+                    <div class="col-sm-1">
+                        <a th:if="${currentPage < totalPages}" th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}">Next</a>
+                        <span th:unless="${currentPage < totalPages}">Next</span>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <a th:if="${currentPage < totalPages}" th:href="@{'/brs/library/book/page/' + ${totalPages }}">Last</a>
+                        <span th:unless="${currentPage < totalPages}">Last</span>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
 
         <!-- floating toast -->

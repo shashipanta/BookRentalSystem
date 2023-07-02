@@ -10,12 +10,14 @@ import com.brs.bookrentalsystem.dto.transaction.BookTransactionRequest;
 import com.brs.bookrentalsystem.dto.transaction.BookTransactionResponse;
 import com.brs.bookrentalsystem.dto.transaction.TransactionFilterRequest;
 import com.brs.bookrentalsystem.dto.transaction.TransactionResponse;
+import com.brs.bookrentalsystem.model.BookTransaction;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.CategoryService;
 import com.brs.bookrentalsystem.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,10 +39,27 @@ public class BookTransactionViewController {
 
     @GetMapping("/")
     public String getTransactionViewPage(Model model){
-        List<BookTransactionResponse> allTransactions = bookTransactionService.getAllTransactions();
-        model.addAttribute("transactionList", allTransactions);
-        return "/bookTransaction/transactions-view-page";
+//        List<BookTransactionResponse> allTransactions = bookTransactionService.getAllTransactions();
+//        model.addAttribute("transactionList", allTransactions);
+//        return "/bookTransaction/transactions-view-page";
 
+        return findPaginated(1, model);
+
+    }
+
+    @GetMapping("/page/{pageNo}")
+    public String findPaginated(@PathVariable(value = "pageNo") int pageNo, Model model) {
+        int pageSize = 5;
+
+        Page<BookTransactionResponse> page = bookTransactionService.getPaginatedTransaction(pageNo, pageSize);
+        page.getContent()
+
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("transactionList", transactionList);
+
+        return "/bookTransaction/transactions-view-page";
     }
 
 
