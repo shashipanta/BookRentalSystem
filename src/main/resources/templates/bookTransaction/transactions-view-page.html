@@ -55,9 +55,12 @@
             </table>
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                    <li th:if="${currentPage > 0}" th:href="@{'/brs/library/book/page/' + ${currentPage - 1}}"
+                    <li th:if="${currentPage > 0}"
                             class="page-item">
-                        <a class="page-link">Previous</a>
+                        <a th:href="@{'/brs/library/book/page/' + ${currentPage - 1}}"
+                                class="page-link"
+                           th:classappend="${currentPage <= 1}? 'disabled':''"
+                        >Previous</a>
                     </li>
                     <li th:each="i: ${#numbers.sequence(1, totalPages)}"
                             class="page-item">
@@ -69,37 +72,37 @@
 <!--                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
 <!--                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
                     <li class="page-item">
-                        <a th:if="${currentPage < totalPages + 1}" th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}"
+                        <a  th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}"
                                 class="page-link"
-                           th:disabled="${currentPage == totalPages + 1}"
+                           th:classappend="${currentPage >= totalPages}?'disabled':''"
                         >Next</a>
                     </li>
                 </ul>
             </nav>
 
 
-            <div th:if="${totalPages > 1}">
-                <div class="row col-sm-10">
-                    <div class="col-sm-2">
-                        Total Rows: [[${totalItems}]]
-                    </div>
-                    <div class="col-sm-1">
-            <span th:each="i: ${#numbers.sequence(1, totalPages)}">
-      <a th:if="${currentPage != i}" th:href="@{'/brs/library/book/page/' + ${i}}">[[${i}]]</a>
-      <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
-            </span>
-                    </div>
-                    <div class="col-sm-1">
-                        <a th:if="${currentPage < totalPages}" th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}">Next</a>
-                        <span th:unless="${currentPage < totalPages}">Next</span>
-                    </div>
+<!--            <div th:if="${totalPages > 1}">-->
+<!--                <div class="row col-sm-10">-->
+<!--                    <div class="col-sm-2">-->
+<!--                        Total Rows: [[${totalItems}]]-->
+<!--                    </div>-->
+<!--                    <div class="col-sm-1">-->
+<!--            <span th:each="i: ${#numbers.sequence(1, totalPages)}">-->
+<!--      <a th:if="${currentPage != i}" th:href="@{'/brs/library/book/page/' + ${i}}">[[${i}]]</a>-->
+<!--      <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;-->
+<!--            </span>-->
+<!--                    </div>-->
+<!--                    <div class="col-sm-1">-->
+<!--                        <a th:if="${currentPage < totalPages}" th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}">Next</a>-->
+<!--                        <span th:unless="${currentPage < totalPages}">Next</span>-->
+<!--                    </div>-->
 
-                    <div class="col-sm-1">
-                        <a th:if="${currentPage < totalPages}" th:href="@{'/brs/library/book/page/' + ${totalPages }}">Last</a>
-                        <span th:unless="${currentPage < totalPages}">Last</span>
-                    </div>
-                </div>
-            </div>
+<!--                    <div class="col-sm-1">-->
+<!--                        <a th:if="${currentPage < totalPages}" th:href="@{'/brs/library/book/page/' + ${totalPages }}">Last</a>-->
+<!--                        <span th:unless="${currentPage < totalPages}">Last</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
 
         </div>
