@@ -52,7 +52,7 @@ public class BookTransactionViewController {
         int pageSize = 5;
 
         Page<BookTransactionResponse> page = bookTransactionService.getPaginatedTransaction(pageNo, pageSize);
-        page.getContent()
+        List<BookTransactionResponse> transactionList = page.getContent();
 
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
