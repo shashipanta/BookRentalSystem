@@ -17,6 +17,10 @@
     <form th:action="@{/brs/library/book/rent/submit}" th:object="${transactionRequest}">
         <h1> Rent Book </h1>
 
+        <div class="right">
+
+        </div>
+
         <!--   SELECT BOOK NAME     -->
         <div class="form-group">
             <label for="bookId" class=""> Book Name</label>
@@ -24,7 +28,7 @@
                     th:classappend="*{#fields.hasErrors('bookId')}? 'is-invalid'"
                     class="form-select mt-2" aria-label="Default select example"
                     id="bookId">
-                <option value="" disabled selected>-- select --</option>
+<!--                <option value="" disabled selected>&#45;&#45; select &#45;&#45;</option>-->
                 <option th:each="book : ${bookList}"
                         th:value="${book.id}"
                         th:text="${book.bookName}"

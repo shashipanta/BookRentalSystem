@@ -59,7 +59,7 @@
 /* FILTER CONPONENT */
 .filter-container {
     border: solid 1px black;
-    background: var(--clr-bg-primary);
+    /*background: var(--clr-bg-primary);*/
     width: 100%;
     color: white;
     margin-block: 1em;

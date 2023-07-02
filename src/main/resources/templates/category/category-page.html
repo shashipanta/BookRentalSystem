@@ -20,11 +20,11 @@
     <div
             class="table-responsive">
 
-        <div class="filter-container">
-            <form action="" class="d-flex align-items-center gap-2 search-form">
-                <input type="text" placeholder="Filter by ..">
-                <i class="fa-solid fa-filter"></i>
-            </form>
+        <div class="filter-container" style="background: white; border: none;">
+<!--            <form action="" class="d-flex align-items-center gap-2 search-form">-->
+<!--                <input type="text" placeholder="Filter by ..">-->
+<!--                <i class="fa-solid fa-filter"></i>-->
+<!--            </form>-->
 
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -77,9 +77,11 @@
 
         <div class="modal-dialog">
             <div class="modal-content">
-                <form th:action="@{/brs/admin/category/save}" th:object="${categoryRequest}"
+                <form th:action="@{/brs/admin/category/save}"
+                      th:object="${categoryRequest}"
                       th:classappend="${showForm}? 'error-modal':''"
                       th:attrappend="update-form=${showModal}"
+                      th:method="GET"
                 >
                     <div class="modal-header">
                         <th:block th:if="${showModal}">

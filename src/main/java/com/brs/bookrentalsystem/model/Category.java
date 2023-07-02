@@ -13,8 +13,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name = "tbl_category",
         uniqueConstraints = @UniqueConstraint(name = "uk_category_categoryName", columnNames = "category_name")
 )
-@SQLDelete(sql = "UPDATE tbl_category SET is_deleted=true WHERE id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE tbl_category SET is_active=false WHERE id = ?")
+@Where(clause = "is_active = true")
 public class Category extends Auditable<String> {
 
     @Id
@@ -27,6 +27,6 @@ public class Category extends Auditable<String> {
     @Column(name = "description", columnDefinition = "TEXT", length = 500)
     private String description;
 
-    @Column
-    private Boolean isDeleted = Boolean.FALSE;
+//    @Column
+//    private Boolean isDeleted = Boolean.FALSE;
 }

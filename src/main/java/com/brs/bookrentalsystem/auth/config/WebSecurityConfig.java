@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -20,12 +21,12 @@ import static org.springframework.security.web.authentication.rememberme.TokenBa
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
 //    private final UserDetailsService userDetailsService;
-
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -38,10 +39,13 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((auth) ->
                 auth.requestMatchers("/brs/auth/**", "/resources/**", "/static/**", "/css/**")
                         .permitAll()
+                        .requestMatchers("/brs/admin/**", "/brs/library/**")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .anyRequest()
                         .hasAnyRole("ADMIN", "SUPER_ADMIN", "LIBRARIAN")
         );
 
+//        http.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.accessDeniedPage("/exception-page"));
         http.formLogin(form -> form
                 .loginPage("/brs/auth/login")
                 .loginProcessingUrl("/login")

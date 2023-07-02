@@ -35,6 +35,6 @@ spring:
       static-locations: file:src/main/resources/static/
       cache-period: 0
       cache:
-        cachecontrol:
+        cache control:
           s-max-age: 0
 

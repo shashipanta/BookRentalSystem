@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -36,6 +37,16 @@ public class UserAccountServiceImpl implements UserAccountService {
         userAccountRepo.save(userAccount);
 
         return new Message("CREATED", "User Account created successfully");
+    }
+
+    @Override
+    public void registerDefaultUsers(List<UserAccount> defaultUsers) {
+        for(UserAccount ua: defaultUsers){
+            ua.setPassword(passwordEncoder.encode(ua.getPassword()));
+            ua.setIp("no ip");
+//            ua.setRemainingLogins((short)1000);
+            userAccountRepo.save(ua);
+        }
     }
 
 

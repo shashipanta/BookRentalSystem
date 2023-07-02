@@ -105,7 +105,7 @@ public class BookTransactionViewController {
     }
 
 
-    @GetMapping(value = "/return/submit")
+    @RequestMapping(value = "/return/submit")
     public String returnBookByCode(
             @Valid @ModelAttribute("bookReturnRequest") BookReturnRequest request,
             Model model

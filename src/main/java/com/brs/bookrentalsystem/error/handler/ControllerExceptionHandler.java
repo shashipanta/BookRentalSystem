@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.file.AccessDeniedException;
+
 
 @Controller
 @ControllerAdvice
@@ -75,6 +77,15 @@ public class ControllerExceptionHandler {
         }
 
         return "redirect:" + redirectionURI;
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ModelAndView handleUnAuthorizedRequestException(AccessDeniedException accessDeniedException){
+        ErrorResponse errorResponse = new ErrorResponse("NOT_AUTHORIZED", "You do not have necessary permission to access this page");
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("message", errorResponse );
+        mv.setViewName("exception-page");
+        return mv;
     }
 
 

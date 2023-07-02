@@ -3,6 +3,7 @@ package com.brs.bookrentalsystem.auth.model;
 import com.brs.bookrentalsystem.auth.enums.RoleNames;
 import com.brs.bookrentalsystem.model.audit.Auditable;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -15,7 +16,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "tbl_user",
+@AllArgsConstructor( )
+@Table(name = "Users",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_user_email", columnNames = "email")
         }
@@ -52,15 +54,15 @@ public class UserAccount extends Auditable<String> {
 //    )
 //    Set<Role> roles;
 
-    @Column(name = "remaining_logins", columnDefinition = "integer default 5", insertable = false)
-    private Short remainingLogins;
+    @Column(name = "remaining_logins", columnDefinition = "integer default 5")
+    private Short remainingLogins = 5;
 
-//    public UserAccount(String userName, String email, String password, Set<Role> roles){
-//        this.userName = userName;
-//        this.email = email;
-//        this.password = password;
-//        this.roles = roles;
-//    }
+    public UserAccount(String userName, String email, String password, RoleNames role){
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 
 
 }

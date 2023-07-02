@@ -41,7 +41,7 @@ public class CategoryViewController {
         return "/category/category-page";
     }
 
-    @RequestMapping(value = "/save")
+    @GetMapping(value = "/save")
     public String saveNewCategory(
             @Valid @ModelAttribute("categoryRequest") CategoryRequest request,
             BindingResult bindingResult,
