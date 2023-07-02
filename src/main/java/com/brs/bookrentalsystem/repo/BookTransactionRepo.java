@@ -45,10 +45,10 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
     List<BookTransaction> findBookTransactionByRentStatus(RentStatus rentStatus);
 
     @Query("SELECT bookTransaction FROM BookTransaction bookTransaction WHERE " +
-            "bookTransaction.code LIKE CONCAT('%',:filterValue, '%')")
+            "bookTransaction.code LIKE CONCAT('%',:filterValue, '%') AND " +
+            "bookTransaction.rentStatus = 'RENTED'")
     List<BookTransaction> filterByTransactionCode(String filterValue);
 
     @Query("SELECT LAST_INSERT_ID()")
     Long getLastInsertedId();
 }
-

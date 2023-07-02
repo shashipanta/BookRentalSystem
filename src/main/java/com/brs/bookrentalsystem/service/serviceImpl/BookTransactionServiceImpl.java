@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -156,7 +157,11 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     @Override
     public List<String> filterTransactionByTransactionCode(TransactionFilterRequest filterRequest) {
         List<BookTransaction> bookTransactions = bookTransactionRepo.filterByTransactionCode(filterRequest.getCode());
-        return bookTransactions.stream()
+
+        List<BookTransaction> filteredBookTransactions = bookTransactions.stream()
+                .filter(b -> isBookRented(b.getBook().getId()))
+                .toList();
+        return filteredBookTransactions.stream()
                 .map(BookTransaction::getCode)
                 .collect(Collectors.toList());
     }

@@ -10,7 +10,6 @@ import com.brs.bookrentalsystem.dto.transaction.BookTransactionRequest;
 import com.brs.bookrentalsystem.dto.transaction.BookTransactionResponse;
 import com.brs.bookrentalsystem.dto.transaction.TransactionFilterRequest;
 import com.brs.bookrentalsystem.dto.transaction.TransactionResponse;
-import com.brs.bookrentalsystem.model.BookTransaction;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.CategoryService;
