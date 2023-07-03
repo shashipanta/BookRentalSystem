@@ -23,23 +23,38 @@
         </div>
 
         <div class="form-label-group">
-            <input  th:field="*{userName}"
-                    type="text" id="inputUserName" class="form-control" placeholder="eg: Jhon Doe" required=""
-                   >
+            <input th:field="*{userName}"
+                   th:classappend="*{#fields.hasErrors('userName')}? 'is-invalid'"
+                   type="text" id="inputUserName" class="form-control" placeholder="eg: Jhon Doe"
+            >
+
             <label for="inputUserName">User Name</label>
+            <!--            <p th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}" style="color: red" ></p>-->
+            <div th:if="${#fields.hasErrors('userName')}" class="form-group">
+                <i class="fa-solid fa-circle-exclamation" style="color: #a51d2d;"></i>
+                <p th:errors="*{userName}" class="invalid-feedback"></p>
+            </div>
+
         </div>
 
         <div class="form-label-group">
             <input th:field="*{email}"
-                    type="email" id="inputEmail" class="form-control" placeholder="Email address" required=""
-                   autofocus="">
+                   th:classappend="*{#fields.hasErrors('email')}? 'is-invalid'"
+                   type="email" id="inputEmail" class="form-control" placeholder="Email address"
+            >
             <label for="inputEmail">Email address</label>
+
+            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red"></p>
+
         </div>
 
         <div class="form-label-group">
             <input th:field="*{password}"
-                    type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                   th:classappend="*{#fields.hasErrors('password')}? 'is-invalid'"
+                   type="password" id="inputPassword" class="form-control" placeholder="Password">
             <label for="inputPassword">Password</label>
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red"></p>
+
         </div>
 
         <button class="btn btn-md btn-primary btn-block" type="submit">Register New Account</button>

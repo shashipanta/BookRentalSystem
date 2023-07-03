@@ -4,12 +4,8 @@ package com.brs.bookrentalsystem.controller.thymeleaf.transaction;
 import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.book.BookMessage;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
-import com.brs.bookrentalsystem.dto.transaction.BookReturnRequest;
+import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.dto.member.MemberResponse;
-import com.brs.bookrentalsystem.dto.transaction.BookTransactionRequest;
-import com.brs.bookrentalsystem.dto.transaction.BookTransactionResponse;
-import com.brs.bookrentalsystem.dto.transaction.TransactionFilterRequest;
-import com.brs.bookrentalsystem.dto.transaction.TransactionResponse;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.CategoryService;
@@ -22,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -37,26 +34,48 @@ public class BookTransactionViewController {
     private final BookTransactionService bookTransactionService;
 
     @GetMapping("/")
-    public String getTransactionViewPage(Model model){
+    public String getTransactionViewPage(Model model) {
 //        List<BookTransactionResponse> allTransactions = bookTransactionService.getAllTransactions();
 //        model.addAttribute("transactionList", allTransactions);
 //        return "/bookTransaction/transactions-view-page";
+
+        model.addAttribute("filterTransaction", new FilterTransaction());
+        model.addAttribute("isFiltered", false);
 
         return findPaginated(1, model);
 
     }
 
-    @GetMapping("/page/{pageNo}")
-    public String findPaginated(@PathVariable(value = "pageNo") int pageNo, Model model) {
+    @GetMapping("/page/{pageNo}/{from}&&{to}")
+    public String findPaginated(@PathVariable(value = "pageNo") int pageNo,
+                                @RequestParam(value = "from", required = false) String fromDate,
+                                @RequestParam(value = "to", required = false) String toDate,
+                                Model model) {
         int pageSize = 5;
+        Page<BookTransactionResponse> page ;
+        Boolean isFiltered = false;
 
-        Page<BookTransactionResponse> page = bookTransactionService.getPaginatedTransaction(pageNo, pageSize);
-        List<BookTransactionResponse> transactionList = page.getContent();
+        if()
+
+        if(!isFiltered){
+            page = bookTransactionService.getPaginatedTransaction(pageNo, pageSize);
+            List<BookTransactionResponse> transactionList = page.getContent();
+            model.addAttribute("transactionList", transactionList);
+
+        } else {
+            FilterTransaction filterTransaction = (FilterTransaction) model.getAttribute("filterTransaction");
+            page = bookTransactionService.getPaginatedAndFilteredTransaction(filterTransaction);
+        }
+
 
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("transactionList", transactionList);
+
+
+        if(!model.containsAttribute("filterTransaction")){
+            model.addAttribute("filterTransaction", new FilterTransaction());
+        }
 
         return "/bookTransaction/transactions-view-page";
     }
@@ -116,7 +135,7 @@ public class BookTransactionViewController {
     // http://localhost:8080/brs/library/book/return/verify?code={codepassed}
     @GetMapping(value = "/return/verify")
     @ResponseBody
-    public ResponseEntity<TransactionResponse> getTransactionDetails(@RequestParam("code") String code){
+    public ResponseEntity<TransactionResponse> getTransactionDetails(@RequestParam("code") String code) {
         TransactionResponse response = bookTransactionService.getTransaction(code);
 
         return ResponseEntity.ok(response);
@@ -149,7 +168,7 @@ public class BookTransactionViewController {
     // generate transaction code
     @GetMapping("/generate-code")
     @ResponseBody
-    public String generateTransactionCode(@RequestParam("bookName") String bookName){
+    public String generateTransactionCode(@RequestParam("bookName") String bookName) {
         String s = bookTransactionService.generateTransactionCode(bookName);
         return s;
     }
@@ -157,7 +176,7 @@ public class BookTransactionViewController {
     // get book return date
     @GetMapping("/get-return-date")
     @ResponseBody
-    public String generateBookReturnDate(@RequestParam("totalDays") Integer totalDays){
+    public String generateBookReturnDate(@RequestParam("totalDays") Integer totalDays) {
         return bookTransactionService.getBookReturnDate(totalDays);
     }
 
@@ -165,12 +184,32 @@ public class BookTransactionViewController {
     // top 5 rented books
     @GetMapping("/top-rented")
     @ResponseBody
-    public ResponseEntity<List<BookMessage>> getTopRentedBooks(){
+    public ResponseEntity<List<BookMessage>> getTopRentedBooks() {
 
         List<BookMessage> topRentedBooks = bookTransactionService.getTopRatedBooks();
 
         return ResponseEntity.ok(topRentedBooks);
 
+    }
+
+    @GetMapping("/filter/filter-by-date")
+    public String filterTransactionByDateRange(
+            @Valid @ModelAttribute("filterTransaction") FilterTransaction filterTransaction,
+            Model model,
+            RedirectAttributes ra
+            ) {
+        Page<BookTransactionResponse> paginatedAndFilteredTransaction = bookTransactionService.getPaginatedAndFilteredTransaction(filterTransaction);
+//        model.addAttribute("")
+
+        List<BookTransactionResponse> content = paginatedAndFilteredTransaction.getContent();
+        if(!model.containsAttribute("filterTransaction")){
+            model.addAttribute("filterTransaction", new FilterTransaction());
+        }
+        model.addAttribute("transactionList", content);
+
+        model.addAttribute("isFiltered", true);
+
+        return findPaginated(1, model);
     }
 
 }

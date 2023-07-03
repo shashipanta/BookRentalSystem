@@ -233,7 +233,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
 
     @Override
     public Page<BookTransactionResponse> getPaginatedTransaction(Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo -1, pageSize);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         Page<BookTransaction> allTransactions = this.bookTransactionRepo.findAll(pageable);
 
         List<BookTransactionResponse> collect = allTransactions.stream()
@@ -243,6 +243,18 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         Page<BookTransactionResponse> map = allTransactions.map(this::toBookTransactionResponse);
 
         return map;
+    }
+
+    @Override
+    public Page<BookTransactionResponse> getPaginatedAndFilteredTransaction(FilterTransaction filterTransaction) {
+        LocalDate to = dateUtil.stringToDate(filterTransaction.getTo());
+        LocalDate from = dateUtil.stringToDate(filterTransaction.getFrom());
+
+        Pageable pageable = PageRequest.of(1, 5);
+
+        Page<BookTransactionProjection> bookTransactionProjections = bookTransactionRepo.filterBookTransactionByDateRange(pageable, from, to);
+
+        return bookTransactionProjections.map(this::toBookTransactionResponse);
     }
 
     private TransactionExcelResponse toTransactionExcelResponse(BookTransaction bookTransaction) {

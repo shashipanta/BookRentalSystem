@@ -11,6 +11,7 @@ import com.brs.bookrentalsystem.util.RandomAlphaNumericString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,14 +35,13 @@ public class ForgotPasswordService {
 
         Optional<UserAccount> userAccountByEmail = userAccountRepo.findUserAccountByEmail(userEmail);
         if(userAccountByEmail.isPresent()){
-            // mail send
-            this.sendOtpToEmail(userEmail);
             return true;
         } else {
             return false;
         }
     }
 
+    @Async
     public void sendOtpToEmail(String to){
         String genereatedOtp = randomAlphaNumericString.generateRandomString(5);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

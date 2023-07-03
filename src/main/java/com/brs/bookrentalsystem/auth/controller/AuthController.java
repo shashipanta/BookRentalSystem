@@ -50,10 +50,18 @@ public class AuthController {
 
     @PostMapping("/register/submit")
     public String registerNewUser(
-            @ModelAttribute(name = "registrationRequest") RegistrationRequest request,
-            HttpServletRequest httpServletRequest,
-            RedirectAttributes ra) {
-        request.setIp(httpServletRequest.getRemoteAddr());
+            @Valid @ModelAttribute(name = "registrationRequest") RegistrationRequest request,
+
+            BindingResult bindingResult,
+            RedirectAttributes ra,
+            Model model) {
+
+        if(bindingResult.hasErrors()){
+            System.out.println("binding result : " + bindingResult);
+            model.addAttribute("registrationRequest", request);
+            return "auth/register";
+        }
+//        request.setIp(httpServletRequest.getRemoteAddr());
         Message message = userAccountService.registerNewUser(request);
 
         ra.addFlashAttribute("errorResponse", new ErrorResponse(message.getCode(), message.getMessage()));
@@ -90,6 +98,8 @@ public class AuthController {
         }
         Message message = new Message();
         if (isUserVerified) {
+            // mail send
+            forgotPasswordService.sendOtpToEmail(request.getEmail());
             message.setCode("OTP");
             message.setMessage("OTP sent! Please verify");
 //            model.addAttribute("forgotPasswordRequest", request);
