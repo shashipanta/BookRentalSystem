@@ -42,7 +42,7 @@ public interface BookTransactionService {
 
 
     // filter transaction by date range
-    Page<BookTransactionResponse> getPaginatedAndFilteredTransaction(FilterTransaction filterTransaction);
+    Page<BookTransactionResponse> getPaginatedAndFilteredTransaction(FilterTransaction filterTransaction, Integer pageNumber);
 
 
 

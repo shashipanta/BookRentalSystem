@@ -1,6 +1,5 @@
 package com.brs.bookrentalsystem.repo;
 
-import com.brs.bookrentalsystem.dto.transaction.FilterTransaction;
 import com.brs.bookrentalsystem.enums.RentStatus;
 import com.brs.bookrentalsystem.model.BookTransaction;
 import com.brs.bookrentalsystem.projections.BookTransactionProjection;

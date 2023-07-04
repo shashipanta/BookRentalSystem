@@ -1,0 +1,27 @@
+
+
+
+<!-- success message -->
+<div th:fragment="success_alert(successAlert)"
+        class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong th:text="${successAlert.code}">Holy guacamole!</strong>
+    <span th:text="${successAlert.message}">
+        You should check in on some of those fields below.
+    </span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+    </button>
+</div>
+
+<div th:fragment="error_alert(errorAlert)"
+     class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong th:text="${errorAlert.code}">Holy guacamole!</strong>
+    <span th:text="${errorAlert.message}">
+        You should check in on some of those fields below.
+    </span>
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"> </script>

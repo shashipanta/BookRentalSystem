@@ -246,11 +246,12 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     }
 
     @Override
-    public Page<BookTransactionResponse> getPaginatedAndFilteredTransaction(FilterTransaction filterTransaction) {
-        LocalDate to = dateUtil.stringToDate(filterTransaction.getTo());
+    public Page<BookTransactionResponse> getPaginatedAndFilteredTransaction(FilterTransaction filterTransaction, Integer pageNumber) {
+
+        LocalDate to = (!filterTransaction.getTo().isEmpty() ) ? dateUtil.stringToDate(filterTransaction.getTo()): LocalDate.now();
         LocalDate from = dateUtil.stringToDate(filterTransaction.getFrom());
 
-        Pageable pageable = PageRequest.of(1, 5);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
 
         Page<BookTransactionProjection> bookTransactionProjections = bookTransactionRepo.filterBookTransactionByDateRange(pageable, from, to);
 

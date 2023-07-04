@@ -17,17 +17,21 @@
     <h1>Transaction Details</h1>
 
     <a th:href="@{/brs/excel/export-to-excel}" class="btn btn-md btn-info export-btn">
-        Export
+        Export All
         <i class="fa-solid fa-file-excel"></i>
     </a>
 
     <div class="row">
-        <div class="col-md-3">
-            <form action="/brs/library/book/filter/filter-by-date" th:object="${filterTransaction}">
-                <div class="orm-input d-flex justify-content-between">
-                    <label for="from">From:</label>
-                    <input type="date" th:field="*{from}" id="from">
-                </div>
+        <div class="col-md-6">
+            <form action="/brs/library/book/filter/filter-by-date"
+                  th:method="POST"
+                  th:object="${filterTransaction}"
+                  class="d-flex m-2 justify-content-between"
+            >
+
+                <label for="from">From:</label>
+                <input type="date" th:field="*{from}" id="from">
+
                 <div class="form-input d-flex justify-content-between">
                     <label for="to">To:</label>
                     <input type="date" th:field="*{to}" id="to">
@@ -56,99 +60,81 @@
                 </thead>
                 <tbody>
                 <!--/*@thymesVar id="categoriesList" type="List<CategoryResponse>"*/-->
-                <tr th:each="trn, index :${transactionList}">
-                    <!--                    <th th:text="${book.id}" hidden></th>-->
-                    <th th:text="${index.count}" scope="row">count</th>
-                    <th th:text="${trn.code}">Transaction Code</th>
-                    <td th:text="${trn.rentFrom}">Rented Date</td>
-                    <td th:text="${trn.rentTo}">Rent Expiry</td>
 
-                    <td th:text="${trn.rentStatus}">Rent status</td>
-                    <td th:text="${trn.memberName}">Member</td>
-                    <td th:text="${trn.bookName}">Book Name</td>
-                </tr>
+
+                <th:block th:if="!${#lists.isEmpty(transactionList)}">
+                    <tr th:each="trn, index :${transactionList}">
+
+                        <th th:text="${index.count}" scope="row">count</th>
+                        <th th:text="${trn.code}">Transaction Code</th>
+                        <td th:text="${trn.rentFrom}">Rented Date</td>
+                        <td th:text="${trn.rentTo}">Rent Expiry</td>
+
+                        <td th:text="${trn.rentStatus}">Rent status</td>
+                        <td th:text="${trn.memberName}">Member</td>
+                        <td th:text="${trn.bookName}">Book Name</td>
+
+                    </tr>
+                </th:block>
+                <th:block th:if="${#lists.isEmpty(transactionList)}">
+                    <td colspan="7">No results found!</td>
+                </th:block>
+
+
+
+
 
                 </tbody>
             </table>
-            <nav th:if="!${isFiltered}"
-                 aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li th:if="${currentPage > 0}"
-                            class="page-item">
-                        <a th:href="@{'/brs/library/book/page/' + ${currentPage - 1}}"
-                                class="page-link"
-                           th:classappend="${currentPage <= 1}? 'disabled':''"
-                        >Previous</a>
-                    </li>
-                    <li th:each="i: ${#numbers.sequence(1, totalPages)}"
-                            class="page-item">
-                        <a  th:href="@{'/brs/library/book/page/' + ${i}}"
-                                class="page-link"
-                           th:classappend="${currentPage == i}?'active':''"
-                        >[[${i}]]</a>
-                    </li>
-<!--                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
-<!--                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
-                    <li class="page-item">
-                        <a  th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}"
-                                class="page-link"
-                           th:classappend="${currentPage >= totalPages}?'disabled':''"
-                        >Next</a>
-                    </li>
-                </ul>
-            </nav>
 
-            <nav th:if="${isFiltered}"
+            <nav th:if="!${#lists.isEmpty(transactionList)}"
                     aria-label="Page navigation example">
                 <ul class="pagination">
                     <li th:if="${currentPage > 0}"
                         class="page-item">
-                        <a th:href="@{'/brs/library/book/page/' + ${currentPage - 1}}"
+                        <a th:if="${fromDate}"
+                           th:href="@{'/brs/library/book/page/' + ${currentPage - 1 }} + '?fromDate=' + *{fromDate} + '&toDate=' + *{toDate}"
+                           class="page-link"
+                           th:classappend="${currentPage <= 1}? 'disabled':''"
+                        >Previous</a>
+                        <a th:if="!${fromDate}"
+                                th:href="@{'/brs/library/book/page/' + ${currentPage - 1}}"
                            class="page-link"
                            th:classappend="${currentPage <= 1}? 'disabled':''"
                         >Previous</a>
                     </li>
                     <li th:each="i: ${#numbers.sequence(1, totalPages)}"
                         class="page-item">
-                        <a  th:href="@{'/brs/library/book/page/' + ${i}}"
-                            class="page-link"
-                            th:classappend="${currentPage == i}?'active':''"
-                        >[[${i}]]</a>
+
+                        <th:block th:if="${fromDate}">
+                            <a th:href="@{'/brs/library/book/page/' + ${i}} + '?fromDate=' + *{fromDate} + '&toDate=' + *{toDate}"
+                               class="page-link"
+                               th:classappend="${currentPage == i}?'active':''"
+                            >[[${i}]]</a>
+                        </th:block>
+                        <th:block th:if="!${fromDate}">
+                            <a th:href="@{'/brs/library/book/page/' + ${i}}"
+                               class="page-link"
+                               th:classappend="${currentPage == i}?'active':''"
+                            >[[${i}]]</a>
+                        </th:block>
+
                     </li>
-                    <!--                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
-                    <!--                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
                     <li class="page-item">
-                        <a  th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}"
-                            class="page-link"
-                            th:classappend="${currentPage >= totalPages}?'disabled':''"
+                        <a th:if="${fromDate}"
+                                th:href="@{'/brs/library/book/page/' + ${currentPage + 1 }} + '?fromDate=' + *{fromDate} + '&toDate=' + *{toDate}"
+                           class="page-link"
+                           th:classappend="${currentPage >= totalPages}?'disabled':''"
+                        >Next</a>
+                        <a th:if="!${fromDate}"
+                           th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}"
+                           class="page-link"
+                           th:classappend="${currentPage >= totalPages}?'disabled':''"
                         >Next</a>
                     </li>
                 </ul>
             </nav>
 
-
-<!--            <div th:if="${totalPages > 1}">-->
-<!--                <div class="row col-sm-10">-->
-<!--                    <div class="col-sm-2">-->
-<!--                        Total Rows: [[${totalItems}]]-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-1">-->
-<!--            <span th:each="i: ${#numbers.sequence(1, totalPages)}">-->
-<!--      <a th:if="${currentPage != i}" th:href="@{'/brs/library/book/page/' + ${i}}">[[${i}]]</a>-->
-<!--      <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;-->
-<!--            </span>-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-1">-->
-<!--                        <a th:if="${currentPage < totalPages}" th:href="@{'/brs/library/book/page/' + ${currentPage + 1}}">Next</a>-->
-<!--                        <span th:unless="${currentPage < totalPages}">Next</span>-->
-<!--                    </div>-->
-
-<!--                    <div class="col-sm-1">-->
-<!--                        <a th:if="${currentPage < totalPages}" th:href="@{'/brs/library/book/page/' + ${totalPages }}">Last</a>-->
-<!--                        <span th:unless="${currentPage < totalPages}">Last</span>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
 
 
         </div>
@@ -159,10 +145,9 @@
         </th:block>
 
         <!-- toast message -->
-        <th:normal-toast
-                th:replace="~{fragments/toast-msg-fragment :: toast_message(message=${message}, type=${type})}">
-
-        </th:normal-toast>
+<!--        <th:normal-toast-->
+<!--                th:replace="~{fragments/toast-msg-fragment :: toast_message(message=${message}, type=${type})}">-->
+<!--        </th:normal-toast>-->
 
 
     </div>

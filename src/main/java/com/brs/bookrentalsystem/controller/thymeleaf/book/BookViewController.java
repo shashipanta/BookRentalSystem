@@ -89,6 +89,10 @@ public class BookViewController {
         model.addAttribute("savedBooks", allBooks);
         model.addAttribute("fileUpload", new ExcelBookUploadRequest());
 
+//        if(model.containsAttribute("message")){
+//            model.addAttribute("message", model.getAttribute("message"));
+//        }
+
         return "/book/book-list-page";
     }
 
@@ -168,10 +172,11 @@ public class BookViewController {
         if (bookRented) {
             message.setCode("DEL-BOOK");
             message.setMessage("Book is rented and not returned yet");
+            ra.addFlashAttribute("errorAlert", message);
         } else {
             message = bookService.deleteBookById(bookId);
+            ra.addFlashAttribute("successAlert", message);
         }
-        ra.addFlashAttribute("message", message);
 
         return "redirect:/brs/admin/book/inventory";
     }
@@ -181,7 +186,7 @@ public class BookViewController {
 
         Message message = bookService.reviveDeletedBookById(bookId);
 
-        ra.addFlashAttribute("message", message);
+        ra.addFlashAttribute("successAlert", message);
 
         return "redirect:/brs/admin/book/inventory";
     }

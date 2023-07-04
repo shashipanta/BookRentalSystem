@@ -6,10 +6,12 @@ import com.brs.bookrentalsystem.dto.book.BookMessage;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
 import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.dto.member.MemberResponse;
+import com.brs.bookrentalsystem.error.ErrorResponse;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.CategoryService;
 import com.brs.bookrentalsystem.service.MemberService;
+import com.brs.bookrentalsystem.util.DateUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,9 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -30,6 +34,7 @@ public class BookTransactionViewController {
     private final BookService bookService;
     private final CategoryService categoryService;
     private final MemberService memberService;
+    private final DateUtil dateUtil;
 
     private final BookTransactionService bookTransactionService;
 
@@ -40,41 +45,49 @@ public class BookTransactionViewController {
 //        return "/bookTransaction/transactions-view-page";
 
         model.addAttribute("filterTransaction", new FilterTransaction());
-        model.addAttribute("isFiltered", false);
 
-        return findPaginated(1, model);
+        return findPaginated(1, model, null, null);
 
     }
 
-    @GetMapping("/page/{pageNo}/{from}&&{to}")
+    @GetMapping("/page/{pageNo}")
     public String findPaginated(@PathVariable(value = "pageNo") int pageNo,
-                                @RequestParam(value = "from", required = false) String fromDate,
-                                @RequestParam(value = "to", required = false) String toDate,
-                                Model model) {
+                                Model model,
+                                @RequestParam(required = false) String fromDate,
+                                @RequestParam(required = false) String toDate
+    ) {
         int pageSize = 5;
-        Page<BookTransactionResponse> page ;
-        Boolean isFiltered = false;
+        Page<BookTransactionResponse> page;
+        FilterTransaction filterTransaction = new FilterTransaction();
 
-        if()
-
-        if(!isFiltered){
-            page = bookTransactionService.getPaginatedTransaction(pageNo, pageSize);
-            List<BookTransactionResponse> transactionList = page.getContent();
-            model.addAttribute("transactionList", transactionList);
-
+        if(fromDate != null){
+            toDate = (toDate == null)? dateUtil.dateToString(LocalDate.now()) : toDate;
+            filterTransaction.setFrom(fromDate);
+            filterTransaction.setTo(toDate);
+            page = bookTransactionService.getPaginatedAndFilteredTransaction(filterTransaction, pageNo);
         } else {
-            FilterTransaction filterTransaction = (FilterTransaction) model.getAttribute("filterTransaction");
-            page = bookTransactionService.getPaginatedAndFilteredTransaction(filterTransaction);
+            page = bookTransactionService.getPaginatedTransaction(pageNo, pageSize);
         }
 
+        List<BookTransactionResponse> transactionList = page.getContent();
+
+        if(!model.containsAttribute("transactionList")){
+            model.addAttribute("transactionList", transactionList);
+        }
 
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
 
+        model.addAttribute("fromDate", fromDate);
+        model.addAttribute("toDate", toDate);
 
-        if(!model.containsAttribute("filterTransaction")){
-            model.addAttribute("filterTransaction", new FilterTransaction());
+        if (!model.containsAttribute("filterTransaction")) {
+            model.addAttribute("filterTransaction", filterTransaction);
+        } else {
+            filterTransaction.setTo(toDate);
+            filterTransaction.setFrom(fromDate);
+            model.addAttribute("filterTransaction", filterTransaction);
         }
 
         return "/bookTransaction/transactions-view-page";
@@ -94,7 +107,7 @@ public class BookTransactionViewController {
         return "/bookTransaction/rentbook-page";
     }
 
-    @GetMapping(value = "/rent/submit")
+    @PostMapping(value = "/rent/submit")
     public String rentBook(
             @Valid @ModelAttribute("transactionRequest") BookTransactionRequest request,
             BindingResult bindingResult,
@@ -192,24 +205,36 @@ public class BookTransactionViewController {
 
     }
 
-    @GetMapping("/filter/filter-by-date")
+    @PostMapping("/filter/filter-by-date")
     public String filterTransactionByDateRange(
-            @Valid @ModelAttribute("filterTransaction") FilterTransaction filterTransaction,
+            @ModelAttribute("filterTransaction") FilterTransaction filterTransaction,
             Model model,
             RedirectAttributes ra
-            ) {
-        Page<BookTransactionResponse> paginatedAndFilteredTransaction = bookTransactionService.getPaginatedAndFilteredTransaction(filterTransaction);
+    ) {
+//        if(bindingResult.hasErrors()){
+//            System.out.println(bindingResult);
+//            return "bookTransaction/transactions-view-page";
+//        }
+
+        if(filterTransaction.getTo().isEmpty() || filterTransaction.getTo().isBlank()){
+           ra.addFlashAttribute("errorResponse", new ErrorResponse("FAILED", "Date cannot be blank"));
+           return "redirect:/brs/library/book/";
+        }
+
+
+
+        Integer pageNumber = 1;
+
+        Page<BookTransactionResponse> paginatedAndFilteredTransaction = bookTransactionService.getPaginatedAndFilteredTransaction(filterTransaction, pageNumber);
 //        model.addAttribute("")
 
         List<BookTransactionResponse> content = paginatedAndFilteredTransaction.getContent();
-        if(!model.containsAttribute("filterTransaction")){
+        if (!model.containsAttribute("filterTransaction")) {
             model.addAttribute("filterTransaction", new FilterTransaction());
         }
         model.addAttribute("transactionList", content);
 
-        model.addAttribute("isFiltered", true);
-
-        return findPaginated(1, model);
+        return findPaginated(1, model, filterTransaction.getFrom(), filterTransaction.getTo());
     }
 
 }
