@@ -51,9 +51,11 @@
                     class="form-select mt-2" aria-label="Default select example"
                     id="memberId">
                 <option value="" disabled selected>-- select --</option>
-                <option th:each="member : ${memberList}"
+                <option th:each="member, index : ${memberList}"
                         th:value="${member.id}"
-                        th:text="${member.name}">
+                        th:text="${member.name}"
+                        th:selected="${index.count == 1}"
+                >
                 </option>
             </select>
             <span th:if="${#fields.hasErrors('memberId')}"
