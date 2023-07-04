@@ -136,19 +136,6 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     public List<BookTransactionResponse> getNotReturnedBookTransactions() {
         List<BookTransaction> rentedBookTransactions = bookTransactionRepo.findBookTransactionByRentStatus(RentStatus.RENTED);
 
-//        List<BookTransaction> distinct = rentedBookTransactions.stream()
-//                .collect(Collectors.toList());
-//        rentedBookTransactions.sort(Comparator.comparing(BookTransaction::getCode));
-//
-//        int count = 0;
-//        List<BookTransaction> actualRented =
-//        for(int i=0; i<rentedBookTransactions.size() -1; i++){
-//            if(rentedBookTransactions.get(i).getCode().equals(rentedBookTransactions.get(i+1))){
-//                count++
-//            } else {
-//                (count % 2) == 0 ?
-//            }
-//        }
         return rentedBookTransactions.stream()
                 .map(this::toBookTransactionResponse)
                 .collect(Collectors.toList());
@@ -234,11 +221,11 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     @Override
     public Page<BookTransactionResponse> getPaginatedTransaction(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        Page<BookTransaction> allTransactions = this.bookTransactionRepo.findAll(pageable);
+        Page<BookTransactionProjection> allTransactions = this.bookTransactionRepo.getAllTransactions(pageable);
 
-        List<BookTransactionResponse> collect = allTransactions.stream()
-                .map(this::toBookTransactionResponse)
-                .collect(Collectors.toList());
+//        List<BookTransactionResponse> collect = allTransactions.stream()
+//                .map(this::toBookTransactionResponse)
+//                .collect(Collectors.toList());
 
         Page<BookTransactionResponse> map = allTransactions.map(this::toBookTransactionResponse);
 
@@ -318,6 +305,9 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     }
 
     private BookTransactionResponse toBookTransactionResponse(BookTransaction bookTransaction) {
+
+        // might get deleted book
+
 
         return BookTransactionResponse.builder()
                 .transactionId(bookTransaction.getTransactionId())

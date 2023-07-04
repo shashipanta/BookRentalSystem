@@ -43,6 +43,30 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
                     "    inner join tbl_category tc on tb.category_id = tc.id;")
     List<BookTransactionProjection> getAllTransactions();
 
+    @Query(nativeQuery = true,
+            value = "select\n" +
+                    "    bt.transaction_id as bookTransactionId,\n" +
+                    "    bt.code as transactionCode,\n" +
+                    "    bt.rent_from as rentFrom,\n" +
+                    "    bt.rent_expiry as rentTo,\n" +
+                    "    bt.rent_status as rentStatus,\n" +
+                    "    tb.id as bookId,\n" +
+                    "    tb.name as bookName,\n" +
+                    "    tb.isbn_no as isbn,\n" +
+                    "    tb.stock_count as stockCount,\n" +
+                    "    tb.published_date as publishedDate,\n" +
+                    "    tb.category_id as categoryId,\n" +
+                    "    tc.category_name as categoryName,\n" +
+                    "    tm.id as memberId,\n" +
+                    "    tm.name as memberName,\n" +
+                    "    tm.mobile_number as memberMobileNumber" +
+                    "\n" +
+                    "from tbl_book_transaction bt\n" +
+                    "    inner join tbl_book tb on bt.book_id = tb.id\n" +
+                    "    inner join tbl_member tm on bt.member_id = tm.id\n" +
+                    "    inner join tbl_category tc on tb.category_id = tc.id;")
+    Page<BookTransactionProjection> getAllTransactions(Pageable pageable);
+
     BookTransaction findBookTransactionByCode(String bookCode);
 
     List<BookTransaction> findBookTransactionByRentStatus(RentStatus rentStatus);
@@ -81,8 +105,7 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
                     "    (tbt.rent_from between :from and :to)\n" +
                     "    and\n" +
                     "    (tbt.rent_expiry between :from and :to)\n" +
-                    ";\n"
-    )
+                    ";\n")
     List<BookTransactionProjection> filterBookTransactionByDateRange(LocalDate from, LocalDate to);
 
 
