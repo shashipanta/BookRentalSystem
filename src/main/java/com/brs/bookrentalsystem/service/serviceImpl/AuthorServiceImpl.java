@@ -45,7 +45,6 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
-
     // handle exception
     @Override
     public AuthorResponse findAuthorById(Integer authorId) {
@@ -94,8 +93,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     // handle exception
-    private Author toAuthor(Integer authorId){
-        return authorRepo.findById(authorId).orElseThrow();
+    private Author toAuthor(Integer authorId) {
+        return authorRepo.findById(authorId).get();
     }
 
     private Author toAuthor(AuthorRequest request) {
@@ -107,7 +106,7 @@ public class AuthorServiceImpl implements AuthorService {
         return author;
     }
 
-    private AuthorRequest toAuthorRequest(AuthorResponse response){
+    private AuthorRequest toAuthorRequest(AuthorResponse response) {
         return AuthorRequest.builder()
                 .id(response.getId())
                 .name(response.getName())
@@ -125,7 +124,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .build();
     }
 
-    private NoSuchEntityFoundException generateNoElementFoundException(Integer authorId){
-        return new NoSuchEntityFoundException(String.format(NOT_FOUND_MESSAGE, authorId),ErrorCodes.NOT_FOUND);
+    private NoSuchEntityFoundException generateNoElementFoundException(Integer authorId) {
+        return new NoSuchEntityFoundException(String.format(NOT_FOUND_MESSAGE, authorId), ErrorCodes.NOT_FOUND);
     }
 }

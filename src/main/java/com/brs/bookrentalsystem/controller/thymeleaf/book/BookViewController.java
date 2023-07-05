@@ -208,7 +208,7 @@ public class BookViewController {
             message.setMessage("Invalid Excel format. Please check your file and try again.");
             message.setMessage("FAILLED");
         }
-        ra.addFlashAttribute("message", message);
+        ra.addFlashAttribute("successAlert", message);
 
         return "redirect:/brs/admin/book/inventory";
     }
