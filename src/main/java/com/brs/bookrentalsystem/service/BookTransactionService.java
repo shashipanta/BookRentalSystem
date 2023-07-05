@@ -7,6 +7,7 @@ import com.brs.bookrentalsystem.model.BookTransaction;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookTransactionService {
 
@@ -27,7 +28,7 @@ public interface BookTransactionService {
 
     String getBookReturnDate(Integer days);
 
-    TransactionResponse getTransaction(String transactionCode);
+    Optional<TransactionResponse> getTransaction(String transactionCode);
 
     // get top 5 rented books
     List<BookMessage> getTopRentedBooks();

@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -70,13 +71,6 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     public Message returnBook(BookReturnRequest request) {
 
         BookTransaction transactionById = getTransactionById(request.getId());
-//        BookTransactionRequest build = BookTransactionRequest.builder()
-//                .transactionId(request.getId())
-//                .memberId(transactionById.getMember().getId())
-//                .bookId(transactionById.getBook().getId())
-//                .totalDays(null)
-//                .code(request.getCode())
-//                .build();
 
         BookTransaction bookTransaction = new BookTransaction();
         bookTransaction.setRentStatus(RentStatus.RETURNED);
@@ -144,6 +138,8 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     public List<String> filterTransactionByTransactionCode(TransactionFilterRequest filterRequest) {
         List<BookTransaction> bookTransactions = bookTransactionRepo.filterByTransactionCode(filterRequest.getCode());
 
+        // check if the book is returned already or not
+
         List<BookTransaction> filteredBookTransactions = bookTransactions.stream()
                 .filter(b -> isBookRented(b.getBook().getId()))
                 .toList();
@@ -170,16 +166,28 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     }
 
     @Override
-    public TransactionResponse getTransaction(String transactionCode) {
-        BookTransaction bookTransactionByCode = bookTransactionRepo.findBookTransactionByCode(transactionCode);
-        return TransactionResponse.builder()
-                .id(bookTransactionByCode.getTransactionId())
-                .code(bookTransactionByCode.getCode())
-                .memberName(bookTransactionByCode.getMember().getName())
-                .bookName(bookTransactionByCode.getBook().getName())
-                .rentedDate(dateUtil.dateToString(bookTransactionByCode.getRentFrom()))
-                .expiryDate(dateUtil.dateToString(bookTransactionByCode.getRentTo()))
-                .build();
+    public Optional<TransactionResponse> getTransaction(String transactionCode) {
+        List<BookTransaction> rentedBooks = bookTransactionRepo.findBookTransactionByCodeAndRentStatus(transactionCode, RentStatus.RENTED);
+        List<BookTransaction> returnedBooks = bookTransactionRepo.findBookTransactionByCodeAndRentStatus(transactionCode, RentStatus.RETURNED);
+
+
+        // check if the book is already returned or not
+        long totalRentedBooks = rentedBooks.size();
+        long totalReturnedBooks = returnedBooks.size();
+        if(totalRentedBooks == totalReturnedBooks){
+            return Optional.empty();
+        }
+
+        BookTransaction bookTransaction = rentedBooks.get(0);
+
+        return Optional.of(TransactionResponse.builder()
+                .id(bookTransaction.getTransactionId())
+                .code(bookTransaction.getCode())
+                .memberName(bookTransaction.getMember().getName())
+                .bookName(bookTransaction.getBook().getName())
+                .rentedDate(dateUtil.dateToString(bookTransaction.getRentFrom()))
+                .expiryDate(dateUtil.dateToString(bookTransaction.getRentTo()))
+                .build());
 
     }
 

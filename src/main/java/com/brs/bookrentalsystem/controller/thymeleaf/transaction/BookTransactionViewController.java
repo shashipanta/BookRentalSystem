@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -148,7 +149,12 @@ public class BookTransactionViewController {
     @GetMapping(value = "/return/verify")
     @ResponseBody
     public ResponseEntity<TransactionResponse> getTransactionDetails(@RequestParam("code") String code) {
-        TransactionResponse response = bookTransactionService.getTransaction(code);
+        Optional<TransactionResponse> transaction = bookTransactionService.getTransaction(code);
+        TransactionResponse response = null;
+        
+        if(transaction.isPresent()){
+            response = transaction.get();
+        }
 
         return ResponseEntity.ok(response);
     }

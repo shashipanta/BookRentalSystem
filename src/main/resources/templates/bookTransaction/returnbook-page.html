@@ -128,13 +128,18 @@
         $.ajax({
             url: "http://localhost:8080/brs/library/book/return/verify" + "?code=" + selectedCode,
             success: function (details) {
-                $("#bookName").val(details.bookName)
-                $("#rentTo").val(details.expiryDate);
-                $("#rentFrom").val(details.rentedDate);
-                $("#id").val(details.id);
-                $("#codeSelect").val(details.code);
-                $("#memberName").val(details.memberName);
-                console.log("woah transaction generated", details)
+                if(details == ""){
+                    console.log("Book returned already")
+                } else {
+                    $("#bookName").val(details.bookName)
+                    $("#rentTo").val(details.expiryDate);
+                    $("#rentFrom").val(details.rentedDate);
+                    $("#id").val(details.id);
+                    $("#codeSelect").val(details.code);
+                    $("#memberName").val(details.memberName);
+                    console.log("woah transaction generated", details)
+                }
+
             }
         });
         // alert("You have selected the country - " + selectedBookName);

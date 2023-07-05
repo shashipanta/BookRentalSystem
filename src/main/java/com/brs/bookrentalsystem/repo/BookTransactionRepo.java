@@ -1,6 +1,7 @@
 package com.brs.bookrentalsystem.repo;
 
 import com.brs.bookrentalsystem.enums.RentStatus;
+import com.brs.bookrentalsystem.model.Book;
 import com.brs.bookrentalsystem.model.BookTransaction;
 import com.brs.bookrentalsystem.projections.BookTransactionProjection;
 import com.brs.bookrentalsystem.projections.TopRentedBookTransactionProjection;
@@ -69,6 +70,8 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
     Page<BookTransactionProjection> getAllTransactions(Pageable pageable);
 
     BookTransaction findBookTransactionByCode(String bookCode);
+
+    List<BookTransaction> findBookTransactionByCodeAndRentStatus(String bookCode, RentStatus rentStatus);
 
     List<BookTransaction> findBookTransactionByRentStatus(RentStatus rentStatus);
 
