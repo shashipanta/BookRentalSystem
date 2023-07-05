@@ -30,7 +30,7 @@ public interface BookTransactionService {
     TransactionResponse getTransaction(String transactionCode);
 
     // get top 5 rented books
-    List<BookMessage> getTopRatedBooks();
+    List<BookMessage> getTopRentedBooks();
 
     // excel report
     List<TransactionExcelResponse> getAllTransactionsForExcel();

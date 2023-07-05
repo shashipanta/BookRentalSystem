@@ -8,6 +8,7 @@ import com.brs.bookrentalsystem.model.Book;
 import com.brs.bookrentalsystem.model.BookTransaction;
 import com.brs.bookrentalsystem.model.Member;
 import com.brs.bookrentalsystem.projections.BookTransactionProjection;
+import com.brs.bookrentalsystem.projections.TopRentedBookTransactionProjection;
 import com.brs.bookrentalsystem.repo.BookRepo;
 import com.brs.bookrentalsystem.repo.BookTransactionRepo;
 import com.brs.bookrentalsystem.repo.CategoryRepo;
@@ -19,7 +20,6 @@ import com.brs.bookrentalsystem.util.DateUtil;
 import com.brs.bookrentalsystem.util.RandomAlphaNumericString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,6 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Service
@@ -185,15 +184,21 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     }
 
     @Override
-    public List<BookMessage> getTopRatedBooks() {
-        List<BookTransaction> bookTransactionByRentStatus = bookTransactionRepo.findBookTransactionByRentStatus(RentStatus.RENTED);
-        bookTransactionByRentStatus.sort(Comparator.comparing(o -> o.getBook().getRating()));
+    public List<BookMessage> getTopRentedBooks() {
+        List<TopRentedBookTransactionProjection> bookTransactionByRentStatus = bookTransactionRepo.getTopRentedBookTransaction();
 
-        List<BookTransaction> list = bookTransactionByRentStatus.stream().distinct().toList();
+        List<BookMessage> bookMessage = bookTransactionByRentStatus.stream()
+                .map((topRentedBooks) -> BookMessage.builder()
+                        .bookName(topRentedBooks.getBookName())
+                        .rating(topRentedBooks.getBookRating())
+                        .build()
+                )
+                .distinct()
+                .toList();
 
-        List<BookTransaction> limit = list.stream().distinct().limit(5).collect(Collectors.toList());
+//        List<BookTransaction> limit = bookMessage.stream().distinct().limit(5).collect(Collectors.toList());
 //        return limit.stream()
-//                .map(bookTransaction -> new BookMessage(bookTransaction.getBook().getName(), ))
+//                .map(bookTransaction -> new BookMessage(bookTransaction.getBook().getName(), bookTransaction.get))
         return null;
     }
 
@@ -202,7 +207,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         List<BookTransactionProjection> all = bookTransactionRepo.getAllTransactions();
         return all.stream()
                 .map(this::toTransactionExcelResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -223,10 +228,6 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         Page<BookTransactionProjection> allTransactions = this.bookTransactionRepo.getAllTransactions(pageable);
 
-//        List<BookTransactionResponse> collect = allTransactions.stream()
-//                .map(this::toBookTransactionResponse)
-//                .collect(Collectors.toList());
-
         Page<BookTransactionResponse> map = allTransactions.map(this::toBookTransactionResponse);
 
         return map;
@@ -235,7 +236,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     @Override
     public Page<BookTransactionResponse> getPaginatedAndFilteredTransaction(FilterTransaction filterTransaction, Integer pageNumber) {
 
-        LocalDate to = (!filterTransaction.getTo().isEmpty() ) ? dateUtil.stringToDate(filterTransaction.getTo()): LocalDate.now();
+        LocalDate to = (!filterTransaction.getTo().isEmpty()) ? dateUtil.stringToDate(filterTransaction.getTo()) : LocalDate.now();
         LocalDate from = dateUtil.stringToDate(filterTransaction.getFrom());
 
         Pageable pageable = PageRequest.of(pageNumber - 1, 5);
@@ -245,28 +246,6 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         return bookTransactionProjections.map(this::toBookTransactionResponse);
     }
 
-    private TransactionExcelResponse toTransactionExcelResponse(BookTransaction bookTransaction) {
-        Book book = bookTransaction.getBook();
-        Member member = bookTransaction.getMember();
-        String categoryName = bookTransaction.getBook().getCategory().getName();
-        String publishedDate = dateUtil.dateToString(book.getPublishedDate());
-        String rentedDate = dateUtil.dateToString(bookTransaction.getRentFrom());
-        String expiryDate = dateUtil.dateToString(bookTransaction.getRentTo());
-        return TransactionExcelResponse.builder()
-                .transactionId(bookTransaction.getTransactionId())
-                .transactionCode(bookTransaction.getCode())
-                .bookName(book.getName())
-                .publishedDate(publishedDate)
-                .isbn(book.getIsbn())
-                .categoryName(categoryName)
-                .stockCount(book.getStockCount())
-                .rentFrom(rentedDate)
-                .rentTo(expiryDate)
-                .rentStatus(bookTransaction.getRentStatus().name())
-                .memberName(member.getName())
-                .memberMobileNumber(member.getMobileNumber())
-                .build();
-    }
 
     // for exporting into excel
     private TransactionExcelResponse toTransactionExcelResponse(BookTransactionProjection projection) {
@@ -325,10 +304,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     private BookTransactionResponse toBookTransactionResponse(BookTransactionProjection projection) {
         LocalDate rentedFrom = dateUtil.stringToDate(projection.getRentFrom());
         LocalDate rentExpiry = dateUtil.stringToDate(projection.getRentTo());
-        LocalDate bookPublishedOn = dateUtil.stringToDate(projection.getPublishedDate());
-//        Book book = bookRepo.findById(projection.getBookId()).get();                    // TODO: check this
-//        Category category = categoryRepo.findById(projection.getCategoryId()).get();
-//        Member member = memberRepo.findById(projection.getMemberId()).get();
+
         return BookTransactionResponse.builder()
                 .transactionId(projection.getBookTransactionId())
                 .code(projection.getTransactionCode())
