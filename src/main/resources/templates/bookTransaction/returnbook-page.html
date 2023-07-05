@@ -120,6 +120,9 @@
         })
     })
 
+    // verify-form
+    var $verify = $(".verify-details");
+
     // get transaction verification
     $("select#codeSelect").change(function () {
 
@@ -129,8 +132,12 @@
             url: "http://localhost:8080/brs/library/book/return/verify" + "?code=" + selectedCode,
             success: function (details) {
                 if(details == ""){
+                    $("#bookName").val("Book has already been returned")
+                    $(".verify-details").hide()
                     console.log("Book returned already")
                 } else {
+                    var hidden = $verify.hidden;
+                    $verify.show();
                     $("#bookName").val(details.bookName)
                     $("#rentTo").val(details.expiryDate);
                     $("#rentFrom").val(details.rentedDate);
