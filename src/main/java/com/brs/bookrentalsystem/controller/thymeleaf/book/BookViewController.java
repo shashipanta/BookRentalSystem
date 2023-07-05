@@ -48,11 +48,6 @@ public class BookViewController {
             model.addAttribute("bookRequest", new BookRequest());
         }
 
-//        BookRequest bookRequest =(BookRequest) model.getAttribute("bookRequest");
-//        assert bookRequest != null;
-//        if(bookRequest.getId()!= null){
-//             model.addAttribute("bookRequest", bookRequest);
-//        }
         return "/book/book-page";
     }
 
@@ -61,7 +56,8 @@ public class BookViewController {
     public String registerPassedBook(
             @Valid @ModelAttribute("bookRequest") BookRequest request,
             BindingResult bindingResult,
-            Model model
+            Model model,
+            RedirectAttributes ra
     ) {
         // check if errors
         if (bindingResult.hasErrors()) {
@@ -73,8 +69,7 @@ public class BookViewController {
         BookResponse bookResponse = bookService.saveBook(request);
 
         Message createdMessage = new Message("CREATED", "Book saved successfully");
-        model.addAttribute("message", createdMessage);
-        model.addAttribute("messageType", "create");
+        ra.addFlashAttribute("message", createdMessage);
 
         return "redirect:/brs/admin/book/";
     }

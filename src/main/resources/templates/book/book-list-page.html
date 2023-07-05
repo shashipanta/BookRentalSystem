@@ -95,6 +95,10 @@
             <th:block th:replace="~{fragments/message-alert :: error_alert(errorAlert = ${errorAlert})}"></th:block>
         </th:block>
 
+        <th:block th:if="${message}"
+                th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${message})}">
+        </th:block>
+
         <!--    &lt;!&ndash; toast message &ndash;&gt;-->
         <!--    <th:normal-toast th:replace="~{fragments/toast-msg-fragment :: toast_message(message=${message}, type=${type})}">-->
 
