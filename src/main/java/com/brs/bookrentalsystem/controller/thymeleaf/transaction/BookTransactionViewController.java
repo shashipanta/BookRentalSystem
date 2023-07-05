@@ -110,24 +110,24 @@ public class BookTransactionViewController {
     public String rentBook(
             @Valid @ModelAttribute("transactionRequest") BookTransactionRequest request,
             BindingResult bindingResult,
-            Model model
+            Model model,
+            RedirectAttributes ra
     ) {
 
         if (bindingResult.hasErrors()) {
             List<BookResponse> savedBooks = bookService.getBooksAvailableOnStock();
             List<MemberResponse> registeredMembers = memberService.getRegisteredMembers();
 
-//            model.addAttribute("transactionRequest", new BookTransactionRequest());
             model.addAttribute("bookList", savedBooks);
             model.addAttribute("memberList", registeredMembers);
 
             return "/bookTransaction/rentbook-page";
         }
 
+        Message message = new Message("SUCCESS", "Book rented successfully");
         BookTransactionResponse bookTransaction = bookTransactionService.rentBook(request);
-        model.addAttribute("transactionResponse", bookTransaction);
-        model.addAttribute("message", bookTransaction);
-        model.addAttribute("type", "create");
+        ra.addFlashAttribute("transactionResponse", bookTransaction);
+        ra.addFlashAttribute("message", message);
 
         return "redirect:/brs/library/book/rent";
     }

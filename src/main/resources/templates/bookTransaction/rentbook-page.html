@@ -118,8 +118,13 @@
     </th:block>
 
     <!-- Toast Message -->
-    <th:block
-            th:replace="~{fragments/toast-msg-fragment :: toast_message(message = ${message}, type = ${messageType})}">
+<!--    <th:block-->
+<!--            th:replace="~{fragments/toast-msg-fragment :: toast_message(message = ${message}, type = ${messageType})}">-->
+<!--    </th:block>-->
+
+    <!-- floating toast -->
+    <th:block th:if="${message}"
+            th:replace="~{fragments/floating-toast-fragment :: floating_toast(errorResponse = ${message})}">
     </th:block>
 
 
