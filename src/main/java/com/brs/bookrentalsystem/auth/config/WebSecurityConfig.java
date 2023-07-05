@@ -1,19 +1,24 @@
 package com.brs.bookrentalsystem.auth.config;
 
+import com.brs.bookrentalsystem.auth.filter.JwtAuthenticationFilter;
 import com.brs.bookrentalsystem.auth.service.impl.MyCustomUserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -26,12 +31,10 @@ import static org.springframework.security.web.authentication.rememberme.TokenBa
 public class WebSecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
-//    private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserDetailsService userDetailsService;
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new MyCustomUserDetailsServiceImpl();
-    }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
@@ -45,23 +48,31 @@ public class WebSecurityConfig {
                         .hasAnyRole("ADMIN", "SUPER_ADMIN", "LIBRARIAN")
         );
 
-//        http.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.accessDeniedPage("/exception-page"));
-        http.formLogin(form -> form
-                .loginPage("/brs/auth/login")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/brs/")
-                .permitAll()
-        );
+//        http.formLogin(form -> form
+//                .loginPage("/brs/auth/login")
+//                .loginProcessingUrl("/login")
+//                .defaultSuccessUrl("/brs/")
+//                .permitAll()
+//        );
+//
+//        http.logout(logout -> logout
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutSuccessUrl("/brs/auth/login")
+//                .permitAll()
+//        );
+//
+//        http.rememberMe(
+//                remember -> remember.rememberMeServices(rememberMeServices)
+//        );
 
-        http.logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/brs/auth/login")
-                .permitAll()
-        );
 
-        http.rememberMe(
-                remember -> remember.rememberMeServices(rememberMeServices)
-        );
+        http.sessionManagement(sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.authenticationProvider(authenticationProvider());
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
@@ -70,7 +81,7 @@ public class WebSecurityConfig {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
 
         return daoAuthenticationProvider;
     }
@@ -88,6 +99,11 @@ public class WebSecurityConfig {
         rememberMe.setMatchingAlgorithm(RememberMeTokenAlgorithm.MD5);
         rememberMe.setTokenValiditySeconds(60);
         return rememberMe;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
 }
