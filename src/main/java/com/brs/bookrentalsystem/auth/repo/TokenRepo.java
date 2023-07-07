@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TokenRepo extends JpaRepository<UserToken, Short> {
 
-    UserToken findUserTokenByEmail(String email);
+    UserToken findUserTokenByEmailAndAndOtp(String email, String otp);
 
 }

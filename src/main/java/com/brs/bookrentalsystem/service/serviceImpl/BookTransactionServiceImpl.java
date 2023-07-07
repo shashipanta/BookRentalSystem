@@ -25,10 +25,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -50,8 +48,6 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     public BookTransactionResponse rentBook(BookTransactionRequest request) {
 
         BookTransaction bookTransaction = toBookTransaction(request);
-
-        BookTransaction bookTransactionByCode = bookTransactionRepo.findBookTransactionByCode(request.getCode());
 
         bookTransaction = bookTransactionRepo.save(bookTransaction);
 
@@ -80,19 +76,12 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         bookTransaction.setRentTo(transactionById.getRentTo());
         bookTransaction.setRentFrom(transactionById.getRentFrom());
 
-//        transactionById.setRentStatus(RentStatus.RETURNED);
-//        // create new transaction instead of
-//        transactionById.setTransactionId(null);
-
         BookTransaction save = bookTransactionRepo.save(bookTransaction);
 
         // update stock
         bookService.updateStock(save.getBook().getId(), 1);
 
-        // give return operation to
-
         return new Message("S100", "Book returned successfully");
-
 
     }
 
@@ -117,11 +106,10 @@ public class BookTransactionServiceImpl implements BookTransactionService {
 
     @Override
     public List<BookTransactionResponse> getAllTransactions() {
-        List<Book> allBooks = bookRepo.findAllBooks();
         List<BookTransactionProjection> allTransactions = bookTransactionRepo.getAllTransactions();
         return allTransactions.stream()
                 .map(this::toBookTransactionResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // get book transactions that has not been returned yet
@@ -131,7 +119,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
 
         return rentedBookTransactions.stream()
                 .map(this::toBookTransactionResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -145,14 +133,13 @@ public class BookTransactionServiceImpl implements BookTransactionService {
                 .toList();
         return filteredBookTransactions.stream()
                 .map(BookTransaction::getCode)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // generate transaction code for client
     @Override
     public String generateTransactionCode(String bookName) {
 
-        String paddingString = "BOOK-";
         String upperCase = bookName.replace(" ", "").substring(0, 5).toUpperCase();
 
         String randomString = randomAlphaNumericString.generateRandomString(5);
@@ -195,6 +182,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     public List<BookMessage> getTopRentedBooks() {
         List<TopRentedBookTransactionProjection> bookTransactionByRentStatus = bookTransactionRepo.getTopRentedBookTransaction();
 
+        // filter entries containing same bookId but different authorNames
         List<BookMessage> bookMessage = bookTransactionByRentStatus.stream()
                 .map((topRentedBooks) -> BookMessage.builder()
                         .bookName(topRentedBooks.getBookName())
@@ -204,10 +192,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
                 .distinct()
                 .toList();
 
-//        List<BookTransaction> limit = bookMessage.stream().distinct().limit(5).collect(Collectors.toList());
-//        return limit.stream()
-//                .map(bookTransaction -> new BookMessage(bookTransaction.getBook().getName(), bookTransaction.get))
-        return null;
+        return bookMessage;
     }
 
     @Override
@@ -236,9 +221,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         Page<BookTransactionProjection> allTransactions = this.bookTransactionRepo.getAllTransactions(pageable);
 
-        Page<BookTransactionResponse> map = allTransactions.map(this::toBookTransactionResponse);
-
-        return map;
+        return allTransactions.map(this::toBookTransactionResponse);
     }
 
     @Override

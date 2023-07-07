@@ -14,6 +14,28 @@
 
 <div class="container">
 
+    <div class="container d-flex justify-content-evenly" style="flex-wrap: wrap;">
+        <th:block th:each="book : ${bookList}">
+            <div class="card" style="width: 18rem; margin-bottom: 2Qem;">
+                <img th:src="@{/uploads/file(filename= *{book.fileName})}"
+                     class="img-thumbnail"
+                     th:alt="*{book.bookName}" alt="..."
+                     style="width: 100%; height: 10em; object-fit: cover; "
+                >
+                <div class="card-body">
+                    <h5 th:text="${book.bookName}" class="card-title">Card title</h5>
+                    <span th:text="${book.publishedDate}"
+                          class="card-text"></span>
+<!--                    <a href="#" class="btn btn-primary">Go somewhere</a>-->
+                </div>
+            </div>
+        </th:block>
+
+
+    </div>
+
+
+
 
 
 

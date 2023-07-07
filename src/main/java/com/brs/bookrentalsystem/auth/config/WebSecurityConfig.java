@@ -60,7 +60,8 @@ public class WebSecurityConfig {
         );
 
         http.rememberMe(
-                remember -> remember.rememberMeServices(rememberMeServices)
+                remember -> remember.userDetailsService(this.userDetailsService())
+                        .tokenValiditySeconds(180) // 3 min
         );
 
         return http.build();

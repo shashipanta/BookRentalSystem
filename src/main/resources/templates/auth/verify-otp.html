@@ -28,15 +28,24 @@
       <label for="inputEmail">Email address</label>
     </div>
 
-    <h6>Enter the otp sent to your mail</h6>
+    <h6>Enter the OTP sent to your mail</h6>
 
-    <div  class="form-label-group">
-      <input  th:field="*{otp}"
-              name="otp"
-              type="text" id="otp" class="form-control" placeholder="OTP" required=""
-              autofocus ="">
-      <label for="OTP">OTP</label>
+    <div class="form-label-group">
+      <input
+              th:field="*{otp}"
+              name="username"
+              type="text" id="otp" class="form-control" placeholder="otp" required=""
+              autofocus="">
+      <label for="otp">OTP</label>
     </div>
+
+<!--    <div  class="form-label-group">-->
+<!--      <input  th:field="*{otp}"-->
+<!--              name="otp"-->
+<!--              type="text" id="otp" class="form-control" placeholder="OTP" required=""-->
+<!--              autofocus ="">-->
+<!--      <label for="OTP">OTP</label>-->
+<!--    </div>-->
 
     <button class="btn btn-md btn-primary btn-block" type="submit">Verify OTP</button>
 

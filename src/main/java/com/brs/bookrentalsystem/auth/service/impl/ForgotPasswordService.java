@@ -1,12 +1,10 @@
 package com.brs.bookrentalsystem.auth.service.impl;
 
-import com.brs.bookrentalsystem.auth.config.EmailSignature;
 import com.brs.bookrentalsystem.auth.dto.ForgotPasswordRequest;
 import com.brs.bookrentalsystem.auth.model.UserAccount;
 import com.brs.bookrentalsystem.auth.repo.TokenRepo;
 import com.brs.bookrentalsystem.auth.repo.UserAccountRepo;
 import com.brs.bookrentalsystem.auth.service.TokenService;
-import com.brs.bookrentalsystem.auth.service.UserAccountService;
 import com.brs.bookrentalsystem.util.RandomAlphaNumericString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -34,27 +32,23 @@ public class ForgotPasswordService {
     public boolean verifyEmailAndSendOtp(String userEmail){
 
         Optional<UserAccount> userAccountByEmail = userAccountRepo.findUserAccountByEmail(userEmail);
-        if(userAccountByEmail.isPresent()){
-            return true;
-        } else {
-            return false;
-        }
+        return userAccountByEmail.isPresent();
     }
 
     @Async
     public void sendOtpToEmail(String to){
-        String genereatedOtp = randomAlphaNumericString.generateRandomString(5);
+        String generatedOtp = randomAlphaNumericString.generateRandomString(5);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom("shashipanta57@gmail.com");
         simpleMailMessage.setTo(to);
-        simpleMailMessage.setText("Your OTP is : " + "   "+ genereatedOtp);
+        simpleMailMessage.setText("Your OTP is : " + "   "+ generatedOtp);
         simpleMailMessage.setSubject("RESET PASSWORD");
 
 
         javaMailSender.send(simpleMailMessage);
 
         // save otp and email in table
-        tokenService.storeToken(genereatedOtp, to);
+        tokenService.storeToken(generatedOtp, to);
 
     }
 
@@ -62,7 +56,7 @@ public class ForgotPasswordService {
         // otp verification
         if(otp.equals(request.getOtp())){
             // verified and delete token
-            tokenService.deleteToken(tokenRepo.findUserTokenByEmail(request.getEmail()).getId());
+            tokenService.deleteToken(tokenRepo.findUserTokenByEmailAndAndOtp(request.getEmail(),otp ).getId());
             return true;
         }
         return false;

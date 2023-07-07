@@ -76,15 +76,6 @@ public class AuthController {
         return "auth/forgot-password";
     }
 
-//    @GetMapping(value = "/otp-page")
-//    public String openVerifyOtpPage(
-//            @ModelAttribute("forgotPasswordRequest")ForgotPasswordRequest request,
-//            Model model){
-//
-//
-//        return "auth/verify-otp";
-//
-//    }
 
     @GetMapping(value = "/send-otp")
     public String sendOtp(
@@ -108,6 +99,8 @@ public class AuthController {
             message.setCode("FAILED");
             message.setMessage("User not found");
         }
+
+        model.addAttribute("message", message);
 
         return "auth/forgot-password";
 

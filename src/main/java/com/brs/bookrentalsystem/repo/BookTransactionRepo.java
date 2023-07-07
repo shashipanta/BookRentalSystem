@@ -81,7 +81,6 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
     List<BookTransaction> filterByTransactionCode(String filterValue);
 
 
-
     @Query(
             nativeQuery = true,
             value = "select\n" +
@@ -145,34 +144,35 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
     Page<BookTransactionProjection> filterBookTransactionByDateRange(Pageable pageable, LocalDate from, LocalDate to);
 
 
-
     // get top rented books
 
     @Query(
             nativeQuery = true,
-            value = "select tbt.rent_status as bookRentStatus,\n" +
-                    "       tbt.book_id     as bookId,\n" +
-                    "\n" +
-                    "       tb.name         as bookName,\n" +
-                    "       tb.rating       as bookRating,\n" +
-                    "       btt.authorName\n" +
-                    "\n" +
-                    "from tbl_book_transaction tbt\n" +
-                    "         inner join tbl_book tb on tbt.book_id = tb.id\n" +
-                    "         inner join\n" +
-                    "     (select tb.id        as bookId,\n" +
-                    "             ta.name      as authorName,\n" +
-                    "             ta.mobile_no as authorMobile,\n" +
-                    "\n" +
-                    "             tb.name      as bookName,\n" +
-                    "             tb.rating    as bookRating\n" +
-                    "\n" +
-                    "      from book_author ba\n" +
-                    "               inner join tbl_author ta on ba.author_id = ta.id\n" +
-                    "               inner join tbl_book tb on ba.book_id = tb.id\n" +
-                    "      order by ta.name)\n" +
-                    "         as btt on btt.bookId = tbt.book_id\n" +
-                    "where tbt.rent_status = 'RENTED';"
+            value = """
+                    select tbt.rent_status as bookRentStatus,
+                           tbt.book_id     as bookId,
+                                        
+                           btt.bookName    as bookName,
+                           btt.bookRating  as bookRating,
+                           btt.authorName  as authorName
+                                        
+                    from tbl_book_transaction tbt
+                             inner join
+                         (select ta.name      as authorName,
+                                 ta.mobile_no as authorMobile,
+                                        
+                                 tb.id        as bookId,
+                                 tb.name      as bookName,
+                                 tb.rating    as bookRating
+                                        
+                          from book_author ba
+                                   inner join tbl_author ta on ba.author_id = ta.id
+                                   inner join tbl_book tb on ba.book_id = tb.id)
+                             as btt on btt.bookId = tbt.book_id
+                    where tbt.rent_status = 'RENTED'
+                    order by bookId;
+                    """
     )
     List<TopRentedBookTransactionProjection> getTopRentedBookTransaction();
+
 }

@@ -31,8 +31,8 @@
             <label for="inputUserName">User Name</label>
             <!--            <p th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}" style="color: red" ></p>-->
             <div th:if="${#fields.hasErrors('userName')}" class="form-group">
-                <i class="fa-solid fa-circle-exclamation" style="color: #a51d2d;"></i>
-                <p th:errors="*{userName}" class="invalid-feedback"></p>
+
+                <span th:errors="*{userName}" style="color: red"   ></span>
             </div>
 
         </div>
@@ -44,7 +44,7 @@
             >
             <label for="inputEmail">Email address</label>
 
-            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red"></p>
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red"></span>
 
         </div>
 
@@ -59,7 +59,7 @@
 
         <button class="btn btn-md btn-primary btn-block" type="submit">Register New Account</button>
 
-        <div class="form-label-group">
+        <div class="form-label-group mt-2   text-center">
             <a th:href="@{/brs/auth/login}">Already have account?</a>
         </div>
 
