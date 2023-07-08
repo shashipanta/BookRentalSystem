@@ -39,6 +39,13 @@ public class UserAccountServiceImpl implements UserAccountService {
         return new Message("CREATED", "User Account created successfully");
     }
 
+
+    // Todo: handle exception
+    @Override
+    public UserAccount findUserAccountByEmail(String email) {
+        return userAccountRepo.findUserAccountByEmail(email).orElseThrow();
+    }
+
     @Override
     public void registerDefaultUsers(List<UserAccount> defaultUsers) {
         for(UserAccount ua: defaultUsers){

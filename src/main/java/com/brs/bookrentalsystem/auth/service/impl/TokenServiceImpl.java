@@ -17,6 +17,12 @@ public class TokenServiceImpl implements TokenService {
         UserToken userToken = new UserToken();
         userToken.setOtp(token);
         userToken.setEmail(userMail);
+
+        // invalidate any tokens of the same user
+        UserToken previousToken = tokenRepo.findUserTokenByEmail(userMail);
+
+        if(previousToken != null) tokenRepo.deleteById(previousToken.getId());
+
         tokenRepo.save(userToken);
     }
 

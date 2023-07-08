@@ -53,7 +53,7 @@
                 <td>
                     <a th:href="@{/brs/admin/category/} + ${category.id} + '/delete'"
                        class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
-                    <a th:href="@{/brs/admin/category/} + ${category.id} + '/edit'"
+                    <a th:href="@{'/brs/admin/category/' + ${category.id} +  '/edit'}"
                        class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
                 </td>
             </tr>

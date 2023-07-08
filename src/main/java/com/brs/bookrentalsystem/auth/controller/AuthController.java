@@ -1,8 +1,10 @@
 package com.brs.bookrentalsystem.auth.controller;
 
-import com.brs.bookrentalsystem.auth.dto.ForgotPasswordRequest;
+import com.brs.bookrentalsystem.auth.dto.forgotPassword.ChangePasswordRequest;
+import com.brs.bookrentalsystem.auth.dto.forgotPassword.ForgotPasswordRequest;
 import com.brs.bookrentalsystem.auth.dto.LoginRequest;
 import com.brs.bookrentalsystem.auth.dto.RegistrationRequest;
+import com.brs.bookrentalsystem.auth.dto.forgotPassword.VerifyOtpRequest;
 import com.brs.bookrentalsystem.auth.service.UserAccountService;
 import com.brs.bookrentalsystem.auth.service.impl.ForgotPasswordService;
 import com.brs.bookrentalsystem.dto.Message;
@@ -10,6 +12,8 @@ import com.brs.bookrentalsystem.error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,12 +23,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.net.http.HttpRequest;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/brs/auth")
 public class AuthController {
+
+    private static final String UI_MESSAGE = "message";
+    private static final String REGISTRATION_REQUEST = "registrationRequest";
+
+    private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserAccountService userAccountService;
 
@@ -41,8 +48,8 @@ public class AuthController {
     public String openRegistrationPage(Model model, HttpServletRequest httpServletRequest) {
 
         System.out.println(httpServletRequest.getRemoteAddr());
-        if (!model.containsAttribute("registrationRequest")) {
-            model.addAttribute("registrationRequest", new RegistrationRequest());
+        if (!model.containsAttribute(REGISTRATION_REQUEST)) {
+            model.addAttribute(REGISTRATION_REQUEST, new RegistrationRequest());
 
         }
         return "auth/register";
@@ -50,15 +57,16 @@ public class AuthController {
 
     @PostMapping("/register/submit")
     public String registerNewUser(
-            @Valid @ModelAttribute(name = "registrationRequest") RegistrationRequest request,
+            @Valid @ModelAttribute(name = REGISTRATION_REQUEST) RegistrationRequest request,
 
             BindingResult bindingResult,
             RedirectAttributes ra,
             Model model) {
 
         if(bindingResult.hasErrors()){
-            System.out.println("binding result : " + bindingResult);
-            model.addAttribute("registrationRequest", request);
+            logger.error("Binding Error : {}", bindingResult.getFieldError());
+
+            model.addAttribute(REGISTRATION_REQUEST, request);
             return "auth/register";
         }
 //        request.setIp(httpServletRequest.getRemoteAddr());
@@ -77,7 +85,7 @@ public class AuthController {
     }
 
 
-    @GetMapping(value = "/send-otp")
+    @PostMapping(value = "/send-otp")
     public String sendOtp(
             @Valid @ModelAttribute("forgotPasswordRequest") ForgotPasswordRequest request,
             BindingResult bindingResult,
@@ -85,6 +93,9 @@ public class AuthController {
         boolean isUserVerified = forgotPasswordService.verifyEmailAndSendOtp(request.getEmail());
 
         if (bindingResult.hasErrors()) {
+            logger.error("Binding Error : {}", bindingResult.getFieldError());
+
+            model.addAttribute("forgotPasswordRequest", new ForgotPasswordRequest());
             return "/auth/forgot-password";
         }
         Message message = new Message();
@@ -93,46 +104,62 @@ public class AuthController {
             forgotPasswordService.sendOtpToEmail(request.getEmail());
             message.setCode("OTP");
             message.setMessage("OTP sent! Please verify");
-//            model.addAttribute("forgotPasswordRequest", request);
+            model.addAttribute(UI_MESSAGE, message);
+            model.addAttribute("verifyOtpRequest", new VerifyOtpRequest(request.getEmail(), null));
             return "auth/verify-otp";
         } else {
             message.setCode("FAILED");
             message.setMessage("User not found");
         }
 
-        model.addAttribute("message", message);
+        model.addAttribute(UI_MESSAGE, message);
 
         return "auth/forgot-password";
 
     }
 
-    @GetMapping(value = "/verify-otp")
-    public String verifyOtp(@ModelAttribute("forgotPasswordRequest") ForgotPasswordRequest request,
+    @PostMapping(value = "/verify-otp")
+    public String verifyOtp(
+            @Valid @ModelAttribute("verifyOtpRequest") VerifyOtpRequest request,
                             BindingResult bindingResult,
                             Model model){
 
-        boolean isOtpVerified = forgotPasswordService.verifyOtp(request.getOtp(), request);
+        if(bindingResult.hasErrors()){
+            logger.error("Binding Error : {}", bindingResult.getFieldError());
+            return "auth/verify-otp";
+        }
+        boolean isOtpVerified = forgotPasswordService.verifyOtp(request);
 
 
         if(isOtpVerified){
             model.addAttribute("isOtpVerified", true);
-            model.addAttribute("forgotPasswordRequest", request);
+            model.addAttribute("changePasswordRequest", new ChangePasswordRequest(request.getEmail(), null));
+            logger.info("VERIFIED : {} otp has been verified", request.getEmail());
             return "auth/change-password";
         }
 
-        model.addAttribute("message", "Otp not matching");
+        model.addAttribute(UI_MESSAGE, new Message("FAILED", "OTP is not matching"));
 
-        return "auth/forgot-password";
+        return "auth/verify-otp";
     }
 
     // change password
 
     @RequestMapping(value = "/change-password")
-    public String changePassword(@ModelAttribute("forgotPasswordRequest") ForgotPasswordRequest request,
+    public String changePassword(
+            @Valid @ModelAttribute("changePasswordRequest") ChangePasswordRequest request,
                             BindingResult bindingResult,
                             Model model){
 
+        if(bindingResult.hasErrors()){
+            logger.error("Binding Error : {}", bindingResult.getFieldError());
+            return "auth/change-password";
+        }
         boolean isPasswordChanged = forgotPasswordService.changePassword(request);
+        if(isPasswordChanged){
+            model.addAttribute(UI_MESSAGE, new Message("SUCCESS", "Password changed successfully"));
+            logger.info("SUCCESS : Password changed for {}", request.getEmail());
+        }
 
         return "auth/login";
     }

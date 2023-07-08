@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OTP</title>
+    <style>
+        .container{
+            background: var(--clr-bg-primary);
+            color: white;
+        }
+
+        .message-end{
+            background: #777777;
+            color: white;
+            padding: .5em 1em;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+  <div class="top-message">Dear {{userName}},</div>
+  <div class="message">
+    We've gained a request for password reset. Your <strong>OTP</strong> is <code> {{otp}}</code>
+  </div>
+
+  <div class="message-end">
+    Don't share this with anyone. <br>
+    Kindly, ignore this message if you haven't requested an OTP.
+  </div>
+
+</div>
+
+</body>
+</html>

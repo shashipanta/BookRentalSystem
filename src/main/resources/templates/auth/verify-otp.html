@@ -9,7 +9,8 @@
 <body>
 <div class="container">
   <form
-          th:object="${forgotPasswordRequest}"
+          th:method="POST"
+          th:object="${verifyOtpRequest}"
           th:action="@{/brs/auth/verify-otp}"
           class="form-signin">
 
@@ -34,18 +35,17 @@
       <input
               th:field="*{otp}"
               name="username"
-              type="text" id="otp" class="form-control" placeholder="otp" required=""
+              type="text" id="otp"
+              th:classappend="${#fields.hasAnyErrors()}? 'is-invalid'"
+              class="form-control" placeholder="otp" required=""
               autofocus="">
       <label for="otp">OTP</label>
+      <span
+              th:if="${#fields.hasErrors('otp')}"
+              th:errors="*{otp}"
+              class="invalid-feedback"
+      >Field Error</span>
     </div>
-
-<!--    <div  class="form-label-group">-->
-<!--      <input  th:field="*{otp}"-->
-<!--              name="otp"-->
-<!--              type="text" id="otp" class="form-control" placeholder="OTP" required=""-->
-<!--              autofocus ="">-->
-<!--      <label for="OTP">OTP</label>-->
-<!--    </div>-->
 
     <button class="btn btn-md btn-primary btn-block" type="submit">Verify OTP</button>
 
@@ -65,6 +65,19 @@
 
 <!-- Common Scripts-->
 <th:block th:replace="~{fragments/utility-fragments :: common_scripts}"></th:block>
+
+<div th:if="${message}"
+     class="toast position-absolute floating-toast show" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header ">
+    <img src="..." class="rounded me-2" alt="...">
+    <strong class="me-auto"></strong>
+    <small >1 min ago</small>
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div th:text="${message.message}" class="toast-body">
+    Username or password not matching!
+  </div>
+</div>
 
 </body>
 </html>

@@ -11,5 +11,8 @@ public interface UserAccountService {
 
     Message registerNewUser(RegistrationRequest request);
 
+    UserAccount findUserAccountByEmail(String email);
+
+
     void registerDefaultUsers(List<UserAccount> defaultUsers);
 }
