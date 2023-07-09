@@ -24,6 +24,12 @@
 /*    margin-bottom: 20px;*/
 /*}*/
 
+/* FOR REQUIRED LABELS */
+.required:after {
+    content:" *";
+    color: red;
+}
+
 .top-nav {
     padding: .4em 8em;
     background: var(--clr-bg-primary);

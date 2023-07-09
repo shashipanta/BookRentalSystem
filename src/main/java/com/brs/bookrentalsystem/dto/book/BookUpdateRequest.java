@@ -1,6 +1,5 @@
 package com.brs.bookrentalsystem.dto.book;
 
-import com.brs.bookrentalsystem.annotation.ValidMultipartFile;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

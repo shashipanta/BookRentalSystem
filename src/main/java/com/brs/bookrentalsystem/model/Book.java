@@ -1,18 +1,14 @@
 package com.brs.bookrentalsystem.model;
 
 import com.brs.bookrentalsystem.model.audit.Auditable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.NamedNativeQuery;
-import jakarta.persistence.Table;
 import lombok.Data;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 

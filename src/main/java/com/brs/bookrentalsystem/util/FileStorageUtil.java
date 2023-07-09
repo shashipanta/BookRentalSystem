@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -43,9 +41,7 @@ public class FileStorageUtil {
         // ISBN_BOOK_NAME_IMAGE-SAVED-DATE.png 987-11-2-530011-1_RICH-DAD-POOR-DAD_2023-01-23.Png
         String storedFileName = String.format("%s_%s_%s.png", formattedIsbn, formattedBookName, dateUtil.dateToString(LocalDate.now()));
 
-        String filePath = ROOT_LOCATION + File.separator + storedFileName;
-
-        return filePath;
+        return ROOT_LOCATION + File.separator + storedFileName;
 
     }
 
@@ -109,24 +105,6 @@ public class FileStorageUtil {
         }
 
         FileUtils.copyFile(srcFile, destFile);
-
-//        FileInputStream fis = null;
-//        FileOutputStream fos = null;
-//        try{
-//            fis = new FileInputStream(srcFile);
-//            fos = new FileOutputStream(destFile, false);
-//
-//            byte[] buffer = new byte[1024];
-//            int bytesRead;
-//            while((bytesRead = fis.read(buffer)) > 0){
-//                fos.write(buffer, 0, bytesRead);
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        } finally {
-//            if(fos != null) fos.close();
-//            if(fis != null) fis.close();
-//        }
 
         return fileStorageLocation;
     }

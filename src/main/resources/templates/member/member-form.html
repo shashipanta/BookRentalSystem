@@ -18,7 +18,7 @@
     <input type="text" th:field="*{id}" hidden>
 
     <div class="form-group">
-        <label for="memberName">Member Name</label>
+        <label for="memberName" class="required">Member Name</label>
         <input th:field="*{name}"
                th:classappend="*{#fields.hasErrors('name')}? 'is-invalid'"
                type="text" class="form-control" id="memberName" placeholder="eg: Shashi Kumar Panta">
@@ -30,7 +30,7 @@
     </div>
 
     <div class="form-group">
-        <label for="memberEmail">Email</label>
+        <label for="memberEmail" class="required">Email</label>
         <input th:field="*{email}"
                th:classappend="*{#fields.hasErrors('email')}? 'is-invalid'"
                type="email" class="form-control" id="memberEmail" aria-describedby="authorEmailHelp"
@@ -54,7 +54,7 @@
 <!--    </div>-->
 
     <div class="form-group">
-        <label for="authorPhoneNo">Phone Number</label>
+        <label for="authorPhoneNo" class="required">Phone Number</label>
         <input th:field="*{mobileNumber}"
                th:classappend="*{#fields.hasErrors('mobileNumber')}? 'is-invalid'"
                class="form-control" type="text" id="authorPhoneNo" placeholder="eg: 9812347567">

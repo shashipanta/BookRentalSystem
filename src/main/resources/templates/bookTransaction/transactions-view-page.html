@@ -23,20 +23,31 @@
 
     <div class="row">
         <div class="col-md-6">
-            <form action="/brs/library/book/filter/filter-by-date"
-                  th:method="POST"
-                  th:object="${filterTransaction}"
-                  class="d-flex m-2 justify-content-between"
+            <form
+                    action="/brs/library/book/filter/filter-by-date"
+                    th:method="POST"
+                    th:object="${filterTransaction}"
+                    class="d-flex m-2 justify-content-between"
             >
+                <div class="form-input-group d-flex align-items-center gap-3 justify-content-between">
+                    <label for="from" class="required">From:</label>
+                    <input
+                            th:field="*{from}"
+                            th:classappend="${errorResponse}? 'is-invalid'"
+                            class="form-control"
+                            type="date" id="from">
 
-                <label for="from">From:</label>
-                <input type="date" th:field="*{from}" id="from">
-
-                <div class="form-input d-flex justify-content-between">
-                    <label for="to">To:</label>
-                    <input type="date" th:field="*{to}" id="to">
                 </div>
-                <button type="submit">Filter</button>
+
+                <div class="form-input-group d-flex align-items-center gap-3 justify-content-between">
+                    <label for="to">To:</label>
+                    <input type="date"
+                           th:field="*{to}"
+                           class="form-control"
+                           id="to">
+                </div>
+
+                <button type="submit" class="btn btn-info"><i class="fa-solid fa-filter"></i></button>
             </form>
         </div>
     </div>
@@ -81,14 +92,11 @@
                 </th:block>
 
 
-
-
-
                 </tbody>
             </table>
 
             <nav th:if="!${#lists.isEmpty(transactionList)}"
-                    aria-label="Page navigation example">
+                 aria-label="Page navigation example">
                 <ul class="pagination">
                     <li th:if="${currentPage > 0}"
                         class="page-item">
@@ -98,7 +106,7 @@
                            th:classappend="${currentPage <= 1}? 'disabled':''"
                         >Previous</a>
                         <a th:if="!${fromDate}"
-                                th:href="@{'/brs/library/book/page/' + ${currentPage - 1}}"
+                           th:href="@{'/brs/library/book/page/' + ${currentPage - 1}}"
                            class="page-link"
                            th:classappend="${currentPage <= 1}? 'disabled':''"
                         >Previous</a>
@@ -122,7 +130,7 @@
                     </li>
                     <li class="page-item">
                         <a th:if="${fromDate}"
-                                th:href="@{'/brs/library/book/page/' + ${currentPage + 1 }} + '?fromDate=' + *{fromDate} + '&toDate=' + *{toDate}"
+                           th:href="@{'/brs/library/book/page/' + ${currentPage + 1 }} + '?fromDate=' + *{fromDate} + '&toDate=' + *{toDate}"
                            class="page-link"
                            th:classappend="${currentPage >= totalPages}?'disabled':''"
                         >Next</a>
@@ -136,7 +144,6 @@
             </nav>
 
 
-
         </div>
 
         <!-- floating toast -->
@@ -145,9 +152,9 @@
         </th:block>
 
         <!-- toast message -->
-<!--        <th:normal-toast-->
-<!--                th:replace="~{fragments/toast-msg-fragment :: toast_message(message=${message}, type=${type})}">-->
-<!--        </th:normal-toast>-->
+        <!--        <th:normal-toast-->
+        <!--                th:replace="~{fragments/toast-msg-fragment :: toast_message(message=${message}, type=${type})}">-->
+        <!--        </th:normal-toast>-->
 
 
     </div>

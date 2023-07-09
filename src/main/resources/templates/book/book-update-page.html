@@ -15,7 +15,9 @@
 
 
     <!-- Form   -->
-    <form th:action="@{/brs/admin/book/update}" th:object="${bookUpdateRequest}" method="post"
+    <form th:action="@{/brs/admin/book/update}"
+          th:object="${bookUpdateRequest}"
+          method="post"
           enctype="multipart/form-data">
         <h1 th:text="*{id}? 'Update Book' : 'Register a New Book'"></h1>
 

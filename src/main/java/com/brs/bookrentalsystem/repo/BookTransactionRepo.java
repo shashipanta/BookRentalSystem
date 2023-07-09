@@ -1,7 +1,6 @@
 package com.brs.bookrentalsystem.repo;
 
 import com.brs.bookrentalsystem.enums.RentStatus;
-import com.brs.bookrentalsystem.model.Book;
 import com.brs.bookrentalsystem.model.BookTransaction;
 import com.brs.bookrentalsystem.projections.BookTransactionProjection;
 import com.brs.bookrentalsystem.projections.TopRentedBookTransactionProjection;
@@ -30,6 +29,7 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
                     "    bt.rent_status as rentStatus,\n" +
                     "    tb.id as bookId,\n" +
                     "    tb.name as bookName,\n" +
+                    "    tb.photo as bookCoverImage,\n" +
                     "    tb.isbn_no as isbn,\n" +
                     "    tb.stock_count as stockCount,\n" +
                     "    tb.published_date as publishedDate,\n" +

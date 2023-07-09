@@ -16,7 +16,7 @@
 
     <div class="container d-flex justify-content-evenly" style="flex-wrap: wrap;">
         <th:block th:each="book : ${bookList}">
-            <div class="card" style="width: 18rem; margin-bottom: 2Qem;">
+            <div class="card" style="width: 18rem; margin-bottom: 2em;">
                 <img th:src="@{/uploads/file(filename= *{book.fileName})}"
                      class="img-thumbnail"
                      th:alt="*{book.bookName}" alt="..."

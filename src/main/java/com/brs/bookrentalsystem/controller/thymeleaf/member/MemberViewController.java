@@ -1,15 +1,14 @@
 package com.brs.bookrentalsystem.controller.thymeleaf.member;
 
 import com.brs.bookrentalsystem.dto.Message;
-import com.brs.bookrentalsystem.dto.category.CategoryRequest;
-import com.brs.bookrentalsystem.dto.category.CategoryResponse;
 import com.brs.bookrentalsystem.dto.member.MemberRequest;
 import com.brs.bookrentalsystem.dto.member.MemberResponse;
-import com.brs.bookrentalsystem.model.Category;
 import com.brs.bookrentalsystem.model.Member;
 import com.brs.bookrentalsystem.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +26,9 @@ import java.util.List;
 public class MemberViewController {
 
     private final MemberService memberService;
+    private static final String MEMBER_REQUEST = "memberRequest";
+
+    Logger logger = LoggerFactory.getLogger(MemberViewController.class);
 
 
     @GetMapping("/")
@@ -52,7 +54,8 @@ public class MemberViewController {
             Model model
     ) {
         if (bindingResult.hasErrors()) {
-            System.out.println("Binding errors" + bindingResult.getFieldErrors());
+            logger.error("Binding Error : {}", bindingResult.getFieldError());
+
             List<MemberResponse> allMembers = memberService.getRegisteredMembers();
             model.addAttribute("memberList", allMembers);
             model.addAttribute("memberRequest", request);
@@ -60,14 +63,6 @@ public class MemberViewController {
         }
 
         MemberResponse memberResponse = memberService.registerNewMember(request);
-
-//        if(request.getId() == null){
-//            ra.addFlashAttribute("message", new Message("CREATED", "Member created successfully"));
-//            ra.addFlashAttribute("messageType", "create");
-//        } else {
-//            ra.addFlashAttribute("message", new Message("UPDATED", "Member updated successfully"));
-//            ra.addFlashAttribute("messageType", "update");
-//        }
 
         return "redirect:/brs/admin/member/";
     }

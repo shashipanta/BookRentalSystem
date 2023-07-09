@@ -36,10 +36,12 @@
                     <td th:text="${member.email}">Otto</td>
                     <td th:text="${member.mobileNumber}">9812XXXXXX</td>
                     <td th:text="${member.address}">Address</td>
-                    <td class="d-flex gap-2">
-                        <a th:href="@{/brs/admin/member/delete/} + ${member.id}"
-                           class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
-                        <a th:href="@{/brs/admin/member/} + ${member.id} + '/edit'"
+                    <td class="d-flex gap-1">
+                        <a th:href="@{'/brs/admin/member/delete/' + ${member.id} }"
+                           class="btn btn-sm btn-danger">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                        <a th:href="@{'/brs/admin/member/' + ${member.id} + '/edit' }"
                            class="btn btn-sm btn-warning">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>

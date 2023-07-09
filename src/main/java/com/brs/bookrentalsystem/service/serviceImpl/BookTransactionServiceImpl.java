@@ -9,10 +9,7 @@ import com.brs.bookrentalsystem.model.BookTransaction;
 import com.brs.bookrentalsystem.model.Member;
 import com.brs.bookrentalsystem.projections.BookTransactionProjection;
 import com.brs.bookrentalsystem.projections.TopRentedBookTransactionProjection;
-import com.brs.bookrentalsystem.repo.BookRepo;
 import com.brs.bookrentalsystem.repo.BookTransactionRepo;
-import com.brs.bookrentalsystem.repo.CategoryRepo;
-import com.brs.bookrentalsystem.repo.MemberRepo;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
 import com.brs.bookrentalsystem.service.MemberService;
@@ -25,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +35,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
     private final BookService bookService;
     private final MemberService memberService;
     private final BookTransactionRepo bookTransactionRepo;
-    private final BookRepo bookRepo;
-    private final CategoryRepo categoryRepo;
-    private final MemberRepo memberRepo;
+
     private final RandomAlphaNumericString randomAlphaNumericString;
 
     private final DateUtil dateUtil;
@@ -81,28 +77,19 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         // update stock
         bookService.updateStock(save.getBook().getId(), 1);
 
+        // penalty if expiry date is exceeded
+        long penaltyDays = ChronoUnit.DAYS.between(LocalDate.now(), transactionById.getRentTo());
+
+        if ((penaltyDays > 0)) {
+            transactionById.setPenaltyDays((short) penaltyDays);
+        } else {
+            transactionById.setPenaltyDays((short) 0);
+        }
+
         return new Message("S100", "Book returned successfully");
 
     }
 
-    // when returning
-    public BookTransactionResponse returnBook(BookTransactionRequest request) {
-
-        BookTransaction bookTransaction = toBookTransaction(request);
-
-        // update status to RETURNED
-        bookTransaction.setRentStatus(RentStatus.RETURNED);
-
-        bookTransaction = bookTransactionRepo.save(bookTransaction);
-
-        // update stock info
-        bookService.updateStock(request.getBookId(), 1);
-
-        // TODO :: penalty if return date has been exceeded
-
-        return toBookTransactionResponse(bookTransaction);
-
-    }
 
     @Override
     public List<BookTransactionResponse> getAllTransactions() {
@@ -157,11 +144,10 @@ public class BookTransactionServiceImpl implements BookTransactionService {
         List<BookTransaction> rentedBooks = bookTransactionRepo.findBookTransactionByCodeAndRentStatus(transactionCode, RentStatus.RENTED);
         List<BookTransaction> returnedBooks = bookTransactionRepo.findBookTransactionByCodeAndRentStatus(transactionCode, RentStatus.RETURNED);
 
-
         // check if the book is already returned or not
         long totalRentedBooks = rentedBooks.size();
         long totalReturnedBooks = returnedBooks.size();
-        if(totalRentedBooks == totalReturnedBooks){
+        if (totalRentedBooks == totalReturnedBooks) {
             return Optional.empty();
         }
 
@@ -175,7 +161,6 @@ public class BookTransactionServiceImpl implements BookTransactionService {
                 .rentedDate(dateUtil.dateToString(bookTransaction.getRentFrom()))
                 .expiryDate(dateUtil.dateToString(bookTransaction.getRentTo()))
                 .build());
-
     }
 
     @Override
@@ -184,7 +169,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
 
         // filter entries containing same bookId but different authorNames
         List<BookMessage> bookMessage = bookTransactionByRentStatus.stream()
-                .map((topRentedBooks) -> BookMessage.builder()
+                .map(topRentedBooks -> BookMessage.builder()
                         .bookName(topRentedBooks.getBookName())
                         .rating(topRentedBooks.getBookRating())
                         .build()
@@ -245,6 +230,7 @@ public class BookTransactionServiceImpl implements BookTransactionService {
                 .transactionId(projection.getBookTransactionId())
                 .transactionCode(projection.getTransactionCode())
                 .bookName(projection.getBookName())
+                .bookCoverImage(projection.getBookCoverImage())
                 .publishedDate(projection.getPublishedDate())
                 .isbn(projection.getIsbn())
                 .categoryName(projection.getCategoryName())

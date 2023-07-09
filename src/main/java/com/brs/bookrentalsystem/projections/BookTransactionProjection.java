@@ -10,6 +10,7 @@ public interface BookTransactionProjection {
     // book
     Integer getBookId();
     String getBookName();
+    String getBookCoverImage();
     String getIsbn();
     Integer getStockCount();
     String getPublishedDate();

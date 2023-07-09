@@ -2,9 +2,6 @@ package com.brs.bookrentalsystem.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-
-import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 

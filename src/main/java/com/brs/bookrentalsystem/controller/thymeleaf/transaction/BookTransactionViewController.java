@@ -4,8 +4,8 @@ package com.brs.bookrentalsystem.controller.thymeleaf.transaction;
 import com.brs.bookrentalsystem.dto.Message;
 import com.brs.bookrentalsystem.dto.book.BookMessage;
 import com.brs.bookrentalsystem.dto.book.BookResponse;
-import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.dto.member.MemberResponse;
+import com.brs.bookrentalsystem.dto.transaction.*;
 import com.brs.bookrentalsystem.error.ErrorResponse;
 import com.brs.bookrentalsystem.service.BookService;
 import com.brs.bookrentalsystem.service.BookTransactionService;
@@ -13,6 +13,7 @@ import com.brs.bookrentalsystem.service.CategoryService;
 import com.brs.bookrentalsystem.service.MemberService;
 import com.brs.bookrentalsystem.util.DateUtil;
 import jakarta.validation.Valid;
+import jakarta.validation.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +62,7 @@ public class BookTransactionViewController {
         FilterTransaction filterTransaction = new FilterTransaction();
 
         if(fromDate != null){
-            toDate = (toDate == null)? dateUtil.dateToString(LocalDate.now()) : toDate;
+            toDate = (toDate.equals(""))? dateUtil.dateToString(LocalDate.now()) : toDate;
             filterTransaction.setFrom(fromDate);
             filterTransaction.setTo(toDate);
             page = bookTransactionService.getPaginatedAndFilteredTransaction(filterTransaction, pageNo);
@@ -187,8 +188,13 @@ public class BookTransactionViewController {
     @GetMapping("/generate-code")
     @ResponseBody
     public String generateTransactionCode(@RequestParam("bookName") String bookName) {
-        String s = bookTransactionService.generateTransactionCode(bookName);
-        return s;
+        return bookTransactionService.generateTransactionCode(bookName);
+    }
+
+    @GetMapping("/get-book-info/{id}")
+    @ResponseBody
+    public BookResponse getSingleBookInfo(@PathVariable("id") Integer bookId){
+        return bookService.getBookById(bookId);
     }
 
     // get book return date
@@ -213,25 +219,25 @@ public class BookTransactionViewController {
     @PostMapping("/filter/filter-by-date")
     public String filterTransactionByDateRange(
             @ModelAttribute("filterTransaction") FilterTransaction filterTransaction,
+            BindingResult bindingResult,
             Model model,
             RedirectAttributes ra
     ) {
-//        if(bindingResult.hasErrors()){
-//            System.out.println(bindingResult);
-//            return "bookTransaction/transactions-view-page";
-//        }
 
-        if(filterTransaction.getTo().isEmpty() || filterTransaction.getTo().isBlank()){
+        if(bindingResult.hasErrors()){
+            System.out.println(bindingResult);
+
+            return "bookTransaction/transactions-view-page";
+        }
+
+        if(filterTransaction.getFrom().isEmpty() || filterTransaction.getFrom().isBlank()){
            ra.addFlashAttribute("errorResponse", new ErrorResponse("FAILED", "Date cannot be blank"));
            return "redirect:/brs/library/book/";
         }
 
-
-
         Integer pageNumber = 1;
 
         Page<BookTransactionResponse> paginatedAndFilteredTransaction = bookTransactionService.getPaginatedAndFilteredTransaction(filterTransaction, pageNumber);
-//        model.addAttribute("")
 
         List<BookTransactionResponse> content = paginatedAndFilteredTransaction.getContent();
         if (!model.containsAttribute("filterTransaction")) {

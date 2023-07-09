@@ -27,6 +27,4 @@ public class Category extends Auditable<String> {
     @Column(name = "description", columnDefinition = "TEXT", length = 500)
     private String description;
 
-//    @Column
-//    private Boolean isDeleted = Boolean.FALSE;
 }

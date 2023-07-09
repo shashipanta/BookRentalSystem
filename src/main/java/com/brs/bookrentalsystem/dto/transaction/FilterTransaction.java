@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class FilterTransaction {
 
+    @NotBlank(message = "From value should be provided")
     private String from;
 
     private String to;

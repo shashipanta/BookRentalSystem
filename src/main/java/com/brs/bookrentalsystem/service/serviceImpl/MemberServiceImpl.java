@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,13 +50,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberResponse> getRegisteredMembers() {
         List<Member> memberList = memberRepo.findAll();
-        List<MemberResponse> memberResponseList = memberList.stream()
+
+        return memberList.stream()
                 .map(this::toMemberResponse)
-                .collect(Collectors.toList());
-        return memberResponseList;
+                .toList();
     }
 
-    private MemberResponse toMemberResponse(Member member){
+    private MemberResponse toMemberResponse(Member member) {
         return MemberResponse.builder()
                 .id(member.getId())
                 .name(member.getName())

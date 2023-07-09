@@ -3,8 +3,6 @@ package com.brs.bookrentalsystem.dto.transaction;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 
 @Data
 @Builder
@@ -22,6 +20,8 @@ public class TransactionExcelResponse {
 
     // book
     private String bookName;
+
+    private String bookCoverImage;
 
     private String isbn;
 

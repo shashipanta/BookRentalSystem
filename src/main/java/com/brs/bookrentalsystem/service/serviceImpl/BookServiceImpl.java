@@ -25,7 +25,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +57,6 @@ public class BookServiceImpl implements BookService {
     // TODO:: LIKELY TO BREAK CHANGES
     private BookResponse toBookResponse(Book book) {
 
-//        String publishedDate = dateUtil.dateToString(book.getPublishedDate());
         String publishedDate = dateUtil.localDateToHtmlDateFormat(book.getPublishedDate());
 
         List<Author> authors = book.getAuthor().stream()
@@ -87,7 +85,7 @@ public class BookServiceImpl implements BookService {
         List<Book> all = bookRepo.findAll();
         return all.stream()
                 .map(this::toBookResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -107,7 +105,7 @@ public class BookServiceImpl implements BookService {
     BookRequest toBookRequest(Book book){
         List<Integer> authorList = book.getAuthor().stream()
                 .map(Author::getId)
-                .collect(Collectors.toList());
+                .toList();
         String isbn = book.getIsbn().replace("-", "");
         return BookRequest.builder()
                 .id(book.getId())
@@ -188,14 +186,6 @@ public class BookServiceImpl implements BookService {
     public Message reviveDeletedBookById(Integer bookId) {
         Message message = new Message();
         bookRepo.reviveDeletedBookById(bookId);
-//
-//        if(isBookRevived){
-//            message.setCode("SUCCESS");
-//            message.setMessage("Deleted Book revived successfully");
-//        }else {
-//            message.setCode("FAILURE");
-//            message.setMessage("Deleted Book couldn't be revived");
-//        }
 
         message.setCode("SUCCESS");
         message.setMessage("Deleted Book revived successfully");
@@ -215,7 +205,7 @@ public class BookServiceImpl implements BookService {
         List<Book> booksAvailableOnStock = bookRepo.findBookByStockCountIsGreaterThan(0);
         return booksAvailableOnStock.stream()
                 .map(this::toBookResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // create bookUpdateRequest for updating book * multipart file validation error
@@ -223,8 +213,8 @@ public class BookServiceImpl implements BookService {
     public BookUpdateRequest getBookUpdateRequest(Integer bookId) {
 
         Book bookEntityById = this.getBookEntityById(bookId);
-        BookUpdateRequest bookUpdateRequest = toBookUpdateRequest(bookEntityById);
-        return bookUpdateRequest;
+
+        return toBookUpdateRequest(bookEntityById);
     }
 
     @Override
@@ -232,13 +222,13 @@ public class BookServiceImpl implements BookService {
         List<Book> allBooks = bookRepo.findAllBooks();
         return allBooks.stream()
                 .map(this::toBookResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     BookUpdateRequest toBookUpdateRequest(Book book){
         List<Integer> authorList = book.getAuthor().stream()
                 .map(Author::getId)
-                .collect(Collectors.toList());
+                .toList();
         String isbn = book.getIsbn().replace("-", "");
         return BookUpdateRequest.builder()
                 .id(book.getId())
@@ -279,7 +269,6 @@ public class BookServiceImpl implements BookService {
 
         Category category = categoryService.getCategoryById(request.getCategoryId());
         Set<Author> authors = authorService.getAuthorAssociated(request.getAuthorId());
-//        LocalDate publishedDate = dateUtil.stringToDate(request.getPublishedDate());
         LocalDate publishedDate = dateUtil.formatLocalDate(request.getPublishedDate());
 
         String photoFilePath = null;
@@ -289,7 +278,6 @@ public class BookServiceImpl implements BookService {
             photoFilePath = book1.getPhoto();
         }
 
-//        String imagePath = fileStorageUtil.saveMultipartFile(request.getMultipartFile(), fileStorageLocation);
         if (request.getId() != null) book.setId(request.getId());
         if (request.getBookName() != null) book.setName(request.getBookName());
         if (request.getTotalPages() != null) book.setTotalPages(request.getTotalPages());

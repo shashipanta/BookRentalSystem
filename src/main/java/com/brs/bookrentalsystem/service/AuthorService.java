@@ -12,8 +12,6 @@ public interface AuthorService {
 
     AuthorResponse registerAuthor(AuthorRequest request);
 
-    AuthorResponse updateAuthor(AuthorRequest authorRequest);
-
     AuthorResponse findAuthorById(Integer authorId);
 
     Author getAuthorEntityById(Integer authorId);

@@ -42,10 +42,7 @@ public class BookImportHelper {
 
             int rowNum = 0;
 
-            Iterator<Row> iterator = sheet.iterator();
-
-            while (iterator.hasNext()) {
-                Row row = iterator.next();
+            for (Row row : sheet) {
                 //skip first row header row
                 if (rowNum == 0) {
                     rowNum++;
@@ -63,8 +60,6 @@ public class BookImportHelper {
                     singleCell = cells.next();
 
                     switch (cid) {
-                        case 0:
-                            break;
                         case 1:
                             bookRequest.setBookName(singleCell.getStringCellValue());
                             break;
@@ -78,7 +73,7 @@ public class BookImportHelper {
                             bookRequest.setStockCount((int) singleCell.getNumericCellValue());
                             break;
                         case 5:
-                            bookRequest.setPublishedDate( dateUtil.stringToDate(singleCell.getStringCellValue()));
+                            bookRequest.setPublishedDate(dateUtil.stringToDate(singleCell.getStringCellValue()));
                             break;
                         case 6:
                             bookRequest.setPhotoPath(singleCell.getStringCellValue());
@@ -98,6 +93,8 @@ public class BookImportHelper {
 
                         case 9:
                             bookRequest.setTotalPages((short) singleCell.getNumericCellValue());
+                            break;
+                        default:
                             break;
 
                     }

@@ -1,12 +1,17 @@
 package com.brs.bookrentalsystem.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
 @Component
 public class RandomAlphaNumericString {
+
+    private Random random = new Random();
+
+    private Logger logger = LoggerFactory.getLogger(RandomAlphaNumericString.class);
 
     public String generateRandomString(int length) {
 
@@ -17,15 +22,13 @@ public class RandomAlphaNumericString {
         int lowerBound = 48;        //  '0'
         int upperBound = 122;        //  'z'
 
-        Random random = new Random();
-
         String alphaNumericString = random.ints(lowerBound, upperBound + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(length)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
 
-        System.out.println("AlphaNumeric String : " + alphaNumericString);
+        logger.info("Random AlphaNumeric String generated : {}", alphaNumericString);
 
         return alphaNumericString;
     }

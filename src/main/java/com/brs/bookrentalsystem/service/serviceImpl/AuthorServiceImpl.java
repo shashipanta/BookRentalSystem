@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,19 +30,6 @@ public class AuthorServiceImpl implements AuthorService {
         Author author = toAuthor(request);
         author = authorRepo.save(author);
         return toAuthorResponse(author);
-    }
-
-
-    // handle exception
-    @Override
-    public AuthorResponse updateAuthor(AuthorRequest request) {
-
-        Author author = toAuthor(request);
-
-        author = authorRepo.save(author);
-
-        return toAuthorResponse(author);
-
     }
 
 
@@ -80,10 +68,9 @@ public class AuthorServiceImpl implements AuthorService {
 
         List<Author> authorList = authorRepo.findAll();
 
-        List<AuthorResponse> authorResponseList = authorList.stream()
+        return authorList.stream()
                 .map(this::toAuthorResponse)
-                .collect(Collectors.toList());
-        return authorResponseList;
+                .toList();
     }
 
     @Override
@@ -94,7 +81,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     // handle exception
     private Author toAuthor(Integer authorId) {
-        return authorRepo.findById(authorId).get();
+
+        Optional<Author> authorById = authorRepo.findById(authorId);
+        return authorById.orElseGet(Author::new);
     }
 
     private Author toAuthor(AuthorRequest request) {
@@ -106,14 +95,6 @@ public class AuthorServiceImpl implements AuthorService {
         return author;
     }
 
-    private AuthorRequest toAuthorRequest(AuthorResponse response) {
-        return AuthorRequest.builder()
-                .id(response.getId())
-                .name(response.getName())
-                .email(response.getEmail())
-                .mobileNumber(response.getMobileNumber())
-                .build();
-    }
 
     private AuthorResponse toAuthorResponse(Author author) {
         return AuthorResponse.builder()

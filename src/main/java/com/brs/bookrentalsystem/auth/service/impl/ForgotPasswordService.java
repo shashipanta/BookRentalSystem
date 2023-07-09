@@ -117,7 +117,7 @@ public class ForgotPasswordService {
         try {
             otpHtmlFile = new ClassPathResource("templates/auth/otp-verification.html").getFile();
 
-            fileContent = FileUtils.readFileToString(otpHtmlFile, "UTF_8");
+            fileContent = FileUtils.readFileToString(otpHtmlFile, "UTF-8");
 
             Field[] fields = OtpVerificationProperty.class.getDeclaredFields();
             String fieldName;

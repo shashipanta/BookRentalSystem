@@ -24,82 +24,98 @@
         </div>
 
         <!--   SELECT BOOK NAME     -->
-        <div class="form-group">
-            <label for="bookId" class=""> Book Name</label>
-            <select th:field="*{bookId}"
-                    th:classappend="*{#fields.hasErrors('bookId')}? 'is-invalid'"
-                    class="form-select mt-2" aria-label="Default select example"
-                    id="bookId">
-<!--                <option value="" disabled selected>&#45;&#45; select &#45;&#45;</option>-->
-                <option th:each="book : ${bookList}"
-                        th:value="${book.id}"
-                        th:text="${book.bookName}"
-                        th:id="${book.bookName}">
-                </option>
-            </select>
-            <span th:if="${#fields.hasErrors('bookId')}"
-                  th:errors="*{bookId}"
-                  class="invalid-feedback"
-            >Category error</span>
-        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group col-md -6">
+                    <label for="bookId" class=""> Book Name</label>
+                    <select th:field="*{bookId}"
+                            th:classappend="*{#fields.hasErrors('bookId')}? 'is-invalid'"
+                            class="form-select mt-2" aria-label="Default select example"
+                            id="bookId">
+                        <!--                <option value="" disabled selected>&#45;&#45; select &#45;&#45;</option>-->
+                        <option th:each="book : ${bookList}"
+                                th:value="${book.id}"
+                                th:text="${book.bookName}"
+                                th:id="${book.bookName}">
+                        </option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('bookId')}"
+                          th:errors="*{bookId}"
+                          class="invalid-feedback"
+                    >Category error</span>
+                </div>
 
-        <!--   SELECT MEMBER    -->
-        <div class="form-group">
-            <label for="memberId" class=""> Member Name</label>
-            <select th:field="*{memberId}"
-                    th:classappend="*{#fields.hasErrors('memberId')}? 'is-invalid'"
-                    class="form-select mt-2" aria-label="Default select example"
-                    id="memberId">
-                <option value="" disabled selected>-- select --</option>
-                <option th:each="member, index : ${memberList}"
-                        th:value="${member.id}"
-                        th:text="${member.name}"
-                        th:selected="${index.count == 1}"
-                >
-                </option>
-            </select>
-            <span th:if="${#fields.hasErrors('memberId')}"
-                  th:errors="*{memberId}"
-                  class="invalid-feedback"
-            >Category error</span>
-        </div>
+                <!--   SELECT MEMBER    -->
+                <div class="form-group">
+                    <label for="memberId" class=""> Member Name</label>
+                    <select th:field="*{memberId}"
+                            th:classappend="*{#fields.hasErrors('memberId')}? 'is-invalid'"
+                            class="form-select mt-2" aria-label="Default select example"
+                            id="memberId">
+                        <option value="" disabled selected>-- select --</option>
+                        <option th:each="member, index : ${memberList}"
+                                th:value="${member.id}"
+                                th:text="${member.name}"
+                                th:selected="${index.count == 1}"
+                        >
+                        </option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('memberId')}"
+                          th:errors="*{memberId}"
+                          class="invalid-feedback"
+                    >Category error</span>
+                </div>
 
-        <!--   TOTAL RENTED DAYS    -->
-        <div class="form-group">
-            <label for="totalRentedDays">Rent for (days)</label>
-            <input th:field="*{totalDays}"
-                   min="1"
-                   id="totalRentedDays"
-                   th:classappend="*{#fields.hasErrors('totalDays')}? 'is-invalid'"
-                   type="number" class="form-control" aria-describedby="authorEmailHelp"
-                   placeholder="eg: 1024">
-            <span th:if="${#fields.hasErrors('totalDays')}"
-                  th:errors="*{totalDays}"
-                  class="invalid-feedback"
-            >Total Days error</span>
-        </div>
-        <div class="readonly-container">
-            <!--   TRANSACTION-CODE    -->
-            <div class="form-group">
-                <label for="code">Code</label>
-                <input th:field="*{code}"
-                       id="code"
-                       readonly
-                       th:classappend="*{#fields.hasErrors('code')}? 'is-invalid'"
-                       type="text" class="form-control" aria-describedby="authorEmailHelp"
-                       placeholder="eg: Xf123kow">
-                <span th:if="${#fields.hasErrors('code')}"
-                      th:errors="*{code}"
-                      class="invalid-feedback"
-                >Code Error</span>
+                <!--   TOTAL RENTED DAYS    -->
+                <div class="form-group">
+                    <label for="totalRentedDays">Rent for (days)</label>
+                    <input th:field="*{totalDays}"
+                           min="1"
+                           id="totalRentedDays"
+                           th:classappend="*{#fields.hasErrors('totalDays')}? 'is-invalid'"
+                           type="number" class="form-control" aria-describedby="authorEmailHelp"
+                           placeholder="eg: 1024">
+                    <span th:if="${#fields.hasErrors('totalDays')}"
+                          th:errors="*{totalDays}"
+                          class="invalid-feedback"
+                    >Total Days error</span>
+                </div>
+
+                <div class="readonly-container">
+                    <!--   TRANSACTION-CODE    -->
+                    <div class="form-group">
+                        <label for="code">Code</label>
+                        <input th:field="*{code}"
+                               id="code"
+                               readonly
+                               th:classappend="*{#fields.hasErrors('code')}? 'is-invalid'"
+                               type="text" class="form-control" aria-describedby="authorEmailHelp"
+                               placeholder="eg: Xf123kow">
+                        <span th:if="${#fields.hasErrors('code')}"
+                              th:errors="*{code}"
+                              class="invalid-feedback"
+                        >Code Error</span>
+                    </div>
+
+                    <!--   DATE OF RETURN    -->
+                    <div class="form-group">
+                        <label for="dateOfReturn">Date of Return</label>
+                        <input readonly type="date" id="dateOfReturn" class="form-control">
+                    </div>
+                </div>
             </div>
+            <div class="col-md-6">
+                <div class="d-flex flex-column">
+                    <label for="bookCoverImage">Cover Image</label>
+                    <img class="img-thumbnail " id="bookCoverImage"
+                         style="width: 10em; aspect-ratio: 1/1;"
+                         th:src="@{'/uploads/file?filename=' + ${fileName}}"
+                         th:alt="${fileName}" srcset="">
+                </div>
 
-            <!--   DATE OF RETURN    -->
-            <div class="form-group">
-                <label for="dateOfReturn">Date of Return</label>
-                <input readonly type="date" id="dateOfReturn" class="form-control">
             </div>
         </div>
+
 
 
         <!--  Submit buttons -->
@@ -146,11 +162,23 @@
     // });
 
     let baseUrl = "http://localhost:8080/brs/library/book/";
+    let fileUploadUrl = "/uploads/file?filename=";
+
+    // populate image field on redirection if local storage has image field value
+    let storedImageFileName = localStorage.getItem("storedImageFileName");
+    console.log("StoredFileName after redirection : ", storedImageFileName);
+    $("#bookCoverImage").attr("src", fileUploadUrl + storedImageFileName);
 
     // get generated transaction code
     $("select#bookId").change(function () {
 
         var selectedBookName = $(this).children("option:selected").attr("id");
+        let selectedBookId = $(this).children("option:selected").attr("value");
+
+
+
+        let storedImageFileName = localStorage.getItem("storedImageFileName");
+        $("#bookCoverImage").attr("src", fileUploadUrl + storedImageFileName);
 
         $.ajax({
             url: "http://localhost:8080/brs/library/book/generate-code?bookName=" + selectedBookName,
@@ -159,6 +187,21 @@
                 console.log("woah code generated")
             }
         });
+
+        $.ajax({
+            url: baseUrl + "get-book-info/" + selectedBookId,
+            success: function (bookResponse) {
+
+
+                $("#bookCoverImage").attr("src", fileUploadUrl + bookResponse.fileName);
+
+                // add this book name to local storage
+                localStorage.setItem("storedImageFileName", bookResponse.fileName)
+                console.log("book response : ", bookResponse);
+            }
+        })
+
+
         // alert("You have selected the country - " + selectedBookName);
     });
 
