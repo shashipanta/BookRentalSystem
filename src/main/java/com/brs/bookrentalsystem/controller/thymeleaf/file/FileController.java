@@ -2,6 +2,8 @@ package com.brs.bookrentalsystem.controller.thymeleaf.file;
 
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,8 @@ import java.io.IOException;
 @RequestMapping("/uploads")
 public class FileController {
 
+    Logger logger = LoggerFactory.getLogger(FileController.class);
+
     //root path for image files
     private static final String ROOT_LOCATION = System.getProperty("user.home")
             + File.separator + "Desktop" + File.separator + "BRS";
@@ -29,7 +33,7 @@ public class FileController {
         try {
             image = FileUtils.readFileToByteArray(new File(ROOT_LOCATION + File.separator + filename));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("{} Image not found : {}", filename, e.getMessage() );
         }
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
     }

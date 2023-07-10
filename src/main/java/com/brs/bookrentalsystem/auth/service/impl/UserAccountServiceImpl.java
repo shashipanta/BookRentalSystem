@@ -3,7 +3,6 @@ package com.brs.bookrentalsystem.auth.service.impl;
 import com.brs.bookrentalsystem.auth.dto.RegistrationRequest;
 import com.brs.bookrentalsystem.auth.dto.userAccount.UserAccountRequest;
 import com.brs.bookrentalsystem.auth.enums.RoleNames;
-import com.brs.bookrentalsystem.auth.model.Role;
 import com.brs.bookrentalsystem.auth.model.UserAccount;
 import com.brs.bookrentalsystem.auth.repo.RoleRepo;
 import com.brs.bookrentalsystem.auth.repo.UserAccountRepo;
@@ -14,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 
 @Service

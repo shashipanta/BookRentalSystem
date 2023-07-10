@@ -180,6 +180,8 @@
         let storedImageFileName = localStorage.getItem("storedImageFileName");
         $("#bookCoverImage").attr("src", fileUploadUrl + storedImageFileName);
 
+
+        // generate book transaction code
         $.ajax({
             url: "http://localhost:8080/brs/library/book/generate-code?bookName=" + selectedBookName,
             success: function (code) {
@@ -188,12 +190,12 @@
             }
         });
 
+        // get book info
         $.ajax({
             url: baseUrl + "get-book-info/" + selectedBookId,
             success: function (bookResponse) {
 
-
-                $("#bookCoverImage").attr("src", fileUploadUrl + bookResponse.fileName);
+                $("#bookCoverImage").attr("src", fileUploadUrl + bookResponse?.fileName);
 
                 // add this book name to local storage
                 localStorage.setItem("storedImageFileName", bookResponse.fileName)

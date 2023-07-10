@@ -6,6 +6,8 @@ import com.brs.bookrentalsystem.dto.author.AuthorResponse;
 import com.brs.bookrentalsystem.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,13 +25,18 @@ public class AuthorViewController {
 
     private final AuthorService authorService;
 
+    Logger logger = LoggerFactory.getLogger(AuthorViewController.class);
+
+
+    private static final String AUTHOR_REQUEST_DTO = "authorRequest";
+    private static final String REDIRECTION_URL = "redirect:/brs/admin/author/";
+
+
     @GetMapping(path = {"/", ""})
     public String openAuthorPage(Model model) {
-        if (!model.containsAttribute("authorRequest")) {
-            model.addAttribute("authorRequest", new AuthorRequest());
+        if (!model.containsAttribute(AUTHOR_REQUEST_DTO)) {
+            model.addAttribute(AUTHOR_REQUEST_DTO, new AuthorRequest());
         }
-
-        System.out.println(model.asMap());
 
         // get registered authors
         List<AuthorResponse> registeredAuthors = authorService.getRegisteredAuthors();
@@ -46,25 +53,25 @@ public class AuthorViewController {
     ) {
 
         if (bindingResult.hasErrors()) {
-            System.out.println("binding errors : " + bindingResult);
-            model.addAttribute("authorRequest", request);
+
+            logger.error("Binding Error : {}", bindingResult.getFieldError());
+            model.addAttribute(AUTHOR_REQUEST_DTO, request);
             model.addAttribute("authorList", authorService.getRegisteredAuthors());
-//            ra.addFlashAttribute(bindingResult);
 
             return "/author/author-page";
         }
 
         if (request.getName().contains("shashi")) {
             bindingResult.rejectValue("name", "author.name", "Shashi cannot be added as author");
-            model.addAttribute("authorRequest", request);
+            model.addAttribute(AUTHOR_REQUEST_DTO, request);
             return "/author/author-form-redirect";
         }
 
-        AuthorResponse authorResponse = authorService.registerAuthor(request);
+        authorService.registerAuthor(request);
         Message createdMessage = new Message("CREATED", "Author saved successfully");
         model.addAttribute("message", createdMessage);
         model.addAttribute("messageType", "create");
-        return "redirect:/brs/admin/author/";
+        return REDIRECTION_URL;
     }
 
 
@@ -75,9 +82,9 @@ public class AuthorViewController {
     ) {
         AuthorResponse authorResponse = authorService.findAuthorById(authorId);
 
-        ra.addFlashAttribute("authorRequest", authorResponse);
+        ra.addFlashAttribute(AUTHOR_REQUEST_DTO, authorResponse);
 
-        return "redirect:/brs/admin/author/";
+        return REDIRECTION_URL;
     }
 
     @GetMapping("/delete/{id}")
@@ -89,6 +96,6 @@ public class AuthorViewController {
         ra.addFlashAttribute("message", message);
         ra.addFlashAttribute("messageType", "delete");
 
-        return "redirect:/brs/admin/author/";
+        return REDIRECTION_URL;
     }
 }
