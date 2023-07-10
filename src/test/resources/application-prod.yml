@@ -1,0 +1,24 @@
+#jdbc.driverClassName=org.h2.Driver
+#jdbc.url=jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1;NON_KEYWORDS=KEY,VALUE
+#
+#hibernate.dialect=org.hibernate.dialect.H2Dialect
+#hibernate.hbm2ddl.auto=create
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1;NON_KEYWORDS=KEY,VALUE
+    username: test
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      path: /h2-console
+      settings.trace: false
+      settings.web-allow-others: false
+
+hibernate:
+  dialect: org.hibernate.dialect.H2Dialect
+  hbm2ddl-auto: create

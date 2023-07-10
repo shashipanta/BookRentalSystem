@@ -19,7 +19,6 @@ public class HomeController {
     private final BookService bookService;
 
     //http://localhost:8080/brs/dashboard
-
     @GetMapping(value = "/")
     public String getDashboard(Model model){
         List<BookResponse> allBooks = bookService.getAllBooks();

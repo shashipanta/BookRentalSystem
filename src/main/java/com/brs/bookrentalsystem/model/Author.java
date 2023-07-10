@@ -1,12 +1,16 @@
 package com.brs.bookrentalsystem.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "tbl_author",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_author_email", columnNames = "email"),
