@@ -15,19 +15,19 @@ import javax.sql.DataSource;
 @Profile("test")
 public class H2DatabaseConfig {
 
-    @Value("${spring.datasource.h2.url}")
+    @Value("${spring.datasource.url}")
     private String url;
 
-    @Value("${spring.datasource.h2.driverClassName}")
+    @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
 
-    @Value("${spring.datasource.h2.username}")
+    @Value("${spring.datasource.username}")
     private String username;
 
-    @Value("${spring.datasource.h2.password}")
+    @Value("${spring.datasource.password}")
     private String password;
 
-    @Value("${spring.jpa.h2.database-platform}")
+    @Value("${spring.jpa.database-platform}")
     private String databasePlatform;
 
     @Bean
