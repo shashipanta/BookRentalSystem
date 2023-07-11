@@ -18,14 +18,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 //@WebMvcTest(AuthorViewController.class)
-public class AuthorViewControllerTest {
+class AuthorViewControllerTest {
 
     private static final String BASE_URL = "/brs/admin/author";
     private static final String REDIRECTION_URL = "/brs/admin/author/";
@@ -49,7 +48,7 @@ public class AuthorViewControllerTest {
     // test cases
     @Test
     @DisplayName("Get Authors view page")
-    public void testDefaultGetMapping() throws Exception {
+    void testDefaultGetMapping() throws Exception {
         mockMvc.perform(get(BASE_URL))
                 .andExpect(model().attribute(AUTHOR_REQUEST_DTO, new AuthorRequest()))
                 .andExpect(model().attributeExists(AUTHOR_LIST))
@@ -60,7 +59,7 @@ public class AuthorViewControllerTest {
 
     @Test
     @DisplayName("Add new author")
-    public void shouldRegisterNewAuthor() throws Exception {
+    void shouldRegisterNewAuthor() throws Exception {
         mockMvc.perform(post(BASE_URL + "/save")
                         .param("name", "authorName")
                         .param("email", "author@email.com")
@@ -74,7 +73,7 @@ public class AuthorViewControllerTest {
 
     @Test
     @DisplayName(value = "Empty author name is rejected")
-    public void shouldFail_whenName_NotProvided() throws Exception {
+    void shouldFail_whenName_NotProvided() throws Exception {
         mockMvc.perform(post(BASE_URL + "/save")
                 .param("name", "")
                 .param("email", "author@email.com")
@@ -86,7 +85,7 @@ public class AuthorViewControllerTest {
 
     @Test
     @DisplayName(value = "Author name starting with")
-    public void shouldFail_whenName_startsWithNumber() throws Exception {
+    void shouldFail_whenName_startsWithNumber() throws Exception {
         mockMvc.perform(post(BASE_URL + "/save")
                         .param("name", "12Author")
                         .param("email", "author@email.com")
@@ -100,7 +99,7 @@ public class AuthorViewControllerTest {
 
     @Test
     @DisplayName(value = "Invalid Email format is rejected")
-    public void shouldFail_whenEmail_isInvalid() throws Exception {
+    void shouldFail_whenEmail_isInvalid() throws Exception {
         mockMvc.perform(post(BASE_URL + "/save")
                         .param("name", "authorName")
                         .param("email", "author@email.")
@@ -111,14 +110,32 @@ public class AuthorViewControllerTest {
 
     @Test
     @DisplayName(value = "Mobile number should be 10 digits otherwise is rejected")
-    public void shouldFail_whenMobileNumber_isNotValid() throws Exception {
+    void shouldFail_whenMobileNumber_isNotValid() throws Exception {
         mockMvc.perform(post(BASE_URL + "/save")
-                        .param("name", "authorName")
+
                         .param("email", "author@email.com")
                         .param("mobileNumber", "")
                 )
                 .andExpect(model().attributeHasErrors(AUTHOR_REQUEST_DTO))
-                .andExpect(model().attributeErrorCount(AUTHOR_REQUEST_DTO, 1));
+                .andExpect(model().attributeErrorCount(AUTHOR_REQUEST_DTO, 3))
+                .andDo(print());
     }
+
+
+
+    @Test
+    @DisplayName("Edit Author based on id")
+    void editAuthor_test() throws Exception {
+
+        mockMvc.perform(put(BASE_URL + "/{id}/edit", 1)
+                .param("name", "updatedAuthorName")
+                .param("email", "updatedEmail@gmail.com")
+                .param("mobileNumber", "9812091287")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(REDIRECTION_URL));
+    }
+
+
 
 }

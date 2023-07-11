@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class BookServiceTestConfiguration {
 
-    @Bean
-    @Primary
-    public BookService bookService() {
-        return Mockito.mock(BookService.class);
-    }
+//    @Bean
+//    @Primary
+//    public BookService bookService() {
+//        return Mockito.mock(BookService.class);
+//    }
 
 
 }

@@ -16,11 +16,16 @@ public interface AuthorService {
 
     Author getAuthorEntityById(Integer authorId);
 
-    AuthorResponse getAuthor(Integer authorId);
 
     Set<Author> getAuthorAssociated(List<Integer> authorIdList);
 
     List<AuthorResponse> getRegisteredAuthors();
 
     Message deleteAuthorById(Integer authorId);
+
+    // mappings
+    Author toAuthor(AuthorRequest request);
+    AuthorResponse toAuthorResponse(Author author);
+
+
 }

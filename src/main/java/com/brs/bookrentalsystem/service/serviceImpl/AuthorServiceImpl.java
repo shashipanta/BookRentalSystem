@@ -50,10 +50,6 @@ public class AuthorServiceImpl implements AuthorService {
                 .orElseThrow(() -> generateNoElementFoundException(authorId));
     }
 
-    @Override
-    public AuthorResponse getAuthor(Integer authorId) {
-        return null;
-    }
 
     @Override
     public Set<Author> getAuthorAssociated(List<Integer> authorIdList) {
@@ -81,12 +77,11 @@ public class AuthorServiceImpl implements AuthorService {
 
     // handle exception
     private Author toAuthor(Integer authorId) {
-
         Optional<Author> authorById = authorRepo.findById(authorId);
         return authorById.orElseGet(Author::new);
     }
 
-    private Author toAuthor(AuthorRequest request) {
+    public Author toAuthor(AuthorRequest request) {
         Author author = new Author();
         author.setId(request.getId());
         author.setName(request.getName());
@@ -96,7 +91,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
-    private AuthorResponse toAuthorResponse(Author author) {
+    public AuthorResponse toAuthorResponse(Author author) {
         return AuthorResponse.builder()
                 .id(author.getId())
                 .email(author.getEmail())
